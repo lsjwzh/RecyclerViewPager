@@ -1232,7 +1232,6 @@ public class RecyclerViewEx extends ViewGroup {
         int[] childLocationOnScreen = new int[2];
         if(childCount >0){
             getLocationOnScreen(lvLocationOnScreen);
-            int middleX = lvLocationOnScreen[0] + getWidth() / 2;
 
             for (int i = 0; i < childCount; i++) {
                 View child = getChildAt(i);
@@ -3036,6 +3035,9 @@ public class RecyclerViewEx extends ViewGroup {
                     spanPosition = mSplineDistance>0?1:-1;
                 }
                 targetPosition += spanPosition;
+                if(targetPosition<0){
+                    targetPosition = 0;
+                }
                 Log.d(TAG, String.format("spanPosition:%s,targetPosition:%s,child width:%s", spanPosition, targetPosition, child.getWidth()));
             }
             if(spanPosition==0){
