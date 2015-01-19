@@ -408,7 +408,7 @@ public class LinearLayoutManagerEx extends RecyclerViewEx.LayoutManager {
 
                 final int direction = targetPosition < getFirstVisiblePosition() ? -1 : 1;
                 LogEx.d(TAG,"direction:"+direction);
-                if (mOrientation == HORIZONTAL) {
+                if (mOrientation != HORIZONTAL) {
                     return new PointF(0, direction);
                 } else {
                     return new PointF(direction, 0);

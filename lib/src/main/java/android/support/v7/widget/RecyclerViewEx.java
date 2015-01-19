@@ -1226,7 +1226,7 @@ public class RecyclerViewEx extends ViewGroup {
     /***
      * 在Touch事件执行完且没有fling的时候，调整当前view位置
      */
-    void adjustPosition(int spanX,int spanY){
+    void adjustPosition(int spanX){
         int childCount = getChildCount();
         int[] lvLocationOnScreen = new int[2];
         int[] childLocationOnScreen = new int[2];
@@ -1774,7 +1774,7 @@ public class RecyclerViewEx extends ViewGroup {
                 final float yvel = canScrollVertically ?
                         -VelocityTrackerCompat.getYVelocity(mVelocityTracker, mScrollPointerId) : 0;
                 if (!((xvel != 0 || yvel != 0) && fling((int) (xvel), (int) (yvel)))) {
-                    adjustPosition(mLastTouchX-mInitialTouchX,mLastTouchY-mInitialTouchY);
+                    adjustPosition(mLastTouchX-mInitialTouchX);
                 }
                 mVelocityTracker.clear();
                 releaseGlows();
