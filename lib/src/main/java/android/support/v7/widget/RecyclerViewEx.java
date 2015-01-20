@@ -1240,17 +1240,18 @@ public class RecyclerViewEx extends ViewGroup {
                 int xEnd = xStart+child.getWidth();
                 if(spanX>0) {
                     if (xEnd >= lvLocationOnScreen[0] + getWidth() / 4
-                            &&xStart<lvLocationOnScreen[0]+getWidth()/4) {
+                            &&xStart<=lvLocationOnScreen[0]+getWidth()/4) {
                         smoothScrollToPosition(getChildPosition(child));
                         return;
                     }
                 }else {
-                    if(xStart<lvLocationOnScreen[0] + getWidth() * 3 / 4&&xEnd >= lvLocationOnScreen[0] + getWidth() * 3 / 4){
+                    if(xStart<=lvLocationOnScreen[0] + getWidth() * 3 / 4&&xEnd >= lvLocationOnScreen[0] + getWidth() * 3 / 4){
                         smoothScrollToPosition(getChildPosition(child));
                         return;
                     }
                 }
             }
+            smoothScrollToPosition(getCenterXChildPosition());
         }else {
             setScrollState(SCROLL_STATE_IDLE);
         }

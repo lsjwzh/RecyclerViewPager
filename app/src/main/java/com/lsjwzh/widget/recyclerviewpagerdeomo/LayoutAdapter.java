@@ -92,6 +92,7 @@ public class LayoutAdapter extends RecyclerViewEx.Adapter<LayoutAdapter.SimpleVi
             }
         }else {
             ((ViewGroup.MarginLayoutParams) itemView.getLayoutParams()).leftMargin = 0;
+            ((ViewGroup.MarginLayoutParams) itemView.getLayoutParams()).rightMargin = 0;
         }
     }
 
