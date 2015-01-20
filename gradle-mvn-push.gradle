@@ -23,23 +23,22 @@ def isReleaseBuild() {
 
 def getReleaseRepositoryUrl() {
     return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
-            : "http://nexus.mofun.so:8081/nexus/content/repositories/releases"
+            : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 }
 
 def getSnapshotRepositoryUrl() {
     return hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
-            : "http://nexus.mofun.so:8081/nexus/content/repositories/snapshots/"
+            : "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
 def getRepositoryUsername() {
-    return "admin"
-    //hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : "admin"
+    return ""
 }
 
 def getRepositoryPassword() {
-    return "24678954"
-    //hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : "24678954"
+    return ""
 }
+
 
 afterEvaluate { project ->
     uploadArchives {
