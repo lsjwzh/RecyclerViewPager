@@ -29,6 +29,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
+
 import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_DRAGGING;
 import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_IDLE;
 import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_SETTLING;
@@ -36,7 +38,7 @@ import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_SETTLING;
 public class LayoutFragment extends Fragment {
     private static final String ARG_LAYOUT_ID = "layout_id";
 
-    private RecyclerViewEx mRecyclerView;
+    private RecyclerViewPager mRecyclerView;
     private TextView mPositionText;
     private TextView mCountText;
     private TextView mStateText;
@@ -75,7 +77,8 @@ public class LayoutFragment extends Fragment {
         mToast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
         mToast.setGravity(Gravity.CENTER, 0, 0);
 
-        mRecyclerView = (RecyclerViewEx) view.findViewById(R.id.list);
+        mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
+        mRecyclerView.setDisplayPadding(50);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLongClickable(true);
 
@@ -127,6 +130,17 @@ public class LayoutFragment extends Fragment {
 //        mRecyclerView.addItemDecoration(new DividerItemDecoration(divider));
         mRecyclerView.setLayoutManager(new LinearLayoutManagerEx(getActivity(), OrientationHelperEx.HORIZONTAL,false));
         mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView, mLayoutId));
+        mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+
+                if(mRecyclerView.getChildAt(1)!=null){
+                    View v2 = mRecyclerView.getChildAt(1);
+                    v2.setScaleX(0.9f);
+                    v2.setScaleY(0.9f);
+                }
+            }
+        });
     }
 
     private void updateState(int scrollState) {

@@ -82,18 +82,6 @@ public class LayoutAdapter extends RecyclerViewEx.Adapter<LayoutAdapter.SimpleVi
         final View itemView = holder.itemView;
 
         final int itemId = mItems.get(position);
-        if(position==0){
-            if(itemView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams){
-                ((ViewGroup.MarginLayoutParams) itemView.getLayoutParams()).leftMargin = (mRecyclerView.getWidth()-itemView.getLayoutParams().width)/2;
-            }
-        }else if(position==mItems.size()-1){
-            if(itemView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams){
-                ((ViewGroup.MarginLayoutParams) itemView.getLayoutParams()).rightMargin = (mRecyclerView.getWidth()-itemView.getLayoutParams().width)/2;
-            }
-        }else {
-            ((ViewGroup.MarginLayoutParams) itemView.getLayoutParams()).leftMargin = 0;
-            ((ViewGroup.MarginLayoutParams) itemView.getLayoutParams()).rightMargin = 0;
-        }
     }
 
     @Override
