@@ -6798,7 +6798,7 @@ public class RecyclerViewEx extends ViewGroup {
      *
      * @see RecyclerViewEx#setOnScrollListener(android.support.v7.widget.RecyclerViewEx.OnScrollListener)
      */
-    abstract static public class OnScrollListener {
+    public interface OnScrollListener {
         /**
          * Callback method to be invoked when RecyclerViewEx's scroll state changes.
          *
@@ -6806,7 +6806,7 @@ public class RecyclerViewEx extends ViewGroup {
          * @param newState     The updated scroll state. One of {@link #SCROLL_STATE_IDLE},
          *                     {@link #SCROLL_STATE_DRAGGING} or {@link #SCROLL_STATE_SETTLING}.
          */
-        public void onScrollStateChanged(RecyclerViewEx recyclerView, int newState){}
+        public void onScrollStateChanged(RecyclerViewEx recyclerView, int newState);
 
         /**
          * Callback method to be invoked when the RecyclerViewEx has been scrolled. This will be
@@ -6816,7 +6816,7 @@ public class RecyclerViewEx extends ViewGroup {
          * @param dx The amount of horizontal scroll.
          * @param dy The amount of vertical scroll.
          */
-        public void onScrolled(RecyclerViewEx recyclerView, int dx, int dy){}
+        public void onScrolled(RecyclerViewEx recyclerView, int dx, int dy);
     }
 
     /**
