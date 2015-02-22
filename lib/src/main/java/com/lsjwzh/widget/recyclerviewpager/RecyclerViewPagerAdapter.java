@@ -29,6 +29,18 @@ public class RecyclerViewPagerAdapter<VH extends RecyclerViewEx.ViewHolder> exte
     }
 
     @Override
+    public void registerAdapterDataObserver(RecyclerViewEx.AdapterDataObserver observer) {
+        super.registerAdapterDataObserver(observer);
+        mAdapter.registerAdapterDataObserver(observer);
+    }
+
+    @Override
+    public void unregisterAdapterDataObserver(RecyclerViewEx.AdapterDataObserver observer) {
+        super.unregisterAdapterDataObserver(observer);
+        mAdapter.unregisterAdapterDataObserver(observer);
+    }
+
+    @Override
     public void onBindViewHolder(VH holder, int position) {
         mAdapter.onBindViewHolder(holder, position);
         final View itemView = holder.itemView;
@@ -62,5 +74,15 @@ public class RecyclerViewPagerAdapter<VH extends RecyclerViewEx.ViewHolder> exte
     @Override
     public int getItemCount() {
         return mAdapter.getItemCount();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mAdapter.getItemViewType(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return mAdapter.getItemId(position);
     }
 }
