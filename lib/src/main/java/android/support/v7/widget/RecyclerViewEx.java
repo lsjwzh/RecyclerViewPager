@@ -1279,7 +1279,9 @@ public class RecyclerViewEx extends ViewGroup {
         }
         velocityX = Math.max(-mMaxFlingVelocity, Math.min(velocityX/2, mMaxFlingVelocity));
         velocityY = Math.max(-mMaxFlingVelocity, Math.min(velocityY/2, mMaxFlingVelocity));
-        Log.d(TAG,"velocityX:"+velocityX);
+        if (DEBUG) {
+            Log.d(TAG, "velocityX:" + velocityX);
+        }
         if (velocityX != 0 || velocityY != 0) {
             return mViewFlinger.fling(velocityX, velocityY);
         }
@@ -3026,7 +3028,9 @@ public class RecyclerViewEx extends ViewGroup {
             }
 
             mSplineDistance = (int) (totalDistance * Math.signum(velocity));
-            Log.d(TAG,String.format("mSplineDistance:%s,totalDistance:%s",mSplineDistance,totalDistance));
+            if (DEBUG) {
+                Log.d(TAG, String.format("mSplineDistance:%s,totalDistance:%s", mSplineDistance, totalDistance));
+            }
             int spanPosition = 0;
             int targetPosition = getCenterXChildPosition();
             if(getChildCount()>0) {
@@ -3039,7 +3043,9 @@ public class RecyclerViewEx extends ViewGroup {
                 if(targetPosition<0){
                     targetPosition = 0;
                 }
-                Log.d(TAG, String.format("spanPosition:%s,targetPosition:%s,child width:%s", spanPosition, targetPosition, child.getWidth()));
+                if (DEBUG) {
+                    Log.d(TAG, String.format("spanPosition:%s,targetPosition:%s,child width:%s", spanPosition, targetPosition, child.getWidth()));
+                }
             }
             if(spanPosition==0){
                 return  false;
