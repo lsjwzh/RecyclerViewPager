@@ -407,7 +407,9 @@ public class LinearLayoutManagerEx extends RecyclerViewEx.LayoutManager {
                 }
 
                 final int direction = targetPosition < getFirstVisiblePosition() ? -1 : 1;
-                LogEx.d(TAG,"direction:"+direction);
+                if (DEBUG) {
+                    LogEx.d(TAG, "direction:" + direction);
+                }
                 if (mOrientation != HORIZONTAL) {
                     return new PointF(0, direction);
                 } else {
@@ -1698,13 +1700,19 @@ public class LinearLayoutManagerEx extends RecyclerViewEx.LayoutManager {
      * Logs the internal representation of children to default logger.
      */
     private void logChildren() {
-        Log.d(TAG, "internal representation of views on the screen");
+        if (DEBUG) {
+            Log.d(TAG, "internal representation of views on the screen");
+        }
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
-            Log.d(TAG, "item " + getPosition(child) + ", coord:"
-                    + mOrientationHelper.getDecoratedStart(child));
+            if (DEBUG) {
+                Log.d(TAG, "item " + getPosition(child) + ", coord:"
+                        + mOrientationHelper.getDecoratedStart(child));
+            }
         }
-        Log.d(TAG, "==============");
+        if (DEBUG) {
+            Log.d(TAG, "==============");
+        }
     }
 
     /**
@@ -1718,7 +1726,9 @@ public class LinearLayoutManagerEx extends RecyclerViewEx.LayoutManager {
      * be closest to position WIDTH  or HEIGHT
      */
     void validateChildOrder() {
-        Log.d(TAG, "validating child count " + getChildCount());
+        if (DEBUG) {
+            Log.d(TAG, "validating child count " + getChildCount());
+        }
         if (getChildCount() < 1) {
             return;
         }
@@ -1902,8 +1912,10 @@ public class LinearLayoutManagerEx extends RecyclerViewEx.LayoutManager {
         }
 
         void log() {
-            Log.d(TAG, "avail:" + mAvailable + ", ind:" + mCurrentPosition + ", dir:" +
-                    mItemDirection + ", offset:" + mOffset + ", layoutDir:" + mLayoutDirection);
+            if(DEBUG) {
+                Log.d(TAG, "avail:" + mAvailable + ", ind:" + mCurrentPosition + ", dir:" +
+                        mItemDirection + ", offset:" + mOffset + ", layoutDir:" + mLayoutDirection);
+            }
         }
     }
 
