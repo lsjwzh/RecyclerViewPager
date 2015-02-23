@@ -43,18 +43,20 @@ public class RecyclerViewPagerAdapter<VH extends RecyclerViewEx.ViewHolder> exte
         lp.width = mViewPager.getWidth() - 2*padding;
         if (position == 0) {
             if (itemView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-                lp.leftMargin += padding;
+                lp.leftMargin = mPagerLeftMargin + padding;
+                lp.rightMargin = mPagerRightMargin;
             }
         } else if (position == getItemCount() - 1) {
             if (itemView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-                lp.rightMargin += padding;
+                lp.rightMargin = mPagerRightMargin + padding;
+                lp.leftMargin = mPagerLeftMargin;
             }
         } else {
-            if(lp.leftMargin>mPagerLeftMargin) {
-                lp.leftMargin -= padding;
+            if(lp.leftMargin>=mPagerLeftMargin+padding) {
+                lp.leftMargin = mPagerLeftMargin;
             }
-            if(lp.rightMargin>mPagerRightMargin) {
-                lp.rightMargin -= padding;
+            if(lp.rightMargin>=mPagerRightMargin+padding) {
+                lp.rightMargin = mPagerRightMargin;
             }
         }
     }
