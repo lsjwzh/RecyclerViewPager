@@ -17,6 +17,7 @@
 package com.lsjwzh.widget.recyclerviewpagerdeomo;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManagerEx;
@@ -56,6 +57,11 @@ public class LayoutFragment extends Fragment {
         return fragment;
     }
 
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +84,9 @@ public class LayoutFragment extends Fragment {
         mToast.setGravity(Gravity.CENTER, 0, 0);
 
         mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
-        mRecyclerView.setDisplayPadding(50);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManagerEx(getActivity(), OrientationHelperEx.HORIZONTAL, false));
+        mRecyclerView.setDisplayPadding(dip2px(getActivity(), 15));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLongClickable(true);
 
@@ -102,46 +110,45 @@ public class LayoutFragment extends Fragment {
                 int width = mRecyclerView.getChildAt(0).getWidth();
                 int padding  = (mRecyclerView.getWidth() - width)/2;
                 mCountText.setText("Count: " + childCount);
+
                 for (int j = 0; j < childCount; j++) {
-                    View v = mRecyclerView.getChildAt(j);
+                    View v = recyclerView.getChildAt(j);
                     //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
                     float rate = 0;
-                    if(v.getLeft()<=padding){
-                        if(v.getLeft()>=padding-v.getWidth()){
-                            rate = (padding - v.getLeft())*1f/v.getWidth();
-                        }else {
+                    if (v.getLeft() <= padding) {
+                        if (v.getLeft() >= padding - v.getWidth()) {
+                            rate = (padding - v.getLeft()) * 1f / v.getWidth();
+                        } else {
                             rate = 1;
                         }
-                        v.setScaleX(1-rate*0.1f);
-                        v.setScaleY(1-rate*0.1f);
-                    }else{
+                        v.setScaleY(1 - rate * 0.1f);
+                    } else {
                         //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
-                        if(v.getLeft()<=recyclerView.getWidth()-padding){
-                            rate = (recyclerView.getWidth()-padding - v.getLeft())*1f/v.getWidth();
+                        if (v.getLeft() <= recyclerView.getWidth() - padding) {
+                            rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
                         }
-                        v.setScaleX(0.9f+rate*0.1f);
-                        v.setScaleY(0.9f+rate*0.1f);
+                        v.setScaleY(0.9f + rate * 0.1f);
                     }
                 }
             }
         });
 
-//        final Drawable divider = getResources().getDrawable(R.drawable.divider);
-//        mRecyclerView.addItemDecoration(new DividerItemDecoration(divider));
         mRecyclerView.setLayoutManager(new LinearLayoutManagerEx(getActivity(), OrientationHelperEx.HORIZONTAL,false));
         mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView, mLayoutId));
         mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-
-                if(mRecyclerView.getChildAt(1)!=null){
+                if (mRecyclerView.getChildAt(1) != null) {
                     View v2 = mRecyclerView.getChildAt(1);
-                    v2.setScaleX(0.9f);
                     v2.setScaleY(0.9f);
+                    mRecyclerView.removeOnLayoutChangeListener(this);
                 }
             }
         });
     }
+
+
+
 
     private void updateState(int scrollState) {
         String stateName = "Undefined";

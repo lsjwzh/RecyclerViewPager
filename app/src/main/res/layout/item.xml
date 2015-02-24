@@ -14,13 +14,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="400dp">
+    <TextView
+        android:id="@+id/title"
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/title"
-    android:layout_width="300dp"
-    android:layout_height="400dp"
-    android:gravity="center"
-    android:textColor="#999999"
-    android:textStyle="bold"
-    android:textSize="22sp"
-    android:background="@drawable/item_background"/>
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:gravity="center"
+        android:textColor="#999999"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:background="@drawable/item_background"/>
+</FrameLayout>
