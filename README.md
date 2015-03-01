@@ -20,9 +20,70 @@ add this into gradle
 ```
 
 ### java api:
+```
+RecyclerViewPager mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
+LinearLayoutManagerEx layout = new LinearLayoutManagerEx(getActivity(),OrientationHelperEx.HORIZONTAL, false);
+mRecyclerView.setLayoutManager(layout);//setLayoutManager
+//set the left margin of first viewpage and the right margin of last viewpage
+mRecyclerView.setDisplayPadding(dip2px(getActivity(), 15));
+//set adapter
+mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView, mLayoutId));
 
+
+
+//set scroll listener
+//this will show you how to implement a ViewPager like the demo gif
+ mRecyclerView.setOnScrollListener(new RecyclerViewEx.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerViewEx recyclerView, int scrollState) {
+                updateState(scrollState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerViewEx recyclerView, int i, int i2) {
+                int childCount = mRecyclerView.getChildCount();
+                int width = mRecyclerView.getChildAt(0).getWidth();
+                int padding  = (mRecyclerView.getWidth() - width)/2;
+                mCountText.setText("Count: " + childCount);
+
+                for (int j = 0; j < childCount; j++) {
+                    View v = recyclerView.getChildAt(j);
+                    //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
+                    float rate = 0;
+                    if (v.getLeft() <= padding) {
+                        if (v.getLeft() >= padding - v.getWidth()) {
+                            rate = (padding - v.getLeft()) * 1f / v.getWidth();
+                        } else {
+                            rate = 1;
+                        }
+                        v.setScaleY(1 - rate * 0.1f);
+                    } else {
+                        //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
+                        if (v.getLeft() <= recyclerView.getWidth() - padding) {
+                            rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
+                        }
+                        v.setScaleY(0.9f + rate * 0.1f);
+                    }
+                }
+            }
+        });
+
+// and because 'onScrolled' just be called after the viewpager scrolling
+// we must set the initial state 
+mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (mRecyclerView.getChildAt(1) != null) {
+                    View v2 = mRecyclerView.getChildAt(1);
+                    v2.setScaleY(0.9f);
+                    mRecyclerView.removeOnLayoutChangeListener(this);
+                }
+            }
+        });
+
+```
 ### release notes:
-
+	0.1.0
 
 
 
