@@ -7,7 +7,7 @@ An ViewPager implemention base on RecyclerView's code. Support fling operation l
 ### how to import?
 add this into gradle
 
-    compile('com.lsjwzh:recyclerviewpager:0.1.0-RELEASE')
+    compile('com.lsjwzh:recyclerviewpager:0.5.0')
 
 
 ### xml:
@@ -15,8 +15,8 @@ add this into gradle
 ```
 <com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager
         android:id="@+id/viewpager"
-        android:layout_width="60dp"
-        android:layout_height="60dp"/>
+        android:layout_width="MATCH_PARENT"
+        android:layout_height="MATCH_PARENT"/>
 ```
 
 ### java api:
