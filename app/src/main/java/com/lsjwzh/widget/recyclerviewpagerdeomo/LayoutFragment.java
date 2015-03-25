@@ -85,7 +85,10 @@ public class LayoutFragment extends Fragment {
 
         mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManagerEx(getActivity(), OrientationHelperEx.HORIZONTAL, false));
+        LinearLayoutManagerEx layout = new LinearLayoutManagerEx(getActivity(), OrientationHelperEx.HORIZONTAL, false);
+//        layout.setReverseLayout(true);
+        mRecyclerView.setLayoutManager(layout);
+        mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView, mLayoutId));
         mRecyclerView.setDisplayPadding(dip2px(getActivity(), 15));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLongClickable(true);
@@ -95,7 +98,6 @@ public class LayoutFragment extends Fragment {
 
         mStateText = (TextView) view.getRootView().findViewById(R.id.state);
         updateState(SCROLL_STATE_IDLE);
-
 
         mRecyclerView.setOnScrollListener(new RecyclerViewEx.OnScrollListener() {
             @Override
@@ -133,8 +135,6 @@ public class LayoutFragment extends Fragment {
             }
         });
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManagerEx(getActivity(), OrientationHelperEx.HORIZONTAL,false));
-        mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView, mLayoutId));
         mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {

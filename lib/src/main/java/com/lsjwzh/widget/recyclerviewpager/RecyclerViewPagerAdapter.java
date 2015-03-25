@@ -74,6 +74,12 @@ public class RecyclerViewPagerAdapter<VH extends RecyclerViewEx.ViewHolder> exte
     }
 
     @Override
+    public void setHasStableIds(boolean hasStableIds) {
+        super.setHasStableIds(hasStableIds);
+        mAdapter.setHasStableIds(hasStableIds);
+    }
+
+    @Override
     public int getItemCount() {
         return mAdapter.getItemCount();
     }
