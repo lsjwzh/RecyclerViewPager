@@ -7,7 +7,7 @@ An ViewPager implemention base on RecyclerView's code. Support fling operation l
 ### how to import?
 add this into gradle
 
-    compile('com.lsjwzh:recyclerviewpager:0.5.1')
+    compile('com.lsjwzh:recyclerviewpager:0.5.3')
 
 
 ### xml:
@@ -83,7 +83,7 @@ mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
 
 ```
 ### release notes:
-    0.5.1 fix bug: setHasStableIds not work
+    0.5.3 fix bug: setHasStableIds not work
 	0.1.0
 
 

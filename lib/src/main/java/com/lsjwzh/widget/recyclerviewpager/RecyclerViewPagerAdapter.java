@@ -21,6 +21,7 @@ public class RecyclerViewPagerAdapter<VH extends RecyclerViewEx.ViewHolder> exte
     public RecyclerViewPagerAdapter(RecyclerViewPager viewPager, RecyclerViewEx.Adapter<VH> adapter) {
         mAdapter = adapter;
         mViewPager = viewPager;
+        setHasStableIds(mAdapter.hasStableIds());
     }
 
     @Override
