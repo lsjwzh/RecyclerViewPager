@@ -17,6 +17,10 @@
 
 package android.support.v7.widget;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import android.content.Context;
 import android.database.Observable;
 import android.graphics.Canvas;
@@ -52,10 +56,6 @@ import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import static android.support.v7.widget.AdapterHelperEx.Callback;
 import static android.support.v7.widget.AdapterHelperEx.UpdateOp;
@@ -1226,7 +1226,7 @@ public class RecyclerViewEx extends ViewGroup {
     /***
      * 在Touch事件执行完且没有fling的时候，调整当前view位置
      */
-    void adjustPosition(int spanX){
+    protected void adjustPosition(int spanX){
         int childCount = getChildCount();
         int[] lvLocationOnScreen = new int[2];
         int[] childLocationOnScreen = new int[2];

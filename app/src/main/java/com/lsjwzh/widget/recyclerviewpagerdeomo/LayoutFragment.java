@@ -20,8 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManagerEx;
-import android.support.v7.widget.OrientationHelperEx;
+import android.support.v7.widget.HorizontalCenterLayoutManager;
 import android.support.v7.widget.RecyclerViewEx;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -85,11 +84,10 @@ public class LayoutFragment extends Fragment {
 
         mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
 
-        LinearLayoutManagerEx layout = new LinearLayoutManagerEx(getActivity(), OrientationHelperEx.HORIZONTAL, false);
+        HorizontalCenterLayoutManager layout = new HorizontalCenterLayoutManager(getActivity());
 //        layout.setReverseLayout(true);
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView, mLayoutId));
-        mRecyclerView.setDisplayPadding(dip2px(getActivity(), 15));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLongClickable(true);
 
@@ -123,13 +121,13 @@ public class LayoutFragment extends Fragment {
                         } else {
                             rate = 1;
                         }
-                        v.setScaleY(1 - rate * 0.1f);
+//                        v.setScaleY(1 - rate * 0.1f);
                     } else {
                         //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
                         if (v.getLeft() <= recyclerView.getWidth() - padding) {
                             rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
                         }
-                        v.setScaleY(0.9f + rate * 0.1f);
+//                        v.setScaleY(0.9f + rate * 0.1f);
                     }
                 }
             }
@@ -138,11 +136,11 @@ public class LayoutFragment extends Fragment {
         mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (mRecyclerView.getChildAt(1) != null) {
-                    View v2 = mRecyclerView.getChildAt(1);
-                    v2.setScaleY(0.9f);
-                    mRecyclerView.removeOnLayoutChangeListener(this);
-                }
+//                if (mRecyclerView.getChildAt(1) != null) {
+//                    View v2 = mRecyclerView.getChildAt(1);
+//                    v2.setScaleY(0.9f);
+//                    mRecyclerView.removeOnLayoutChangeListener(this);
+//                }
             }
         });
     }

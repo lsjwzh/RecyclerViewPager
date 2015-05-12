@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 public class RecyclerViewPagerAdapter<VH extends RecyclerViewEx.ViewHolder> extends RecyclerViewEx.Adapter<VH> {
     private final RecyclerViewPager mViewPager;
     RecyclerViewEx.Adapter<VH> mAdapter;
-    int mPagerLeftMargin = -1;
-    int mPagerRightMargin = -1;
 
 
     public RecyclerViewPagerAdapter(RecyclerViewPager viewPager, RecyclerViewEx.Adapter<VH> adapter) {
@@ -46,32 +44,7 @@ public class RecyclerViewPagerAdapter<VH extends RecyclerViewEx.ViewHolder> exte
         mAdapter.onBindViewHolder(holder, position);
         final View itemView = holder.itemView;
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) itemView.getLayoutParams();
-        if(mPagerLeftMargin<0){
-            mPagerLeftMargin = lp.leftMargin;
-        }
-        if(mPagerRightMargin<0){
-            mPagerRightMargin = lp.rightMargin;
-        }
-        int padding = mViewPager.getDisplayPadding();
-        lp.width = mViewPager.getWidth() - 2*padding;
-        if (position == 0) {
-            if (itemView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-                lp.leftMargin = mPagerLeftMargin + padding;
-                lp.rightMargin = mPagerRightMargin;
-            }
-        } else if (position == getItemCount() - 1) {
-            if (itemView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-                lp.rightMargin = mPagerRightMargin + padding;
-                lp.leftMargin = mPagerLeftMargin;
-            }
-        } else {
-            if(lp.leftMargin>=mPagerLeftMargin+padding) {
-                lp.leftMargin = mPagerLeftMargin;
-            }
-            if(lp.rightMargin>=mPagerRightMargin+padding) {
-                lp.rightMargin = mPagerRightMargin;
-            }
-        }
+        lp.width = mViewPager.getWidth() - mViewPager.getPaddingLeft() - mViewPager.getPaddingRight();
     }
 
     @Override
