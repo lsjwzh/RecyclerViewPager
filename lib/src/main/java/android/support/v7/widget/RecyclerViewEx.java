@@ -3097,7 +3097,7 @@ public class RecyclerViewEx extends ViewGroup {
 
         public void smoothScrollBy(int dx, int dy, int duration, Interpolator interpolator) {
             if(getChildCount()>0) {
-                dx = dx - (getWidth()-getChildAt(0).getWidth())/2;
+                dx = dx - (getWidth() - getPaddingLeft() - getPaddingRight()-getChildAt(0).getWidth())/2;
             }
             if (mInterpolator != interpolator) {
                 mInterpolator = interpolator;

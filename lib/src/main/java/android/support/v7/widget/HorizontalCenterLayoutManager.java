@@ -27,7 +27,6 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     public static final int VERTICAL = OrientationHelper.VERTICAL;
 
 
-
     /**
      * While trying to find next view to focus, LayoutManager will not try to scroll more
      * than this factor times the total space of the list. If layout is vertical, total space is the
@@ -68,9 +67,9 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     SavedState mPendingSavedState = null;
 
     /**
-     *  Re-used variable to keep anchor information on re-layout.
-     *  Anchor position and coordinate defines the reference point for LLM while doing a layout.
-     * */
+     * Re-used variable to keep anchor information on re-layout.
+     * Anchor position and coordinate defines the reference point for LLM while doing a layout.
+     */
     final AnchorInfo mAnchorInfo;
 
     /**
@@ -105,11 +104,11 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     /**
      * Set whether LayoutManager will recycle its children when it is detached from
      * RecyclerViewEx.
-     * <p>
+     * <p/>
      * If you are using a {@link RecyclerViewEx.RecycledViewPool}, it might be a good idea to set
      * this flag to <code>true</code> so that views will be avilable to other RecyclerViewExs
      * immediately.
-     * <p>
+     * <p/>
      * Note that, setting this flag will result in a performance drop if RecyclerViewEx
      * is restored.
      *
@@ -253,8 +252,9 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
             @Override
             protected int calculateTimeForScrolling(int dx) {
                 int originVal = super.calculateTimeForScrolling(dx);
-                return Math.max(originVal,100);
+                return Math.max(originVal, 100);
             }
+
             @Override
             protected int calculateTimeForDeceleration(int dx) {
                 // we want to cover same area with the linear interpolator for the first 10% of the
@@ -262,7 +262,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
                 // area under curve (1-(1-x)^2) can be calculated as (1 - x/3) * x * x
                 // which gives 0.100028 when x = .3356
                 // this is why we divide linear scrolling time with .3356
-                return  (int) Math.ceil(calculateTimeForScrolling(dx) / .3356);
+                return (int) Math.ceil(calculateTimeForScrolling(dx) / .3356);
             }
         };
         scroller.setTargetPosition(position);
@@ -340,7 +340,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         }
         extraForStart += mOrientationHelper.getStartAfterPadding();
         extraForEnd += mOrientationHelper.getEndPadding();
-        
+
         int startOffset;
         int endOffset;
         onAnchorReady(state, mAnchorInfo);
@@ -349,7 +349,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         // fill towards end
         updateLayoutStateToFillEnd(mAnchorInfo);
         mLayoutState.mExtra = extraForEnd;
-        if(mPendingScrollPosition!=NO_POSITION){
+        if (mPendingScrollPosition != NO_POSITION) {
             mLayoutState.mCurrentPosition = mPendingScrollPosition;
         }
         fill(recycler, mLayoutState, state, false);
@@ -360,9 +360,9 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         // fill towards start
         updateLayoutStateToFillStart(mAnchorInfo);
         mLayoutState.mExtra = extraForStart;
-        if(mPendingScrollPosition!=NO_POSITION){
+        if (mPendingScrollPosition != NO_POSITION) {
             mLayoutState.mCurrentPosition = mPendingScrollPosition + mLayoutState.mItemDirection;
-        }else {
+        } else {
             mLayoutState.mCurrentPosition += mLayoutState.mItemDirection;
         }
         fill(recycler, mLayoutState, state, false);
@@ -407,12 +407,12 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * If necessary, layouts new items for predictive animations
      */
     private void layoutForPredictiveAnimations(RecyclerViewEx.Recycler recycler,
-                                               RecyclerViewEx.State state, int startOffset,  int endOffset) {
+                                               RecyclerViewEx.State state, int startOffset, int endOffset) {
         // If there are scrap children that we did not layout, we need to find where they did go
         // and layout them accordingly so that animations can work as expected.
         // This case may happen if new views are added or an existing view expands and pushes
         // another view out of bounds.
-        if (!state.willRunPredictiveAnimations() ||  getChildCount() == 0 || state.isPreLayout()
+        if (!state.willRunPredictiveAnimations() || getChildCount() == 0 || state.isPreLayout()
                 || !supportsPredictiveItemAnimations()) {
             return;
         }
@@ -483,7 +483,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     /**
      * Finds an anchor child from existing Views. Most of the time, this is the view closest to
      * start or end that has a valid position (e.g. not removed).
-     * <p>
+     * <p/>
      * If a child has focus, it is given priority.
      */
     private boolean updateAnchorFromChildren(RecyclerViewEx.State state, AnchorInfo anchorInfo) {
@@ -542,7 +542,8 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         if (mPendingSavedState != null && mPendingSavedState.hasValidAnchor()) {
             // Anchor offset depends on how that child was laid out. Here, we update it
             // according to our current view bounds
-            anchorInfo.mCoordinate = - mRecyclerView.getWidth() + mOrientationHelper.getStartAfterPadding();
+            // rvp: this makes childeren layout in right position at first time
+            anchorInfo.mCoordinate = -mRecyclerView.getWidth() + mRecyclerView.getPaddingRight() + mRecyclerView.getPaddingLeft() + mOrientationHelper.getStartAfterPadding();
             return true;
         }
 
@@ -669,12 +670,12 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
     /**
      * <p>Scroll the RecyclerViewEx to make the position visible.</p>
-     *
+     * <p/>
      * <p>RecyclerViewEx will scroll the minimum amount that is necessary to make the
      * target position visible. If you are looking for a similar behavior to
      * {@link android.widget.ListView#setSelection(int)} or
      * {@link android.widget.ListView#setSelectionFromTop(int, int)}, use
-     *
+     * <p/>
      * <p>Note that scroll position change will not be reflected until the next layout call.</p>
      *
      * @param position Scroll to this adapter position
@@ -774,14 +775,13 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * If you use a list in which items have different dimensions, the scrollbar will change
      * appearance as the user scrolls through the list. To avoid this issue,  you need to disable
      * this property.
-     *
+     * <p/>
      * When smooth scrollbar is disabled, the position and size of the scrollbar thumb is based
      * solely on the number of items in the adapter and the position of the visible items inside
      * the adapter. This provides a stable scrollbar as the user navigates through a list of items
      * with varying widths / heights.
      *
      * @param enabled Whether or not to enable smooth scrollbar.
-     *
      * @see #setSmoothScrollbarEnabled(boolean)
      */
     public void setSmoothScrollbarEnabled(boolean enabled) {
@@ -792,7 +792,6 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * Returns the current state of the smooth scrollbar feature. It is enabled by default.
      *
      * @return True if smooth scrollbar is enabled, false otherwise.
-     *
      * @see #setSmoothScrollbarEnabled(boolean)
      */
     public boolean isSmoothScrollbarEnabled() {
@@ -1142,17 +1141,17 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     /**
      * Among the children that are suitable to be considered as an anchor child, returns the one
      * closest to the start of the layout.
-     * <p>
+     * <p/>
      * Due to ambiguous adapter updates or children being removed, some children's positions may be
      * invalid. This method is a best effort to find a position within adapter bounds if possible.
-     * <p>
+     * <p/>
      * It also prioritizes children that are within the visible bounds.
      *
      * @return A View that can be used an an anchor View.
      */
     private View findReferenceChildClosestToCenter(RecyclerViewEx.State state) {
         int centerXChildPosition = mRecyclerView.getCenterXChildPosition();
-        if(centerXChildPosition != NO_POSITION){
+        if (centerXChildPosition != NO_POSITION) {
             return getChildAt(centerXChildPosition);
         }
         return null;
@@ -1192,13 +1191,13 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
     /**
      * Returns the adapter position of the first visible view.
-     * <p>
+     * <p/>
      * Note that, this value is not affected by layout orientation or item order traversal.
      * ({@link #(boolean)}). Views are sorted by their positions in the adapter,
      * not in the layout.
-     * <p>
+     * <p/>
      * If RecyclerViewEx has item decorators, they will be considered in calculations as well.
-     * <p>
+     * <p/>
      * LayoutManager may pre-cache some views that are not necessarily visible. Those views
      * are ignored in this method.
      *
@@ -1214,7 +1213,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
     /**
      * Returns the adapter position of the first fully visible view.
-     * <p>
+     * <p/>
      * Note that bounds check is only performed in the current orientation. That means, if
      * LayoutManager is horizontal, it will only check the view's left and right edges.
      *
@@ -1230,13 +1229,13 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
     /**
      * Returns the adapter position of the last visible view.
-     * <p>
+     * <p/>
      * Note that, this value is not affected by layout orientation or item order traversal.
      * ({@link #(boolean)}). Views are sorted by their positions in the adapter,
      * not in the layout.
-     * <p>
+     * <p/>
      * If RecyclerViewEx has item decorators, they will be considered in calculations as well.
-     * <p>
+     * <p/>
      * LayoutManager may pre-cache some views that are not necessarily visible. Those views
      * are ignored in this method.
      *
@@ -1252,7 +1251,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
     /**
      * Returns the adapter position of the last fully visible view.
-     * <p>
+     * <p/>
      * Note that bounds check is only performed in the current orientation. That means, if
      * LayoutManager is horizontal, it will only check the view's left and right edges.
      *
@@ -1271,7 +1270,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         final int start = mOrientationHelper.getStartAfterPadding();
         final int end = mOrientationHelper.getEndAfterPadding();
         final int next = toIndex > fromIndex ? 1 : -1;
-        for (int i = fromIndex; i != toIndex; i+=next) {
+        for (int i = fromIndex; i != toIndex; i += next) {
             final View child = getChildAt(i);
             final int childStart = mOrientationHelper.getDecoratedStart(child);
             final int childEnd = mOrientationHelper.getDecoratedEnd(child);
@@ -1351,7 +1350,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * Used for debugging.
      * Validates that child views are laid out in correct order. This is important because rest of
      * the algorithm relies on this constraint.
-     *
+     * <p/>
      * In default layout, child 0 should be closest to screen position 0 and last child should be
      * closest to position WIDTH or HEIGHT.
      * In reverse layout, last child should be closes to screen position 0 and first child should
@@ -1490,7 +1489,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
         /**
          * Returns next item from limited list.
-         * <p>
+         * <p/>
          * Upon finding a valid VH, sets current item position to VH.itemPosition + mItemDirection
          *
          * @return View if an item in the current position or direction exists if not null.
@@ -1527,7 +1526,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         }
 
         void log() {
-            if(DEBUG) {
+            if (DEBUG) {
                 Log.d(TAG, "avail:" + mAvailable + ", ind:" + mCurrentPosition + ", dir:" +
                         mItemDirection + ", offset:" + mOffset + ", layoutDir:" + mLayoutDirection);
             }
@@ -1598,6 +1597,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     class AnchorInfo {
         int mPosition;
         int mCoordinate;
+
         void reset() {
             mPosition = NO_POSITION;
             mCoordinate = INVALID_OFFSET;
