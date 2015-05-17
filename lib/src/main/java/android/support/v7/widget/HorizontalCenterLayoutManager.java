@@ -266,15 +266,6 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         startSmoothScroll(scroller);
     }
 
-    public PointF computeScrollVectorForPosition(int targetPosition) {
-        if (getChildCount() == 0) {
-            return null;
-        }
-        final int firstChildPos = getPosition(getChildAt(0));
-        final int direction = targetPosition >= firstChildPos ? -1 : 1;
-        return new PointF(0, direction);
-    }
-
     public int getFirstVisiblePosition() {
         if (getChildCount() == 0) {
             return 0;
