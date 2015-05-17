@@ -20,12 +20,9 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
     private static final String TAG = "HCLayoutManager";
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     public static final int HORIZONTAL = OrientationHelper.HORIZONTAL;
-
-    public static final int VERTICAL = OrientationHelper.VERTICAL;
-
 
     /**
      * While trying to find next view to focus, LayoutManager will not try to scroll more
