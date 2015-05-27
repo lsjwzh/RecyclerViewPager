@@ -35,26 +35,13 @@ import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_DRAGGING;
 import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_IDLE;
 import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_SETTLING;
 
-public class LayoutFragment extends Fragment {
-    private static final String ARG_LAYOUT_ID = "layout_id";
-
+public class HorizontalLayoutFragment extends Fragment {
     private RecyclerViewPager mRecyclerView;
-    private TextView mPositionText;
     private TextView mCountText;
     private TextView mStateText;
     private Toast mToast;
+    private TextView mPositionText;
 
-    private int mLayoutId;
-
-    public static LayoutFragment newInstance(int layoutId) {
-        LayoutFragment fragment = new LayoutFragment();
-
-        Bundle args = new Bundle();
-        args.putInt(ARG_LAYOUT_ID, layoutId);
-        fragment.setArguments(args);
-
-        return fragment;
-    }
 
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -64,13 +51,12 @@ public class LayoutFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLayoutId = getArguments().getInt(ARG_LAYOUT_ID);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(mLayoutId, container, false);
+        return inflater.inflate(R.layout.layout_horizontal, container, false);
     }
 
     @Override
@@ -86,7 +72,7 @@ public class LayoutFragment extends Fragment {
 
         HorizontalCenterLayoutManager layout = new HorizontalCenterLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layout);
-        mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView, mLayoutId));
+        mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLongClickable(true);
 
@@ -175,9 +161,5 @@ public class LayoutFragment extends Fragment {
         }
 
         mStateText.setText(stateName);
-    }
-
-    public int getLayoutId() {
-        return getArguments().getInt(ARG_LAYOUT_ID);
     }
 }

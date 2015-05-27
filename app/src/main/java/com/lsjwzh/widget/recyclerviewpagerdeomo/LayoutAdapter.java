@@ -16,6 +16,9 @@
 
 package com.lsjwzh.widget.recyclerviewpagerdeomo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerViewEx;
 import android.view.LayoutInflater;
@@ -23,11 +26,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.lsjwzh.widget.recyclerviewpagerdeomo.R.*;
+import static com.lsjwzh.widget.recyclerviewpagerdeomo.R.id;
+import static com.lsjwzh.widget.recyclerviewpagerdeomo.R.layout;
 
 public class LayoutAdapter extends RecyclerViewEx.Adapter<LayoutAdapter.SimpleViewHolder> {
     private static final int COUNT = 100;
@@ -35,7 +35,6 @@ public class LayoutAdapter extends RecyclerViewEx.Adapter<LayoutAdapter.SimpleVi
     private final Context mContext;
     private final RecyclerViewEx mRecyclerView;
     private final List<Integer> mItems;
-    private final int mLayoutId;
     private int mCurrentItemId = 0;
 
     public static class SimpleViewHolder extends RecyclerViewEx.ViewHolder {
@@ -47,7 +46,7 @@ public class LayoutAdapter extends RecyclerViewEx.Adapter<LayoutAdapter.SimpleVi
         }
     }
 
-    public LayoutAdapter(Context context, RecyclerViewEx recyclerView, int layoutId) {
+    public LayoutAdapter(Context context, RecyclerViewEx recyclerView) {
         mContext = context;
         mItems = new ArrayList<Integer>(COUNT);
         for (int i = 0; i < COUNT; i++) {
@@ -55,7 +54,6 @@ public class LayoutAdapter extends RecyclerViewEx.Adapter<LayoutAdapter.SimpleVi
         }
 
         mRecyclerView = recyclerView;
-        mLayoutId = layoutId;
     }
 
     public void addItem(int position) {

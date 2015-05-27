@@ -17,17 +17,13 @@
 package com.lsjwzh.widget.recyclerviewpagerdeomo;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 
 
 public class MainActivity extends ActionBarActivity {
-    private final String ARG_SELECTED_LAYOUT_ID = "selectedLayoutId";
-
-    private final int DEFAULT_LAYOUT = R.layout.layout_list;
-
-    private int mSelectedLayoutId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,61 +35,53 @@ public class MainActivity extends ActionBarActivity {
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayShowHomeEnabled(false);
 
-        mSelectedLayoutId = DEFAULT_LAYOUT;
-        if (savedInstanceState != null) {
-            mSelectedLayoutId = savedInstanceState.getInt(ARG_SELECTED_LAYOUT_ID);
-        }
-
-        addLayoutTab(
-                actionBar, R.layout.layout_list, R.mipmap.ic_launcher, "list");
+        ActionBar.Tab tab = actionBar.newTab()
+                .setText("Horizontal")
+                .setTabListener(new TabListener(HorizontalLayoutFragment.class, "Horizontal"));
+        ActionBar.Tab tab2 = actionBar.newTab()
+                .setText("Vertical")
+                .setTabListener(new TabListener(VerticalLayoutFragment.class, "Vertical"));
+        actionBar.addTab(tab, true);
+        actionBar.addTab(tab2, false);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(ARG_SELECTED_LAYOUT_ID, mSelectedLayoutId);
-    }
-
-    private void addLayoutTab(ActionBar actionBar, int layoutId, int iconId, String tag) {
-        ActionBar.Tab tab = actionBar.newTab()
-                .setText("")
-                .setIcon(iconId)
-                .setTabListener(new TabListener(layoutId, tag));
-        actionBar.addTab(tab, layoutId == mSelectedLayoutId);
     }
 
     public class TabListener implements ActionBar.TabListener {
-        private LayoutFragment mFragment;
-        private final int mLayoutId;
         private final String mTag;
+        Class<? extends Fragment> mFragClazz;
 
-        public TabListener(int layoutId, String tag) {
-            mLayoutId = layoutId;
+        public TabListener(Class<? extends Fragment> fragClazz, String tag) {
+            mFragClazz = fragClazz;
             mTag = tag;
         }
 
         @Override
         public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-            mFragment = (LayoutFragment) getSupportFragmentManager().findFragmentByTag(mTag);
-            if (mFragment == null) {
-                mFragment = (LayoutFragment) LayoutFragment.newInstance(mLayoutId);
-                ft.add(R.id.content, mFragment, mTag);
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content);
+            if (fragment == null) {
+                ft.add(R.id.content, new HorizontalLayoutFragment(), mTag);
             } else {
-                ft.attach(mFragment);
+                try {
+                    ft.replace(R.id.content, mFragClazz.newInstance());
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
-
-            mSelectedLayoutId = mFragment.getLayoutId();
         }
 
         @Override
         public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-            if (mFragment != null) {
-                ft.detach(mFragment);
-            }
         }
 
         @Override
         public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
         }
     }
+
 }
