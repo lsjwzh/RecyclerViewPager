@@ -33,7 +33,8 @@ public class MainActivity extends ActionBarActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowHomeEnabled
+                (false);
 
         ActionBar.Tab tab = actionBar.newTab()
                 .setText("Horizontal")
@@ -64,7 +65,7 @@ public class MainActivity extends ActionBarActivity {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content);
             if (fragment == null) {
                 ft.add(R.id.content, new HorizontalLayoutFragment(), mTag);
-            } else {
+            } else if (!mFragClazz.isAssignableFrom(fragment.getClass())) {
                 try {
                     ft.replace(R.id.content, mFragClazz.newInstance());
                 } catch (InstantiationException e) {

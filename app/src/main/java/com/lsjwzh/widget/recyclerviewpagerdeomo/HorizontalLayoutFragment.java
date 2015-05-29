@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
 
 public class HorizontalLayoutFragment extends Fragment {
+    private View mViewRoot;
     private RecyclerViewPager mRecyclerView;
     private TextView mCountText;
     private TextView mStateText;
@@ -52,7 +53,12 @@ public class HorizontalLayoutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.layout_horizontal, container, false);
+        if (mViewRoot == null) {
+            mViewRoot = inflater.inflate(R.layout.layout_horizontal, container, false);
+        } else if (mViewRoot.getParent() != null) {
+            ((ViewGroup) mViewRoot.getParent()).removeView(mViewRoot);
+        }
+        return mViewRoot;
     }
 
     @Override
@@ -89,13 +95,14 @@ public class HorizontalLayoutFragment extends Fragment {
 //                mPositionText.setText("First: " + mRecyclerView.getFirstVisiblePosition());
                 int childCount = mRecyclerView.getChildCount();
                 int width = mRecyclerView.getChildAt(0).getWidth();
-                int padding  = (mRecyclerView.getWidth() - width)/2;
+                int padding = (mRecyclerView.getWidth() - width) / 2;
                 mCountText.setText("Count: " + childCount);
 
                 for (int j = 0; j < childCount; j++) {
                     View v = recyclerView.getChildAt(j);
                     //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
                     float rate = 0;
+                    ;
                     if (v.getLeft() <= padding) {
                         if (v.getLeft() >= padding - v.getWidth()) {
                             rate = (padding - v.getLeft()) * 1f / v.getWidth();
@@ -117,12 +124,12 @@ public class HorizontalLayoutFragment extends Fragment {
         mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if(mRecyclerView.getChildCount()<3){
+                if (mRecyclerView.getChildCount() < 3) {
                     if (mRecyclerView.getChildAt(1) != null) {
                         View v1 = mRecyclerView.getChildAt(1);
                         v1.setScaleY(0.9f);
                     }
-                }else {
+                } else {
                     if (mRecyclerView.getChildAt(0) != null) {
                         View v0 = mRecyclerView.getChildAt(0);
                         v0.setScaleY(0.9f);
@@ -138,11 +145,9 @@ public class HorizontalLayoutFragment extends Fragment {
     }
 
 
-
-
     private void updateState(int scrollState) {
         String stateName = "Undefined";
-        switch(scrollState) {
+        switch (scrollState) {
             case RecyclerView.SCROLL_STATE_IDLE:
                 stateName = "Idle";
                 break;
