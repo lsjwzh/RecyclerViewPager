@@ -31,10 +31,6 @@ import android.widget.Toast;
 
 import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
 
-import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_DRAGGING;
-import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_IDLE;
-import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_SETTLING;
-
 public class HorizontalLayoutFragment extends Fragment {
     private RecyclerViewPager mRecyclerView;
     private TextView mCountText;
@@ -80,7 +76,7 @@ public class HorizontalLayoutFragment extends Fragment {
         mCountText = (TextView) view.getRootView().findViewById(R.id.count);
 
         mStateText = (TextView) view.getRootView().findViewById(R.id.state);
-        updateState(SCROLL_STATE_IDLE);
+        updateState(RecyclerView.SCROLL_STATE_IDLE);
 
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -147,15 +143,15 @@ public class HorizontalLayoutFragment extends Fragment {
     private void updateState(int scrollState) {
         String stateName = "Undefined";
         switch(scrollState) {
-            case SCROLL_STATE_IDLE:
+            case RecyclerView.SCROLL_STATE_IDLE:
                 stateName = "Idle";
                 break;
 
-            case SCROLL_STATE_DRAGGING:
+            case RecyclerView.SCROLL_STATE_DRAGGING:
                 stateName = "Dragging";
                 break;
 
-            case SCROLL_STATE_SETTLING:
+            case RecyclerView.SCROLL_STATE_SETTLING:
                 stateName = "Flinging";
                 break;
         }
