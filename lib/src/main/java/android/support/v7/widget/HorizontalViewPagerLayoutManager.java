@@ -14,9 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 
-import static android.support.v7.widget.RecyclerViewEx.NO_POSITION;
+import static android.support.v7.widget.RecyclerView.NO_POSITION;
 
-public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager {
+public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager {
 
     private static final String TAG = "HCLayoutManager";
 
@@ -41,11 +41,11 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
     /**
      * Many calculations are made depending on orientation. To keep it clean, this interface
-     * helps {@link LinearLayoutManagerEx} make those decisions.
+     * helps {@link LinearLayoutManager} make those decisions.
      * Based on {@link #}, an implementation is lazily created in
      * {@link #ensureLayoutState} method.
      */
-    OrientationHelperEx mOrientationHelper;
+    OrientationHelper mOrientationHelper;
 
     /**
      * Works the same way as {@link android.widget.AbsListView#setSmoothScrollbarEnabled(boolean)}.
@@ -74,7 +74,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      *
      * @param context Current context, will be used to access resources.
      */
-    public HorizontalCenterLayoutManager(Context context) {
+    public HorizontalViewPagerLayoutManager(Context context) {
         mAnchorInfo = new AnchorInfo();
     }
 
@@ -82,17 +82,17 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * {@inheritDoc}
      */
     @Override
-    public RecyclerViewEx.LayoutParams generateDefaultLayoutParams() {
-        return new RecyclerViewEx.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+    public RecyclerView.LayoutParams generateDefaultLayoutParams() {
+        return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     /**
      * Returns whether LayoutManager will recycle its children when it is detached from
-     * RecyclerViewEx.
+     * RecyclerView.
      *
      * @return true if LayoutManager will recycle its children when it is detached from
-     * RecyclerViewEx.
+     * RecyclerView.
      */
     public boolean getRecycleChildrenOnDetach() {
         return mRecycleChildrenOnDetach;
@@ -100,13 +100,13 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
     /**
      * Set whether LayoutManager will recycle its children when it is detached from
-     * RecyclerViewEx.
+     * RecyclerView.
      * <p/>
-     * If you are using a {@link RecyclerViewEx.RecycledViewPool}, it might be a good idea to set
-     * this flag to <code>true</code> so that views will be avilable to other RecyclerViewExs
+     * If you are using a {@link RecyclerView.RecycledViewPool}, it might be a good idea to set
+     * this flag to <code>true</code> so that views will be avilable to other RecyclerViews
      * immediately.
      * <p/>
-     * Note that, setting this flag will result in a performance drop if RecyclerViewEx
+     * Note that, setting this flag will result in a performance drop if RecyclerView
      * is restored.
      *
      * @param recycleChildrenOnDetach Whether children should be recycled in detach or not.
@@ -116,7 +116,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     }
 
     @Override
-    public void onDetachedFromWindow(RecyclerViewEx view, RecyclerViewEx.Recycler recycler) {
+    public void onDetachedFromWindow(RecyclerView view, RecyclerView.Recycler recycler) {
         super.onDetachedFromWindow(view, recycler);
         if (mRecycleChildrenOnDetach) {
             removeAndRecycleAllViews(recycler);
@@ -200,7 +200,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
     /**
      * <p>Returns the amount of extra space that should be laid out by LayoutManager.
-     * By default, {@link LinearLayoutManagerEx} lays out 1 extra page of
+     * By default, {@link LinearLayoutManager} lays out 1 extra page of
      * items while smooth scrolling and 0 otherwise. You can override this method to implement your
      * custom layout pre-cache logic.</p>
      * <p>Laying out invisible elements will eventually come with performance cost. On the other
@@ -210,7 +210,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      *
      * @return The extra space that should be laid out (in pixels).
      */
-    protected int getExtraLayoutSpace(RecyclerViewEx.State state) {
+    protected int getExtraLayoutSpace(RecyclerView.State state) {
         if (state.hasTargetScrollPosition()) {
             return mOrientationHelper.getTotalSpace();
         } else {
@@ -219,7 +219,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     }
 
     @Override
-    public void smoothScrollToPosition(RecyclerViewEx recyclerView, RecyclerViewEx.State state,
+    public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state,
                                        int position) {
         final LinearSmoothScrollerEx scroller = new LinearSmoothScrollerEx(recyclerView.getContext()) {
             @Override
@@ -230,7 +230,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
                 final int direction = targetPosition < getFirstVisiblePosition() ? -1 : 1;
                 if (DEBUG) {
-                    LogEx.d(TAG, "direction:" + direction);
+                    Log.d(TAG, "direction:" + direction);
                 }
                 return new PointF(direction, 0);
             }
@@ -287,7 +287,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * {@inheritDoc}
      */
     @Override
-    public void onLayoutChildren(RecyclerViewEx.Recycler recycler, RecyclerViewEx.State state) {
+    public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         // layout algorithm:
         // 1) by checking children and other variables, find an anchor coordinate and an anchor
         //  item position.
@@ -388,14 +388,14 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * @param state
      * @param anchorInfo Simple data structure to keep anchor point information for the next layout
      */
-    void onAnchorReady(RecyclerViewEx.State state, AnchorInfo anchorInfo) {
+    void onAnchorReady(RecyclerView.State state, AnchorInfo anchorInfo) {
     }
 
     /**
      * If necessary, layouts new items for predictive animations
      */
-    private void layoutForPredictiveAnimations(RecyclerViewEx.Recycler recycler,
-                                               RecyclerViewEx.State state, int startOffset, int endOffset) {
+    private void layoutForPredictiveAnimations(RecyclerView.Recycler recycler,
+                                               RecyclerView.State state, int startOffset, int endOffset) {
         // If there are scrap children that we did not layout, we need to find where they did go
         // and layout them accordingly so that animations can work as expected.
         // This case may happen if new views are added or an existing view expands and pushes
@@ -407,11 +407,11 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
         // to make the logic simpler, we calculate the size of children and call fill.
         int scrapExtraStart = 0, scrapExtraEnd = 0;
-        final List<RecyclerViewEx.ViewHolder> scrapList = recycler.getScrapList();
+        final List<RecyclerView.ViewHolder> scrapList = recycler.getScrapList();
         final int scrapSize = scrapList.size();
         final int firstChildPos = getPosition(getChildAt(0));
         for (int i = 0; i < scrapSize; i++) {
-            RecyclerViewEx.ViewHolder scrap = scrapList.get(i);
+            RecyclerView.ViewHolder scrap = scrapList.get(i);
             final int position = scrap.getPosition();
             final int direction = position >= firstChildPos
                     ? LayoutState.LAYOUT_START : LayoutState.LAYOUT_END;
@@ -447,7 +447,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         mLayoutState.mScrapList = null;
     }
 
-    private void updateAnchorInfoForLayout(RecyclerViewEx.State state, AnchorInfo anchorInfo) {
+    private void updateAnchorInfoForLayout(RecyclerView.State state, AnchorInfo anchorInfo) {
         if (updateAnchorFromPendingData(state, anchorInfo)) {
             if (DEBUG) {
                 Log.d(TAG, "updated anchor info from pending information");
@@ -474,7 +474,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * <p/>
      * If a child has focus, it is given priority.
      */
-    private boolean updateAnchorFromChildren(RecyclerViewEx.State state, AnchorInfo anchorInfo) {
+    private boolean updateAnchorFromChildren(RecyclerView.State state, AnchorInfo anchorInfo) {
         if (getChildCount() == 0) {
             return false;
         }
@@ -511,7 +511,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * If there is a pending scroll position or saved states, updates the anchor info from that
      * data and returns true
      */
-    private boolean updateAnchorFromPendingData(RecyclerViewEx.State state, AnchorInfo anchorInfo) {
+    private boolean updateAnchorFromPendingData(RecyclerView.State state, AnchorInfo anchorInfo) {
         if (state.isPreLayout() || mPendingScrollPosition == NO_POSITION) {
             return false;
         }
@@ -569,8 +569,8 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     /**
      * @return The final offset amount for children
      */
-    private int fixLayoutEndGap(int endOffset, RecyclerViewEx.Recycler recycler,
-                                RecyclerViewEx.State state, boolean canOffsetChildren) {
+    private int fixLayoutEndGap(int endOffset, RecyclerView.Recycler recycler,
+                                RecyclerView.State state, boolean canOffsetChildren) {
         int gap = mOrientationHelper.getEndAfterPadding() - endOffset;
         int fixOffset = 0;
         if (gap > 0) {
@@ -594,8 +594,8 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     /**
      * @return The final offset amount for children
      */
-    private int fixLayoutStartGap(int startOffset, RecyclerViewEx.Recycler recycler,
-                                  RecyclerViewEx.State state, boolean canOffsetChildren) {
+    private int fixLayoutStartGap(int startOffset, RecyclerView.Recycler recycler,
+                                  RecyclerView.State state, boolean canOffsetChildren) {
         int gap = startOffset - mOrientationHelper.getStartAfterPadding();
         int fixOffset = 0;
         if (gap > 0) {
@@ -652,14 +652,14 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
             mLayoutState = new LayoutState();
         }
         if (mOrientationHelper == null) {
-            mOrientationHelper = OrientationHelperEx.createOrientationHelper(this, HORIZONTAL);
+            mOrientationHelper = OrientationHelper.createOrientationHelper(this, HORIZONTAL);
         }
     }
 
     /**
-     * <p>Scroll the RecyclerViewEx to make the position visible.</p>
+     * <p>Scroll the RecyclerView to make the position visible.</p>
      * <p/>
-     * <p>RecyclerViewEx will scroll the minimum amount that is necessary to make the
+     * <p>RecyclerView will scroll the minimum amount that is necessary to make the
      * target position visible. If you are looking for a similar behavior to
      * {@link android.widget.ListView#setSelection(int)} or
      * {@link android.widget.ListView#setSelectionFromTop(int, int)}, use
@@ -682,8 +682,8 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * {@inheritDoc}
      */
     @Override
-    public int scrollHorizontallyBy(int dx, RecyclerViewEx.Recycler recycler,
-                                    RecyclerViewEx.State state) {
+    public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler,
+                                    RecyclerView.State state) {
         return scrollBy(dx, recycler, state);
     }
 
@@ -691,67 +691,67 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * {@inheritDoc}
      */
     @Override
-    public int scrollVerticallyBy(int dy, RecyclerViewEx.Recycler recycler,
-                                  RecyclerViewEx.State state) {
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler,
+                                  RecyclerView.State state) {
         return 0;
     }
 
     @Override
-    public int computeHorizontalScrollOffset(RecyclerViewEx.State state) {
+    public int computeHorizontalScrollOffset(RecyclerView.State state) {
         return computeScrollOffset(state);
     }
 
     @Override
-    public int computeVerticalScrollOffset(RecyclerViewEx.State state) {
+    public int computeVerticalScrollOffset(RecyclerView.State state) {
         return computeScrollOffset(state);
     }
 
     @Override
-    public int computeHorizontalScrollExtent(RecyclerViewEx.State state) {
+    public int computeHorizontalScrollExtent(RecyclerView.State state) {
         return computeScrollExtent(state);
     }
 
     @Override
-    public int computeVerticalScrollExtent(RecyclerViewEx.State state) {
+    public int computeVerticalScrollExtent(RecyclerView.State state) {
         return computeScrollExtent(state);
     }
 
     @Override
-    public int computeHorizontalScrollRange(RecyclerViewEx.State state) {
+    public int computeHorizontalScrollRange(RecyclerView.State state) {
         return computeScrollRange(state);
     }
 
     @Override
-    public int computeVerticalScrollRange(RecyclerViewEx.State state) {
+    public int computeVerticalScrollRange(RecyclerView.State state) {
         return computeScrollRange(state);
     }
 
-    private int computeScrollOffset(RecyclerViewEx.State state) {
+    private int computeScrollOffset(RecyclerView.State state) {
         if (getChildCount() == 0) {
             return 0;
         }
         ensureLayoutState();
-        return ScrollbarHelperEx.computeScrollOffset(state, mOrientationHelper,
+        return ScrollbarHelper.computeScrollOffset(state, mOrientationHelper,
                 getChildClosestToStart(), getChildClosestToEnd(), this,
                 mSmoothScrollbarEnabled, false);
     }
 
-    private int computeScrollExtent(RecyclerViewEx.State state) {
+    private int computeScrollExtent(RecyclerView.State state) {
         if (getChildCount() == 0) {
             return 0;
         }
         ensureLayoutState();
-        return ScrollbarHelperEx.computeScrollExtent(state, mOrientationHelper,
+        return ScrollbarHelper.computeScrollExtent(state, mOrientationHelper,
                 getChildClosestToStart(), getChildClosestToEnd(), this,
                 mSmoothScrollbarEnabled);
     }
 
-    private int computeScrollRange(RecyclerViewEx.State state) {
+    private int computeScrollRange(RecyclerView.State state) {
         if (getChildCount() == 0) {
             return 0;
         }
         ensureLayoutState();
-        return ScrollbarHelperEx.computeScrollRange(state, mOrientationHelper,
+        return ScrollbarHelper.computeScrollRange(state, mOrientationHelper,
                 getChildClosestToStart(), getChildClosestToEnd(), this,
                 mSmoothScrollbarEnabled);
     }
@@ -787,7 +787,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     }
 
     private void updateLayoutState(int layoutDirection, int requiredSpace,
-                                   boolean canUseExistingSpace, RecyclerViewEx.State state) {
+                                   boolean canUseExistingSpace, RecyclerView.State state) {
         mLayoutState.mExtra = getExtraLayoutSpace(state);
         mLayoutState.mLayoutDirection = layoutDirection;
         int fastScrollSpace;
@@ -819,7 +819,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         mLayoutState.mScrollingOffset = fastScrollSpace;
     }
 
-    int scrollBy(int dy, RecyclerViewEx.Recycler recycler, RecyclerViewEx.State state) {
+    int scrollBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (getChildCount() == 0 || dy == 0) {
             return 0;
         }
@@ -857,7 +857,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * @param startIndex inclusive
      * @param endIndex   exclusive
      */
-    private void recycleChildren(RecyclerViewEx.Recycler recycler, int startIndex, int endIndex) {
+    private void recycleChildren(RecyclerView.Recycler recycler, int startIndex, int endIndex) {
         if (startIndex == endIndex) {
             return;
         }
@@ -878,13 +878,13 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     /**
      * Recycles views that went out of bounds after scrolling towards the end of the layout.
      *
-     * @param recycler Recycler instance of {@link android.support.v7.widget.RecyclerViewEx}
+     * @param recycler Recycler instance of {@link android.support.v7.widget.RecyclerView}
      * @param dt       This can be used to add additional padding to the visible area. This is used
      *                 to
      *                 detect children that will go out of bounds after scrolling, without actually
      *                 moving them.
      */
-    private void recycleViewsFromStart(RecyclerViewEx.Recycler recycler, int dt) {
+    private void recycleViewsFromStart(RecyclerView.Recycler recycler, int dt) {
         if (dt < 0) {
             if (DEBUG) {
                 Log.d(TAG, "Called recycle from start with a negative value. This might happen"
@@ -908,12 +908,12 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     /**
      * Recycles views that went out of bounds after scrolling towards the start of the layout.
      *
-     * @param recycler Recycler instance of {@link android.support.v7.widget.RecyclerViewEx}
+     * @param recycler Recycler instance of {@link android.support.v7.widget.RecyclerView}
      * @param dt       This can be used to add additional padding to the visible area. This is used
      *                 to detect children that will go out of bounds after scrolling, without
      *                 actually moving them.
      */
-    private void recycleViewsFromEnd(RecyclerViewEx.Recycler recycler, int dt) {
+    private void recycleViewsFromEnd(RecyclerView.Recycler recycler, int dt) {
         final int childCount = getChildCount();
         if (dt < 0) {
             if (DEBUG) {
@@ -936,15 +936,15 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
     /**
      * Helper method to call appropriate recycle method depending on current layout direction
      *
-     * @param recycler    Current recycler that is attached to RecyclerViewEx
+     * @param recycler    Current recycler that is attached to RecyclerView
      * @param layoutState Current layout state. Right now, this object does not change but
      *                    we may consider moving it out of this view so passing around as a
      *                    parameter for now, rather than accessing {@link #mLayoutState}
-     * @see #recycleViewsFromStart(android.support.v7.widget.RecyclerViewEx.Recycler, int)
-     * @see #recycleViewsFromEnd(android.support.v7.widget.RecyclerViewEx.Recycler, int)
-     * @see LinearLayoutManagerEx.LayoutState#mLayoutDirection
+     * @see #recycleViewsFromStart(android.support.v7.widget.RecyclerView.Recycler, int)
+     * @see #recycleViewsFromEnd(android.support.v7.widget.RecyclerView.Recycler, int)
+     * @see LinearLayoutManager.LayoutState#mLayoutDirection
      */
-    private void recycleByLayoutState(RecyclerViewEx.Recycler recycler, LayoutState layoutState) {
+    private void recycleByLayoutState(RecyclerView.Recycler recycler, LayoutState layoutState) {
         if (!layoutState.mRecycle) {
             return;
         }
@@ -957,17 +957,17 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
     /**
      * The magic functions :). Fills the given layout, defined by the layoutState. This is fairly
-     * independent from the rest of the {@link LinearLayoutManagerEx}
+     * independent from the rest of the {@link LinearLayoutManager}
      * and with little change, can be made publicly available as a helper class.
      *
-     * @param recycler        Current recycler that is attached to RecyclerViewEx
+     * @param recycler        Current recycler that is attached to RecyclerView
      * @param layoutState     Configuration on how we should fill out the available space.
-     * @param state           Context passed by the RecyclerViewEx to control scroll steps.
+     * @param state           Context passed by the RecyclerView to control scroll steps.
      * @param stopOnFocusable If true, filling stops in the first focusable new child
      * @return Number of pixels that it added. Useful for scoll functions.
      */
-    int fill(RecyclerViewEx.Recycler recycler, LayoutState layoutState,
-             RecyclerViewEx.State state, boolean stopOnFocusable) {
+    int fill(RecyclerView.Recycler recycler, LayoutState layoutState,
+             RecyclerView.State state, boolean stopOnFocusable) {
         // max offset we should set is mFastScroll + available
         final int start = layoutState.mAvailable;
         if (layoutState.mScrollingOffset != LayoutState.SCOLLING_OFFSET_NaN) {
@@ -1016,7 +1016,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         return start - layoutState.mAvailable;
     }
 
-    void layoutChunk(RecyclerViewEx.Recycler recycler, RecyclerViewEx.State state,
+    void layoutChunk(RecyclerView.Recycler recycler, RecyclerView.State state,
                      LayoutState layoutState, LayoutChunkResult result) {
         View view = layoutState.next(recycler);
         if (view == null) {
@@ -1028,7 +1028,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
             result.mFinished = true;
             return;
         }
-        RecyclerViewEx.LayoutParams params = (RecyclerViewEx.LayoutParams) view.getLayoutParams();
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) view.getLayoutParams();
         if (layoutState.mScrapList == null) {
             if ((layoutState.mLayoutDirection
                     != LayoutState.LAYOUT_START)) {
@@ -1137,8 +1137,8 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      *
      * @return A View that can be used an an anchor View.
      */
-    private View findReferenceChildClosestToCenter(RecyclerViewEx.State state) {
-        int centerXChildPosition = mRecyclerView.getCenterXChildPosition();
+    private View findReferenceChildClosestToCenter(RecyclerView.State state) {
+        int centerXChildPosition = ViewUtils.getCenterXChildPosition(mRecyclerView);
         if (centerXChildPosition != NO_POSITION) {
             return getChildAt(centerXChildPosition);
         }
@@ -1160,7 +1160,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
             final View view = getChildAt(i);
             final int position = getPosition(view);
             if (position >= 0 && position < itemCount) {
-                if (((RecyclerViewEx.LayoutParams) view.getLayoutParams()).isItemRemoved()) {
+                if (((RecyclerView.LayoutParams) view.getLayoutParams()).isItemRemoved()) {
                     if (invalidMatch == null) {
                         invalidMatch = view; // removed item, least preferred
                     }
@@ -1184,12 +1184,12 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * ({@link #(boolean)}). Views are sorted by their positions in the adapter,
      * not in the layout.
      * <p/>
-     * If RecyclerViewEx has item decorators, they will be considered in calculations as well.
+     * If RecyclerView has item decorators, they will be considered in calculations as well.
      * <p/>
      * LayoutManager may pre-cache some views that are not necessarily visible. Those views
      * are ignored in this method.
      *
-     * @return The adapter position of the first visible item or {@link RecyclerViewEx#NO_POSITION} if
+     * @return The adapter position of the first visible item or {@link RecyclerView#NO_POSITION} if
      * there aren't any visible items.
      * @see #findFirstCompletelyVisibleItemPosition()
      * @see #findLastVisibleItemPosition()
@@ -1206,7 +1206,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * LayoutManager is horizontal, it will only check the view's left and right edges.
      *
      * @return The adapter position of the first fully visible item or
-     * {@link RecyclerViewEx#NO_POSITION} if there aren't any visible items.
+     * {@link RecyclerView#NO_POSITION} if there aren't any visible items.
      * @see #findFirstVisibleItemPosition()
      * @see #findLastCompletelyVisibleItemPosition()
      */
@@ -1222,12 +1222,12 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * ({@link #(boolean)}). Views are sorted by their positions in the adapter,
      * not in the layout.
      * <p/>
-     * If RecyclerViewEx has item decorators, they will be considered in calculations as well.
+     * If RecyclerView has item decorators, they will be considered in calculations as well.
      * <p/>
      * LayoutManager may pre-cache some views that are not necessarily visible. Those views
      * are ignored in this method.
      *
-     * @return The adapter position of the last visible view or {@link RecyclerViewEx#NO_POSITION} if
+     * @return The adapter position of the last visible view or {@link RecyclerView#NO_POSITION} if
      * there aren't any visible items.
      * @see #findLastCompletelyVisibleItemPosition()
      * @see #findFirstVisibleItemPosition()
@@ -1244,7 +1244,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
      * LayoutManager is horizontal, it will only check the view's left and right edges.
      *
      * @return The adapter position of the last fully visible view or
-     * {@link RecyclerViewEx#NO_POSITION} if there aren't any visible items.
+     * {@link RecyclerView#NO_POSITION} if there aren't any visible items.
      * @see #findLastVisibleItemPosition()
      * @see #findFirstCompletelyVisibleItemPosition()
      */
@@ -1277,7 +1277,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
 
     @Override
     public View onFocusSearchFailed(View focused, int focusDirection,
-                                    RecyclerViewEx.Recycler recycler, RecyclerViewEx.State state) {
+                                    RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (getChildCount() == 0) {
             return null;
         }
@@ -1441,7 +1441,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         int mExtra = 0;
 
         /**
-         * Equal to {@link RecyclerViewEx.State#isPreLayout()}. When consuming scrap, if this value
+         * Equal to {@link RecyclerView.State#isPreLayout()}. When consuming scrap, if this value
          * is set to true, we skip removed views since they should not be laid out in post layout
          * step.
          */
@@ -1451,12 +1451,12 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
          * When LLM needs to layout particular views, it sets this list in which case, LayoutState
          * will only return views from this list and return null if it cannot find an item.
          */
-        List<RecyclerViewEx.ViewHolder> mScrapList = null;
+        List<RecyclerView.ViewHolder> mScrapList = null;
 
         /**
          * @return true if there are more items in the data adapter
          */
-        boolean hasMore(RecyclerViewEx.State state) {
+        boolean hasMore(RecyclerView.State state) {
             return mCurrentPosition >= 0 && mCurrentPosition < state.getItemCount();
         }
 
@@ -1466,7 +1466,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
          *
          * @return The next element that we should layout.
          */
-        View next(RecyclerViewEx.Recycler recycler) {
+        View next(RecyclerView.Recycler recycler) {
             if (mScrapList != null) {
                 return nextFromLimitedList();
             }
@@ -1484,10 +1484,10 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
          */
         private View nextFromLimitedList() {
             int size = mScrapList.size();
-            RecyclerViewEx.ViewHolder closest = null;
+            RecyclerView.ViewHolder closest = null;
             int closestDistance = Integer.MAX_VALUE;
             for (int i = 0; i < size; i++) {
-                RecyclerViewEx.ViewHolder viewHolder = mScrapList.get(i);
+                RecyclerView.ViewHolder viewHolder = mScrapList.get(i);
                 if (!mIsPreLayout && viewHolder.isRemoved()) {
                     continue;
                 }
@@ -1592,7 +1592,7 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
         }
 
         /**
-         * assigns anchor coordinate from the RecyclerViewEx's padding depending on current
+         * assigns anchor coordinate from the RecyclerView's padding depending on current
          * layoutFromEnd value
          */
         void assignCoordinateFromPadding() {
@@ -1611,8 +1611,8 @@ public class HorizontalCenterLayoutManager extends RecyclerViewEx.LayoutManager 
          * Assign anchor position information from the provided view if it is valid as a reference
          * child.
          */
-        public boolean assignFromViewIfValid(View child, RecyclerViewEx.State state) {
-            RecyclerViewEx.LayoutParams lp = (RecyclerViewEx.LayoutParams) child.getLayoutParams();
+        public boolean assignFromViewIfValid(View child, RecyclerView.State state) {
+            RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) child.getLayoutParams();
             if (!lp.isItemRemoved() && lp.getViewPosition() >= 0
                     && lp.getViewPosition() < state.getItemCount()) {
                 assignFromView(child);

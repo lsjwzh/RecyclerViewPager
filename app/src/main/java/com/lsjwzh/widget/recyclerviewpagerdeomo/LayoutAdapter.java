@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerViewEx;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,15 +29,15 @@ import android.widget.TextView;
 import static com.lsjwzh.widget.recyclerviewpagerdeomo.R.id;
 import static com.lsjwzh.widget.recyclerviewpagerdeomo.R.layout;
 
-public class LayoutAdapter extends RecyclerViewEx.Adapter<LayoutAdapter.SimpleViewHolder> {
+public class LayoutAdapter extends RecyclerView.Adapter<LayoutAdapter.SimpleViewHolder> {
     private static final int COUNT = 100;
 
     private final Context mContext;
-    private final RecyclerViewEx mRecyclerView;
+    private final RecyclerView mRecyclerView;
     private final List<Integer> mItems;
     private int mCurrentItemId = 0;
 
-    public static class SimpleViewHolder extends RecyclerViewEx.ViewHolder {
+    public static class SimpleViewHolder extends RecyclerView.ViewHolder {
         public final TextView title;
 
         public SimpleViewHolder(View view) {
@@ -46,9 +46,9 @@ public class LayoutAdapter extends RecyclerViewEx.Adapter<LayoutAdapter.SimpleVi
         }
     }
 
-    public LayoutAdapter(Context context, RecyclerViewEx recyclerView) {
+    public LayoutAdapter(Context context, RecyclerView recyclerView) {
         mContext = context;
-        mItems = new ArrayList<Integer>(COUNT);
+        mItems = new ArrayList<>(COUNT);
         for (int i = 0; i < COUNT; i++) {
             addItem(i);
         }

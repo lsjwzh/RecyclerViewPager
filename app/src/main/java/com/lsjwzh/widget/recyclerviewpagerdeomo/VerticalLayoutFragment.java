@@ -20,8 +20,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerViewEx;
-import android.support.v7.widget.VerticalLayoutManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,10 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
-
-import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_DRAGGING;
-import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_IDLE;
-import static android.support.v7.widget.RecyclerViewEx.SCROLL_STATE_SETTLING;
 
 public class VerticalLayoutFragment extends Fragment {
     private RecyclerViewPager mRecyclerView;
@@ -69,8 +63,8 @@ public class VerticalLayoutFragment extends Fragment {
 
         mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
 
-        VerticalLayoutManager layout = new VerticalLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(layout);
+//        VerticalLayoutManager layout = new VerticalLayoutManager(getActivity());
+//        mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLongClickable(true);
@@ -79,43 +73,43 @@ public class VerticalLayoutFragment extends Fragment {
         mCountText = (TextView) view.getRootView().findViewById(R.id.count);
 
         mStateText = (TextView) view.getRootView().findViewById(R.id.state);
-        updateState(SCROLL_STATE_IDLE);
+//        updateState(SCROLL_STATE_IDLE);
 
-        mRecyclerView.setOnScrollListener(new RecyclerViewEx.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerViewEx recyclerView, int scrollState) {
-                updateState(scrollState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerViewEx recyclerView, int i, int i2) {
-//                mPositionText.setText("First: " + mRecyclerView.getFirstVisiblePosition());
-                int childCount = mRecyclerView.getChildCount();
-                int width = mRecyclerView.getChildAt(0).getWidth();
-                int padding = (mRecyclerView.getWidth() - width) / 2;
-                mCountText.setText("Count: " + childCount);
-
-                for (int j = 0; j < childCount; j++) {
-                    View v = recyclerView.getChildAt(j);
-                    //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
-                    float rate = 0;
-                    if (v.getLeft() <= padding) {
-                        if (v.getLeft() >= padding - v.getWidth()) {
-                            rate = (padding - v.getLeft()) * 1f / v.getWidth();
-                        } else {
-                            rate = 1;
-                        }
-                        v.setScaleY(1 - rate * 0.1f);
-                    } else {
-                        //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
-                        if (v.getLeft() <= recyclerView.getWidth() - padding) {
-                            rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
-                        }
-                        v.setScaleY(0.9f + rate * 0.1f);
-                    }
-                }
-            }
-        });
+//        mRecyclerView.setOnScrollListener(new RecyclerViewEx.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerViewEx recyclerView, int scrollState) {
+//                updateState(scrollState);
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerViewEx recyclerView, int i, int i2) {
+////                mPositionText.setText("First: " + mRecyclerView.getFirstVisiblePosition());
+//                int childCount = mRecyclerView.getChildCount();
+//                int width = mRecyclerView.getChildAt(0).getWidth();
+//                int padding = (mRecyclerView.getWidth() - width) / 2;
+//                mCountText.setText("Count: " + childCount);
+//
+//                for (int j = 0; j < childCount; j++) {
+//                    View v = recyclerView.getChildAt(j);
+//                    //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
+//                    float rate = 0;
+//                    if (v.getLeft() <= padding) {
+//                        if (v.getLeft() >= padding - v.getWidth()) {
+//                            rate = (padding - v.getLeft()) * 1f / v.getWidth();
+//                        } else {
+//                            rate = 1;
+//                        }
+//                        v.setScaleY(1 - rate * 0.1f);
+//                    } else {
+//                        //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
+//                        if (v.getLeft() <= recyclerView.getWidth() - padding) {
+//                            rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
+//                        }
+//                        v.setScaleY(0.9f + rate * 0.1f);
+//                    }
+//                }
+//            }
+//        });
 
         mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
@@ -142,21 +136,21 @@ public class VerticalLayoutFragment extends Fragment {
 
 
     private void updateState(int scrollState) {
-        String stateName = "Undefined";
-        switch (scrollState) {
-            case SCROLL_STATE_IDLE:
-                stateName = "Idle";
-                break;
-
-            case SCROLL_STATE_DRAGGING:
-                stateName = "Dragging";
-                break;
-
-            case SCROLL_STATE_SETTLING:
-                stateName = "Flinging";
-                break;
-        }
-
-        mStateText.setText(stateName);
+//        String stateName = "Undefined";
+//        switch (scrollState) {
+//            case SCROLL_STATE_IDLE:
+//                stateName = "Idle";
+//                break;
+//
+//            case SCROLL_STATE_DRAGGING:
+//                stateName = "Dragging";
+//                break;
+//
+//            case SCROLL_STATE_SETTLING:
+//                stateName = "Flinging";
+//                break;
+//        }
+//
+//        mStateText.setText(stateName);
     }
 }

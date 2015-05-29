@@ -20,8 +20,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.HorizontalCenterLayoutManager;
-import android.support.v7.widget.RecyclerViewEx;
+import android.support.v7.widget.HorizontalViewPagerLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,7 +70,7 @@ public class HorizontalLayoutFragment extends Fragment {
 
         mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
 
-        HorizontalCenterLayoutManager layout = new HorizontalCenterLayoutManager(getActivity());
+        HorizontalViewPagerLayoutManager layout = new HorizontalViewPagerLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView));
         mRecyclerView.setHasFixedSize(true);
@@ -82,14 +82,14 @@ public class HorizontalLayoutFragment extends Fragment {
         mStateText = (TextView) view.getRootView().findViewById(R.id.state);
         updateState(SCROLL_STATE_IDLE);
 
-        mRecyclerView.setOnScrollListener(new RecyclerViewEx.OnScrollListener() {
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(RecyclerViewEx recyclerView, int scrollState) {
+            public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
                 updateState(scrollState);
             }
 
             @Override
-            public void onScrolled(RecyclerViewEx recyclerView, int i, int i2) {
+            public void onScrolled(RecyclerView recyclerView, int i, int i2) {
 //                mPositionText.setText("First: " + mRecyclerView.getFirstVisiblePosition());
                 int childCount = mRecyclerView.getChildCount();
                 int width = mRecyclerView.getChildAt(0).getWidth();

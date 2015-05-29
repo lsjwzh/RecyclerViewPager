@@ -25,12 +25,12 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 /**
- * {@link android.support.v7.widget.RecyclerViewEx.SmoothScroller} implementation which uses
+ * {@link android.support.v7.widget.RecyclerView.SmoothScroller} implementation which uses
  * {@link android.view.animation.LinearInterpolator} until the target position becames a child of
- * the RecyclerViewEx and then uses
+ * the RecyclerView and then uses
  * {@link android.view.animation.DecelerateInterpolator} to slowly approach to target position.
  */
-abstract public class LinearSmoothScrollerEx extends RecyclerViewEx.SmoothScroller {
+abstract public class LinearSmoothScrollerEx extends RecyclerView.SmoothScroller {
 
     private static final String TAG = "LinearSmoothScroller";
 
@@ -61,7 +61,7 @@ abstract public class LinearSmoothScrollerEx extends RecyclerViewEx.SmoothScroll
     /**
      * <p>Decides if the child should be snapped from start or end, depending on where it
      * currently is in relation to its parent.</p>
-     * <p>For instance, if the view is virtually on the left of RecyclerViewEx, using
+     * <p>For instance, if the view is virtually on the left of RecyclerView, using
      * {@code SNAP_TO_ANY} is the same as using {@code SNAP_TO_START}</p>
      *
      * @see #calculateDtToFit(int, int, int, int, int)
@@ -103,7 +103,7 @@ abstract public class LinearSmoothScrollerEx extends RecyclerViewEx.SmoothScroll
      * {@inheritDoc}
      */
     @Override
-    protected void onTargetFound(View targetView, RecyclerViewEx.State state, Action action) {
+    protected void onTargetFound(View targetView, RecyclerView.State state, Action action) {
         final int dx = calculateDxToMakeVisible(targetView, getHorizontalSnapPreference());
         final int dy = calculateDyToMakeVisible(targetView, getVerticalSnapPreference());
         final int distance = (int) Math.sqrt(dx * dx + dy * dy);
@@ -117,7 +117,7 @@ abstract public class LinearSmoothScrollerEx extends RecyclerViewEx.SmoothScroll
      * {@inheritDoc}
      */
     @Override
-    protected void onSeekTargetStep(int dx, int dy, RecyclerViewEx.State state, Action action) {
+    protected void onSeekTargetStep(int dx, int dy, RecyclerView.State state, Action action) {
         if (getChildCount() == 0) {
             stop();
             return;
@@ -189,7 +189,7 @@ abstract public class LinearSmoothScrollerEx extends RecyclerViewEx.SmoothScroll
 
     /**
      * When scrolling towards a child view, this method defines whether we should align the left
-     * or the right edge of the child with the parent RecyclerViewEx.
+     * or the right edge of the child with the parent RecyclerView.
      *
      * @return SNAP_TO_START, SNAP_TO_END or SNAP_TO_ANY; depending on the current target vector
      * @see #SNAP_TO_START
@@ -203,7 +203,7 @@ abstract public class LinearSmoothScrollerEx extends RecyclerViewEx.SmoothScroll
 
     /**
      * When scrolling towards a child view, this method defines whether we should align the top
-     * or the bottom edge of the child with the parent RecyclerViewEx.
+     * or the bottom edge of the child with the parent RecyclerView.
      *
      * @return SNAP_TO_START, SNAP_TO_END or SNAP_TO_ANY; depending on the current target vector
      * @see #SNAP_TO_START
@@ -216,7 +216,7 @@ abstract public class LinearSmoothScrollerEx extends RecyclerViewEx.SmoothScroll
     }
 
     /**
-     * When the target scroll position is not a child of the RecyclerViewEx, this method calculates
+     * When the target scroll position is not a child of the RecyclerView, this method calculates
      * a direction vector towards that child and triggers a smooth scroll.
      *
      * @see #computeScrollVectorForPosition(int)
@@ -286,7 +286,7 @@ abstract public class LinearSmoothScrollerEx extends RecyclerViewEx.SmoothScroll
 
     /**
      * Calculates the vertical scroll amount necessary to make the given view fully visible
-     * inside the RecyclerViewEx.
+     * inside the RecyclerView.
      *
      * @param view           The view which we want to make fully visible
      * @param snapPreference The edge which the view should snap to when entering the visible
@@ -296,11 +296,11 @@ abstract public class LinearSmoothScrollerEx extends RecyclerViewEx.SmoothScroll
      * snap preference.
      */
     public int calculateDyToMakeVisible(View view, int snapPreference) {
-        final RecyclerViewEx.LayoutManager layoutManager = getLayoutManager();
+        final RecyclerView.LayoutManager layoutManager = getLayoutManager();
         if (!layoutManager.canScrollVertically()) {
             return 0;
         }
-        final RecyclerViewEx.LayoutParams params = (RecyclerViewEx.LayoutParams)
+        final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
                 view.getLayoutParams();
         final int top = layoutManager.getDecoratedTop(view) - params.topMargin;
         final int bottom = layoutManager.getDecoratedBottom(view) + params.bottomMargin;
@@ -311,7 +311,7 @@ abstract public class LinearSmoothScrollerEx extends RecyclerViewEx.SmoothScroll
 
     /**
      * Calculates the horizontal scroll amount necessary to make the given view fully visible
-     * inside the RecyclerViewEx.
+     * inside the RecyclerView.
      *
      * @param view           The view which we want to make fully visible
      * @param snapPreference The edge which the view should snap to when entering the visible
@@ -321,11 +321,11 @@ abstract public class LinearSmoothScrollerEx extends RecyclerViewEx.SmoothScroll
      * snap preference.
      */
     public int calculateDxToMakeVisible(View view, int snapPreference) {
-        final RecyclerViewEx.LayoutManager layoutManager = getLayoutManager();
+        final RecyclerView.LayoutManager layoutManager = getLayoutManager();
         if (!layoutManager.canScrollHorizontally()) {
             return 0;
         }
-        final RecyclerViewEx.LayoutParams params = (RecyclerViewEx.LayoutParams)
+        final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
                 view.getLayoutParams();
         final int left = layoutManager.getDecoratedLeft(view) - params.leftMargin;
         final int right = layoutManager.getDecoratedRight(view) + params.rightMargin;

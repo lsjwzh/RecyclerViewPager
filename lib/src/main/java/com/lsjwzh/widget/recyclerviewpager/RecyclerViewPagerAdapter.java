@@ -1,6 +1,6 @@
 package com.lsjwzh.widget.recyclerviewpager;
 
-import android.support.v7.widget.RecyclerViewEx;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,12 +11,12 @@ import android.view.ViewGroup;
  * @author Green
  * @since 2015/1/20 下午2:17
  */
-public class RecyclerViewPagerAdapter<VH extends RecyclerViewEx.ViewHolder> extends RecyclerViewEx.Adapter<VH> {
+public class RecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
     private final RecyclerViewPager mViewPager;
-    RecyclerViewEx.Adapter<VH> mAdapter;
+    RecyclerView.Adapter<VH> mAdapter;
 
 
-    public RecyclerViewPagerAdapter(RecyclerViewPager viewPager, RecyclerViewEx.Adapter<VH> adapter) {
+    public RecyclerViewPagerAdapter(RecyclerViewPager viewPager, RecyclerView.Adapter<VH> adapter) {
         mAdapter = adapter;
         mViewPager = viewPager;
         setHasStableIds(mAdapter.hasStableIds());
@@ -28,13 +28,13 @@ public class RecyclerViewPagerAdapter<VH extends RecyclerViewEx.ViewHolder> exte
     }
 
     @Override
-    public void registerAdapterDataObserver(RecyclerViewEx.AdapterDataObserver observer) {
+    public void registerAdapterDataObserver(RecyclerView.AdapterDataObserver observer) {
         super.registerAdapterDataObserver(observer);
         mAdapter.registerAdapterDataObserver(observer);
     }
 
     @Override
-    public void unregisterAdapterDataObserver(RecyclerViewEx.AdapterDataObserver observer) {
+    public void unregisterAdapterDataObserver(RecyclerView.AdapterDataObserver observer) {
         super.unregisterAdapterDataObserver(observer);
         mAdapter.unregisterAdapterDataObserver(observer);
     }
