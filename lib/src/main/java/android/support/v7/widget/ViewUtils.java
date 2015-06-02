@@ -37,9 +37,24 @@ public class ViewUtils {
         }
         return childCount;
     }
-
     /**
-     * Get position of center child in X Axes
+     * Get center child in Y Axes
+     *
+     */
+    public static View getCenterYChild(RecyclerView recyclerView) {
+        int childCount = recyclerView.getChildCount();
+        if (childCount > 0) {
+            for (int i = 0; i < childCount; i++) {
+                View child = recyclerView.getChildAt(i);
+                if (isChildInCenterY(recyclerView, child)) {
+                    return child;
+                }
+            }
+        }
+        return null;
+    }
+    /**
+     * Get position of center child in Y Axes
      *
      */
     public static int getCenterYChildPosition(RecyclerView recyclerView) {
