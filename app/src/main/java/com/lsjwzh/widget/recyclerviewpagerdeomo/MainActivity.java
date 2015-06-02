@@ -42,8 +42,12 @@ public class MainActivity extends ActionBarActivity {
         ActionBar.Tab tab2 = actionBar.newTab()
                 .setText("Vertical")
                 .setTabListener(new TabListener(VerticalLayoutFragment.class, "Vertical"));
+        ActionBar.Tab tab3 = actionBar.newTab()
+                .setText("ViewPager")
+                .setTabListener(new TabListener(ViewPagerFragment.class, "ViewPager"));
         actionBar.addTab(tab, true);
         actionBar.addTab(tab2, false);
+        actionBar.addTab(tab3, false);
     }
 
     @Override

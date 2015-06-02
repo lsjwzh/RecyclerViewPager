@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2014 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific languag`e governing permissions and
+ * limitations under the License.
+ */
+
 package android.support.v7.widget;
 
 import java.util.List;
@@ -16,13 +32,20 @@ import android.view.accessibility.AccessibilityEvent;
 
 import static android.support.v7.widget.RecyclerView.NO_POSITION;
 
-public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager {
+/**
+ * A {@link RecyclerView.LayoutManager} implementation which provides
+ * similar functionality to {@link android.widget.ListView}.
+ */
+public class VerticalViewPageLayoutManager extends RecyclerView.LayoutManager {
 
-    private static final String TAG = "HVPLM";
+    private static final String TAG = "VVPLM";
 
     private static final boolean DEBUG = false;
 
-    public static final int HORIZONTAL = OrientationHelper.HORIZONTAL;
+    public static final int VERTICAL = OrientationHelper.VERTICAL;
+
+    public static final int INVALID_OFFSET = Integer.MIN_VALUE;
+
 
     /**
      * While trying to find next view to focus, LayoutManager will not try to scroll more
@@ -30,7 +53,6 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
      * height minus padding, if layout is horizontal, total space is the width minus padding.
      */
     private static final float MAX_SCROLL_FACTOR = 0.33f;
-    private static final int INVALID_OFFSET = Integer.MIN_VALUE;
 
     /**
      * Helper class that keeps temporary layout state.
@@ -41,8 +63,8 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
 
     /**
      * Many calculations are made depending on orientation. To keep it clean, this interface
-     * helps {@link LinearLayoutManager} make those decisions.
-     * Based on {@link #}, an implementation is lazily created in
+     * helps {@link VerticalViewPageLayoutManager} make those decisions.
+     * Based on {@link #VERTICAL}, an implementation is lazily created in
      * {@link #ensureLayoutState} method.
      */
     OrientationHelper mOrientationHelper;
@@ -59,6 +81,12 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
      */
     int mPendingScrollPosition = NO_POSITION;
 
+    /**
+     * Used to keep the offset value when {@link #scrollToPositionWithOffset(int, int)} is
+     * called.
+     */
+    int mPendingScrollPositionOffset = INVALID_OFFSET;
+
     private boolean mRecycleChildrenOnDetach;
 
     SavedState mPendingSavedState = null;
@@ -74,7 +102,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
      *
      * @param context Current context, will be used to access resources.
      */
-    public HorizontalViewPagerLayoutManager(Context context) {
+    public VerticalViewPageLayoutManager(Context context) {
         mAnchorInfo = new AnchorInfo();
     }
 
@@ -137,13 +165,16 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
 
     @Override
     public Parcelable onSaveInstanceState() {
+        if (mPendingSavedState != null) {
+            return new SavedState(mPendingSavedState);
+        }
         SavedState state = new SavedState();
         if (getChildCount() > 0) {
             ensureLayoutState();
             state.mAnchorLayoutFromEnd = false;
             final View refChild = getChildClosestToStart();
             state.mAnchorPosition = getPosition(refChild);
-//            state.mAnchorOffset = //mOrientationHelper.getDecoratedStart(refChild) -
+//            state.mAnchorOffset = mOrientationHelper.getDecoratedStart(refChild) -
 //                    mOrientationHelper.getStartAfterPadding();
         } else {
             state.invalidateAnchor();
@@ -165,19 +196,19 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
     }
 
     /**
-     * @return true
-     */
-    @Override
-    public boolean canScrollHorizontally() {
-        return true;
-    }
-
-    /**
      * @return false
      */
     @Override
-    public boolean canScrollVertically() {
+    public boolean canScrollHorizontally() {
         return false;
+    }
+
+    /**
+     * @return true
+     */
+    @Override
+    public boolean canScrollVertically() {
+        return true;
     }
 
 
@@ -200,7 +231,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
 
     /**
      * <p>Returns the amount of extra space that should be laid out by LayoutManager.
-     * By default, {@link LinearLayoutManager} lays out 1 extra page of
+     * By default, {@link VerticalViewPageLayoutManager} lays out 1 extra page of
      * items while smooth scrolling and 0 otherwise. You can override this method to implement your
      * custom layout pre-cache logic.</p>
      * <p>Laying out invisible elements will eventually come with performance cost. On the other
@@ -232,7 +263,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
                 if (DEBUG) {
                     Log.d(TAG, "direction:" + direction);
                 }
-                return new PointF(direction, 0);
+                return new PointF(0, direction);
             }
 
             @Override
@@ -302,7 +333,6 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
             mPendingScrollPosition = mPendingSavedState.mAnchorPosition;
         }
 
-
         ensureLayoutState();
         mLayoutState.mRecycle = false;
 
@@ -318,28 +348,38 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         int extraForStart;
         int extraForEnd;
         final int extra = getExtraLayoutSpace(state);
-        boolean before = state.getTargetScrollPosition() < mAnchorInfo.mPosition;
-        if (before == false) {
-            extraForEnd = extra;
-            extraForStart = 0;
-        } else {
-            extraForStart = extra;
-            extraForEnd = 0;
-        }
+        extraForStart = extra;
+        extraForEnd = 0;
         extraForStart += mOrientationHelper.getStartAfterPadding();
         extraForEnd += mOrientationHelper.getEndPadding();
-
+        if (state.isPreLayout() && mPendingScrollPosition != NO_POSITION &&
+                mPendingScrollPositionOffset != INVALID_OFFSET) {
+            // if the child is visible and we are going to move it around, we should layout
+            // extra items in the opposite direction to make sure new items animate nicely
+            // instead of just fading in
+            final View existing = findViewByPosition(mPendingScrollPosition);
+            if (existing != null) {
+                final int current;
+                final int upcomingOffset;
+                current = mOrientationHelper.getDecoratedStart(existing)
+                        - mOrientationHelper.getStartAfterPadding();
+                upcomingOffset = mPendingScrollPositionOffset - current;
+                if (upcomingOffset > 0) {
+                    extraForStart += upcomingOffset;
+                } else {
+                    extraForEnd -= upcomingOffset;
+                }
+            }
+        }
         int startOffset;
         int endOffset;
         onAnchorReady(state, mAnchorInfo);
         detachAndScrapAttachedViews(recycler);
         mLayoutState.mIsPreLayout = state.isPreLayout();
+
         // fill towards end
         updateLayoutStateToFillEnd(mAnchorInfo);
         mLayoutState.mExtra = extraForEnd;
-        if (mPendingScrollPosition != NO_POSITION) {
-            mLayoutState.mCurrentPosition = mPendingScrollPosition;
-        }
         fill(recycler, mLayoutState, state, false);
         endOffset = mLayoutState.mOffset;
         if (mLayoutState.mAvailable > 0) {
@@ -348,11 +388,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         // fill towards start
         updateLayoutStateToFillStart(mAnchorInfo);
         mLayoutState.mExtra = extraForStart;
-        if (mPendingScrollPosition != NO_POSITION) {
-            mLayoutState.mCurrentPosition = mPendingScrollPosition + mLayoutState.mItemDirection;
-        } else {
-            mLayoutState.mCurrentPosition += mLayoutState.mItemDirection;
-        }
+        mLayoutState.mCurrentPosition += mLayoutState.mItemDirection;
         fill(recycler, mLayoutState, state, false);
         startOffset = mLayoutState.mOffset;
 
@@ -373,9 +409,10 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         layoutForPredictiveAnimations(recycler, state, startOffset, endOffset);
         if (!state.isPreLayout()) {
             mPendingScrollPosition = NO_POSITION;
+            mPendingScrollPositionOffset = INVALID_OFFSET;
             mOrientationHelper.onLayoutComplete();
         }
-//        mPendingSavedState = null; // we don't need this anymore
+        mPendingSavedState = null; // we don't need this anymore
         if (DEBUG) {
             validateChildOrder();
         }
@@ -413,7 +450,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         for (int i = 0; i < scrapSize; i++) {
             RecyclerView.ViewHolder scrap = scrapList.get(i);
             final int position = scrap.getPosition();
-            final int direction = position >= firstChildPos
+            final int direction = position < firstChildPos
                     ? LayoutState.LAYOUT_START : LayoutState.LAYOUT_END;
             if (direction == LayoutState.LAYOUT_START) {
                 scrapExtraStart += mOrientationHelper.getDecoratedMeasurement(scrap.itemView);
@@ -486,7 +523,8 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
             return true;
         }
 
-        View referenceChild = findReferenceChildClosestToCenter(state);
+        View referenceChild = anchorInfo.mLayoutFromEnd ? findReferenceChildClosestToEnd(state)
+                : findReferenceChildClosestToStart(state);
         if (referenceChild != null) {
             anchorInfo.assignFromView(referenceChild);
             // If all visible views are removed in 1 pass, reference child might be out of bounds.
@@ -499,7 +537,9 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
                                 || mOrientationHelper.getDecoratedEnd(referenceChild)
                                 < mOrientationHelper.getStartAfterPadding();
                 if (notVisible) {
-                    anchorInfo.mCoordinate = mOrientationHelper.getStartAfterPadding();
+                    anchorInfo.mCoordinate = anchorInfo.mLayoutFromEnd
+                            ? mOrientationHelper.getEndAfterPadding()
+                            : mOrientationHelper.getStartAfterPadding();
                 }
             }
             return true;
@@ -518,6 +558,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         // validate scroll position
         if (mPendingScrollPosition < 0 || mPendingScrollPosition >= state.getItemCount()) {
             mPendingScrollPosition = NO_POSITION;
+            mPendingScrollPositionOffset = INVALID_OFFSET;
             if (DEBUG) {
                 Log.e(TAG, "ignoring invalid scroll position " + mPendingScrollPosition);
             }
@@ -530,39 +571,58 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         if (mPendingSavedState != null && mPendingSavedState.hasValidAnchor()) {
             // Anchor offset depends on how that child was laid out. Here, we update it
             // according to our current view bounds
-            // rvp: this makes childeren layout in right position at first time
-            anchorInfo.mCoordinate = -mRecyclerView.getWidth() + mRecyclerView.getPaddingRight() + mRecyclerView.getPaddingLeft() + mOrientationHelper.getStartAfterPadding();
+            anchorInfo.mLayoutFromEnd = mPendingSavedState.mAnchorLayoutFromEnd;
+            if (anchorInfo.mLayoutFromEnd) {
+                anchorInfo.mCoordinate = mOrientationHelper.getEndAfterPadding() -
+                        mPendingSavedState.mAnchorOffset;
+            } else {
+                anchorInfo.mCoordinate = mOrientationHelper.getStartAfterPadding() +
+                        mPendingSavedState.mAnchorOffset;
+            }
             return true;
         }
 
-        View child = findViewByPosition(mPendingScrollPosition);
-        if (child != null) {
-            final int childSize = mOrientationHelper.getDecoratedMeasurement(child);
-            if (childSize > mOrientationHelper.getTotalSpace()) {
-                // item does not fit. fix depending on layout direction
+        if (mPendingScrollPositionOffset == INVALID_OFFSET) {
+            View child = findViewByPosition(mPendingScrollPosition);
+            if (child != null) {
+                final int childSize = mOrientationHelper.getDecoratedMeasurement(child);
+                if (childSize > mOrientationHelper.getTotalSpace()) {
+                    // item does not fit. fix depending on layout direction
+                    anchorInfo.assignCoordinateFromPadding();
+                    return true;
+                }
+                final int startGap = mOrientationHelper.getDecoratedStart(child)
+                        - mOrientationHelper.getStartAfterPadding();
+                if (startGap < 0) {
+                    anchorInfo.mCoordinate = mOrientationHelper.getStartAfterPadding();
+                    anchorInfo.mLayoutFromEnd = false;
+                    return true;
+                }
+                final int endGap = mOrientationHelper.getEndAfterPadding() -
+                        mOrientationHelper.getDecoratedEnd(child);
+                if (endGap < 0) {
+                    anchorInfo.mCoordinate = mOrientationHelper.getEndAfterPadding();
+                    anchorInfo.mLayoutFromEnd = true;
+                    return true;
+                }
+                anchorInfo.mCoordinate = anchorInfo.mLayoutFromEnd
+                        ? (mOrientationHelper.getDecoratedEnd(child) + mOrientationHelper
+                        .getTotalSpaceChange())
+                        : mOrientationHelper.getDecoratedStart(child);
+            } else { // item is not visible.
+                if (getChildCount() > 0) {
+                    // get position of any child, does not matter
+                    int pos = getPosition(getChildAt(0));
+                    anchorInfo.mLayoutFromEnd = mPendingScrollPosition >= pos;
+                }
                 anchorInfo.assignCoordinateFromPadding();
-                return true;
             }
-            final int startGap = mOrientationHelper.getDecoratedStart(child)
-                    - mOrientationHelper.getStartAfterPadding();
-            if (startGap < 0) {
-                anchorInfo.mCoordinate = mOrientationHelper.getStartAfterPadding();
-                return true;
-            }
-            final int endGap = mOrientationHelper.getEndAfterPadding() -
-                    mOrientationHelper.getDecoratedEnd(child);
-            if (endGap < 0) {
-                anchorInfo.mCoordinate = mOrientationHelper.getEndAfterPadding();
-                return true;
-            }
-            anchorInfo.mCoordinate = mOrientationHelper.getDecoratedStart(child);
-        } else { // item is not visible.
-            if (getChildCount() > 0) {
-                // get position of any child, does not matter
-                int pos = getPosition(getChildAt(0));
-            }
-            anchorInfo.assignCoordinateFromPadding();
+            return true;
         }
+        // override layout from end values for consistency
+        anchorInfo.mLayoutFromEnd = false;
+        anchorInfo.mCoordinate = mOrientationHelper.getStartAfterPadding() +
+                mPendingScrollPositionOffset;
         return true;
     }
 
@@ -624,7 +684,6 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         mLayoutState.mAvailable = mOrientationHelper.getEndAfterPadding() - offset;
         mLayoutState.mItemDirection = LayoutState.ITEM_DIRECTION_TAIL;
         mLayoutState.mCurrentPosition = itemPosition;
-        mLayoutState.mLayoutDirection = LayoutState.LAYOUT_END;
         mLayoutState.mOffset = offset;
         mLayoutState.mScrollingOffset = LayoutState.SCOLLING_OFFSET_NaN;
     }
@@ -637,7 +696,6 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         mLayoutState.mAvailable = offset - mOrientationHelper.getStartAfterPadding();
         mLayoutState.mCurrentPosition = itemPosition;
         mLayoutState.mItemDirection = LayoutState.ITEM_DIRECTION_HEAD;
-        mLayoutState.mLayoutDirection = LayoutState.LAYOUT_START;
         mLayoutState.mOffset = offset;
         mLayoutState.mScrollingOffset = LayoutState.SCOLLING_OFFSET_NaN;
 
@@ -652,7 +710,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
             mLayoutState = new LayoutState();
         }
         if (mOrientationHelper == null) {
-            mOrientationHelper = OrientationHelper.createOrientationHelper(this, HORIZONTAL);
+            mOrientationHelper = OrientationHelper.createOrientationHelper(this, VERTICAL);
         }
     }
 
@@ -663,14 +721,45 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
      * target position visible. If you are looking for a similar behavior to
      * {@link android.widget.ListView#setSelection(int)} or
      * {@link android.widget.ListView#setSelectionFromTop(int, int)}, use
+     * {@link #scrollToPositionWithOffset(int, int)}.</p>
      * <p/>
      * <p>Note that scroll position change will not be reflected until the next layout call.</p>
      *
      * @param position Scroll to this adapter position
+     * @see #scrollToPositionWithOffset(int, int)
      */
     @Override
     public void scrollToPosition(int position) {
         mPendingScrollPosition = position;
+        mPendingScrollPositionOffset = INVALID_OFFSET;
+        if (mPendingSavedState != null) {
+            mPendingSavedState.invalidateAnchor();
+        }
+        requestLayout();
+    }
+
+    /**
+     * Scroll to the specified adapter position with the given offset from resolved layout
+     * start.
+     * {@link ViewCompat#getLayoutDirection(View)}.
+     * <p/>
+     * For example, calling
+     * <code>scrollToPositionWithOffset(10, 20)</code> will layout such that
+     * <code>item[10]</code>'s bottom is 20 pixels above the RecyclerView's bottom.
+     * <p/>
+     * Note that scroll position change will not be reflected until the next layout call.
+     * <p/>
+     * <p/>
+     * If you are just trying to make a position visible, use {@link #scrollToPosition(int)}.
+     *
+     * @param position Index (starting at 0) of the reference item.
+     * @param offset   The distance (in pixels) between the start edge of the item view and
+     *                 start edge of the RecyclerView.
+     * @see #scrollToPosition(int)
+     */
+    public void scrollToPositionWithOffset(int position, int offset) {
+        mPendingScrollPosition = position;
+        mPendingScrollPositionOffset = offset;
         if (mPendingSavedState != null) {
             mPendingSavedState.invalidateAnchor();
         }
@@ -684,7 +773,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
     @Override
     public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler,
                                     RecyclerView.State state) {
-        return scrollBy(dx, recycler, state);
+        return 0;
     }
 
     /**
@@ -693,7 +782,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler,
                                   RecyclerView.State state) {
-        return 0;
+        return scrollBy(dy, recycler, state);
     }
 
     @Override
@@ -789,29 +878,14 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
     private void updateLayoutState(int layoutDirection, int requiredSpace,
                                    boolean canUseExistingSpace, RecyclerView.State state) {
         mLayoutState.mExtra = getExtraLayoutSpace(state);
-        mLayoutState.mLayoutDirection = layoutDirection;
         int fastScrollSpace;
-        if (layoutDirection == LayoutState.LAYOUT_END) {
-            mLayoutState.mExtra += mOrientationHelper.getEndPadding();
-            // get the first child in the direction we are going
-            final View child = getChildClosestToEnd();
-            // the direction in which we are traversing children
-            mLayoutState.mItemDirection = LayoutState.ITEM_DIRECTION_TAIL;
-            mLayoutState.mCurrentPosition = getPosition(child) + mLayoutState.mItemDirection;
-            mLayoutState.mOffset = mOrientationHelper.getDecoratedEnd(child);
-            // calculate how much we can scroll without adding new children (independent of layout)
-            fastScrollSpace = mOrientationHelper.getDecoratedEnd(child)
-                    - mOrientationHelper.getEndAfterPadding();
-
-        } else {
-            final View child = getChildClosestToStart();
-            mLayoutState.mExtra += mOrientationHelper.getStartAfterPadding();
-            mLayoutState.mItemDirection = LayoutState.ITEM_DIRECTION_HEAD;
-            mLayoutState.mCurrentPosition = getPosition(child) + mLayoutState.mItemDirection;
-            mLayoutState.mOffset = mOrientationHelper.getDecoratedStart(child);
-            fastScrollSpace = -mOrientationHelper.getDecoratedStart(child)
-                    + mOrientationHelper.getStartAfterPadding();
-        }
+        final View child = getChildClosestToStart();
+        mLayoutState.mExtra += mOrientationHelper.getStartAfterPadding();
+        mLayoutState.mItemDirection = LayoutState.ITEM_DIRECTION_HEAD;
+        mLayoutState.mCurrentPosition = getPosition(child) + mLayoutState.mItemDirection;
+        mLayoutState.mOffset = mOrientationHelper.getDecoratedStart(child);
+        fastScrollSpace = -mOrientationHelper.getDecoratedStart(child)
+                + mOrientationHelper.getStartAfterPadding();
         mLayoutState.mAvailable = requiredSpace;
         if (canUseExistingSpace) {
             mLayoutState.mAvailable -= fastScrollSpace;
@@ -878,7 +952,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
     /**
      * Recycles views that went out of bounds after scrolling towards the end of the layout.
      *
-     * @param recycler Recycler instance of {@link android.support.v7.widget.RecyclerView}
+     * @param recycler Recycler instance of {@link RecyclerView}
      * @param dt       This can be used to add additional padding to the visible area. This is used
      *                 to
      *                 detect children that will go out of bounds after scrolling, without actually
@@ -908,7 +982,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
     /**
      * Recycles views that went out of bounds after scrolling towards the start of the layout.
      *
-     * @param recycler Recycler instance of {@link android.support.v7.widget.RecyclerView}
+     * @param recycler Recycler instance of {@link RecyclerView}
      * @param dt       This can be used to add additional padding to the visible area. This is used
      *                 to detect children that will go out of bounds after scrolling, without
      *                 actually moving them.
@@ -940,24 +1014,19 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
      * @param layoutState Current layout state. Right now, this object does not change but
      *                    we may consider moving it out of this view so passing around as a
      *                    parameter for now, rather than accessing {@link #mLayoutState}
-     * @see #recycleViewsFromStart(android.support.v7.widget.RecyclerView.Recycler, int)
-     * @see #recycleViewsFromEnd(android.support.v7.widget.RecyclerView.Recycler, int)
-     * @see LinearLayoutManager.LayoutState#mLayoutDirection
+     * @see #recycleViewsFromStart(RecyclerView.Recycler, int)
+     * @see #recycleViewsFromEnd(RecyclerView.Recycler, int)
      */
     private void recycleByLayoutState(RecyclerView.Recycler recycler, LayoutState layoutState) {
         if (!layoutState.mRecycle) {
             return;
         }
-        if (layoutState.mLayoutDirection == LayoutState.LAYOUT_START) {
-            recycleViewsFromEnd(recycler, layoutState.mScrollingOffset);
-        } else {
-            recycleViewsFromStart(recycler, layoutState.mScrollingOffset);
-        }
+        recycleViewsFromEnd(recycler, layoutState.mScrollingOffset);
     }
 
     /**
      * The magic functions :). Fills the given layout, defined by the layoutState. This is fairly
-     * independent from the rest of the {@link LinearLayoutManager}
+     * independent from the rest of the {@link VerticalViewPageLayoutManager}
      * and with little change, can be made publicly available as a helper class.
      *
      * @param recycler        Current recycler that is attached to RecyclerView
@@ -985,7 +1054,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
             if (layoutChunkResult.mFinished) {
                 break;
             }
-            layoutState.mOffset += layoutChunkResult.mConsumed * layoutState.mLayoutDirection;
+            layoutState.mOffset += layoutChunkResult.mConsumed * -1;
             /**
              * Consume the available space if:
              * * layoutChunk did not request to be ignored
@@ -1030,33 +1099,22 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         }
         RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) view.getLayoutParams();
         if (layoutState.mScrapList == null) {
-            if ((layoutState.mLayoutDirection
-                    != LayoutState.LAYOUT_START)) {
-                addView(view);
-            } else {
-                addView(view, 0);
-            }
+            addView(view, 0);
         } else {
-            if (layoutState.mLayoutDirection
-                    != LayoutState.LAYOUT_START) {
-                addDisappearingView(view);
-            } else {
-                addDisappearingView(view, 0);
-            }
+            addDisappearingView(view, 0);
         }
         measureChildWithMargins(view, 0, 0);
         result.mConsumed = mOrientationHelper.getDecoratedMeasurement(view);
         int left, top, right, bottom;
-        top = getPaddingTop();
-        bottom = top + mOrientationHelper.getDecoratedMeasurementInOther(view);
-
-        if (layoutState.mLayoutDirection == LayoutState.LAYOUT_START) {
-            right = layoutState.mOffset;
-            left = layoutState.mOffset - result.mConsumed;
+        if (isLayoutRTL()) {
+            right = getWidth() - getPaddingRight();
+            left = right - mOrientationHelper.getDecoratedMeasurementInOther(view);
         } else {
-            left = layoutState.mOffset;
-            right = layoutState.mOffset + result.mConsumed;
+            left = getPaddingLeft();
+            right = left + mOrientationHelper.getDecoratedMeasurementInOther(view);
         }
+        bottom = layoutState.mOffset;
+        top = layoutState.mOffset - result.mConsumed;
         // We calculate everything with View's bounding box (which includes decor and margins)
         // To calculate correct layout position, we subtract margins.
         layoutDecorated(view, left + params.leftMargin, top + params.topMargin,
@@ -1090,13 +1148,13 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
             case View.FOCUS_FORWARD:
                 return LayoutState.LAYOUT_END;
             case View.FOCUS_UP:
-                return LayoutState.INVALID_LAYOUT;
-            case View.FOCUS_DOWN:
-                return LayoutState.INVALID_LAYOUT;
-            case View.FOCUS_LEFT:
                 return LayoutState.LAYOUT_START;
-            case View.FOCUS_RIGHT:
+            case View.FOCUS_DOWN:
                 return LayoutState.LAYOUT_END;
+            case View.FOCUS_LEFT:
+                return LayoutState.INVALID_LAYOUT;
+            case View.FOCUS_RIGHT:
+                return LayoutState.INVALID_LAYOUT;
             default:
                 if (DEBUG) {
                     Log.d(TAG, "Unknown focus request:" + focusDirection);
@@ -1126,6 +1184,22 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         return getChildAt(getChildCount() - 1);
     }
 
+
+    /**
+     * Among the children that are suitable to be considered as an anchor child, returns the one
+     * closest to the end of the layout.
+     * <p/>
+     * Due to ambiguous adapter updates or children being removed, some children's positions may be
+     * invalid. This method is a best effort to find a position within adapter bounds if possible.
+     * <p/>
+     * It also prioritizes children that are within the visible bounds.
+     *
+     * @return A View that can be used an an anchor View.
+     */
+    private View findReferenceChildClosestToEnd(RecyclerView.State state) {
+        return findLastReferenceChild(state.getItemCount());
+    }
+
     /**
      * Among the children that are suitable to be considered as an anchor child, returns the one
      * closest to the start of the layout.
@@ -1137,12 +1211,12 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
      *
      * @return A View that can be used an an anchor View.
      */
-    private View findReferenceChildClosestToCenter(RecyclerView.State state) {
-        int centerXChildPosition = ViewUtils.getCenterXChildPosition(mRecyclerView);
-        if (centerXChildPosition != NO_POSITION) {
-            return getChildAt(centerXChildPosition);
-        }
-        return null;
+    private View findReferenceChildClosestToStart(RecyclerView.State state) {
+        return findFirstReferenceChild(state.getItemCount());
+    }
+
+    private View findFirstReferenceChild(int itemCount) {
+        return findReferenceChild(0, getChildCount(), itemCount);
     }
 
     private View findLastReferenceChild(int itemCount) {
@@ -1181,7 +1255,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
      * Returns the adapter position of the first visible view.
      * <p/>
      * Note that, this value is not affected by layout orientation or item order traversal.
-     * ({@link #(boolean)}). Views are sorted by their positions in the adapter,
+     * Views are sorted by their positions in the adapter,
      * not in the layout.
      * <p/>
      * If RecyclerView has item decorators, they will be considered in calculations as well.
@@ -1219,7 +1293,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
      * Returns the adapter position of the last visible view.
      * <p/>
      * Note that, this value is not affected by layout orientation or item order traversal.
-     * ({@link #(boolean)}). Views are sorted by their positions in the adapter,
+     * Views are sorted by their positions in the adapter,
      * not in the layout.
      * <p/>
      * If RecyclerView has item decorators, they will be considered in calculations as well.
@@ -1288,7 +1362,11 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         }
         ensureLayoutState();
         final View referenceChild;
-        referenceChild = findReferenceChildClosestToCenter(state);
+        if (layoutDir == LayoutState.LAYOUT_START) {
+            referenceChild = findReferenceChildClosestToStart(state);
+        } else {
+            referenceChild = findReferenceChildClosestToEnd(state);
+        }
         if (referenceChild == null) {
             if (DEBUG) {
                 Log.d(TAG,
@@ -1380,7 +1458,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
      */
     static class LayoutState {
 
-        final static String TAG = "HCLM#LayoutState";
+        final static String TAG = "VLM#LayoutState";
 
         final static int LAYOUT_START = -1;
 
@@ -1419,12 +1497,6 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
          * Should be {@link #ITEM_DIRECTION_HEAD} or {@link #ITEM_DIRECTION_TAIL}
          */
         int mItemDirection;
-
-        /**
-         * Defines the direction in which the layout is filled.
-         * Should be {@link #LAYOUT_START} or {@link #LAYOUT_END}
-         */
-        int mLayoutDirection;
 
         /**
          * Used when LayoutState is constructed in a scrolling state.
@@ -1516,7 +1588,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         void log() {
             if (DEBUG) {
                 Log.d(TAG, "avail:" + mAvailable + ", ind:" + mCurrentPosition + ", dir:" +
-                        mItemDirection + ", offset:" + mOffset + ", layoutDir:" + mLayoutDirection);
+                        mItemDirection + ", offset:" + mOffset + ", layoutDir:" + -1);
             }
         }
     }
@@ -1525,7 +1597,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
 
         int mAnchorPosition;
 
-//        int mAnchorOffset;
+        int mAnchorOffset;
 
         boolean mAnchorLayoutFromEnd;
 
@@ -1535,13 +1607,13 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
 
         SavedState(Parcel in) {
             mAnchorPosition = in.readInt();
-//            mAnchorOffset = in.readInt();
+            mAnchorOffset = in.readInt();
             mAnchorLayoutFromEnd = in.readInt() == 1;
         }
 
         public SavedState(SavedState other) {
             mAnchorPosition = other.mAnchorPosition;
-//            mAnchorOffset = other.mAnchorOffset;
+            mAnchorOffset = other.mAnchorOffset;
             mAnchorLayoutFromEnd = other.mAnchorLayoutFromEnd;
         }
 
@@ -1561,12 +1633,12 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(mAnchorPosition);
-//            dest.writeInt(mAnchorOffset);
+            dest.writeInt(mAnchorOffset);
             dest.writeInt(mAnchorLayoutFromEnd ? 1 : 0);
         }
 
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
+        public static final Creator<SavedState> CREATOR
+                = new Creator<SavedState>() {
             @Override
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
@@ -1585,10 +1657,12 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
     class AnchorInfo {
         int mPosition;
         int mCoordinate;
+        boolean mLayoutFromEnd;
 
         void reset() {
             mPosition = NO_POSITION;
             mCoordinate = INVALID_OFFSET;
+            mLayoutFromEnd = false;
         }
 
         /**
@@ -1596,7 +1670,9 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
          * layoutFromEnd value
          */
         void assignCoordinateFromPadding() {
-            mCoordinate = mOrientationHelper.getStartAfterPadding();
+            mCoordinate = mLayoutFromEnd
+                    ? mOrientationHelper.getEndAfterPadding()
+                    : mOrientationHelper.getStartAfterPadding();
         }
 
         @Override
@@ -1604,6 +1680,7 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
             return "AnchorInfo{" +
                     "mPosition=" + mPosition +
                     ", mCoordinate=" + mCoordinate +
+                    ", mLayoutFromEnd=" + mLayoutFromEnd +
                     '}';
         }
 
@@ -1622,7 +1699,13 @@ public class HorizontalViewPagerLayoutManager extends RecyclerView.LayoutManager
         }
 
         public void assignFromView(View child) {
-            mCoordinate = mOrientationHelper.getDecoratedStart(child);
+            if (mLayoutFromEnd) {
+                mCoordinate = mOrientationHelper.getDecoratedEnd(child) +
+                        mOrientationHelper.getTotalSpaceChange();
+            } else {
+                mCoordinate = mOrientationHelper.getDecoratedStart(child);
+            }
+
             mPosition = getPosition(child);
         }
     }
