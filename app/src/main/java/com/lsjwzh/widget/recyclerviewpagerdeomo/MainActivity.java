@@ -45,13 +45,16 @@ public class MainActivity extends ActionBarActivity {
         ActionBar.Tab tab3 = actionBar.newTab()
                 .setText("ViewPager")
                 .setTabListener(new TabListener(ViewPagerFragment.class, "ViewPager"));
-        actionBar.addTab(tab, true);
+        actionBar.addTab(tab, false);
         actionBar.addTab(tab2, false);
         actionBar.addTab(tab3, false);
+        int tabIndex = getIntent().getIntExtra("tab",0);
+        actionBar.selectTab(actionBar.getTabAt(tabIndex));
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        getIntent().putExtra("tab", getSupportActionBar().getSelectedTab().getPosition());
         super.onSaveInstanceState(outState);
     }
 

@@ -1,7 +1,10 @@
 package com.lsjwzh.widget.recyclerviewpager;
 
+import java.lang.reflect.Field;
+
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ViewUtils;
 import android.util.AttributeSet;
@@ -56,6 +59,33 @@ public class RecyclerViewPager extends RecyclerView {
 
     public float getTriggerOffset() {
         return mTriggerOffset;
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        return super.onSaveInstanceState();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        try {
+            Field fLayoutState = state.getClass().getDeclaredField("mLayoutState");
+            fLayoutState.setAccessible(true);
+            Object layoutState = fLayoutState.get(state);
+            Field fAnchorOffset = layoutState.getClass().getDeclaredField("mAnchorOffset");
+            Field fAnchorPosition = layoutState.getClass().getDeclaredField("mAnchorPosition");
+            fAnchorPosition.setAccessible(true);
+            fAnchorOffset.setAccessible(true);
+            if (fAnchorOffset.getInt(layoutState) > 0) {
+                fAnchorPosition.set(layoutState, fAnchorPosition.getInt(layoutState) - 1);
+            } else {
+                fAnchorPosition.set(layoutState, fAnchorPosition.getInt(layoutState) + 1);
+            }
+            fAnchorOffset.setInt(layoutState, 0);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        super.onRestoreInstanceState(state);
     }
 
     @Override
@@ -192,6 +222,8 @@ public class RecyclerViewPager extends RecyclerView {
                 }
             }
             smoothScrollToPosition(targetPosition);
+            Log.d("@", "mTouchSpan:" + mTouchSpan);
+            Log.d("@", "adjustPositionX:" + targetPosition);
         }
     }
 
