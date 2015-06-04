@@ -1,5 +1,13 @@
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerViewPager-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1622)
 # RecyclerViewPager
-A ViewPager implemention base on RecyclerView's code. Support fling operation like gallary.
+A ViewPager implemention base on RecyclerView. Support fling operation like gallary.
+
+## Features:
+1. Extends RecyclerView.
+2. Custom fling factor.
+3. Custom paging trigger.
+4. support Vertical and Horizontal orientation.
+
 
 ![RecyclerViewPager](https://github.com/lsjwzh/RecyclerViewPager/blob/master/demo.gif)
 ## Usage
@@ -7,8 +15,7 @@ A ViewPager implemention base on RecyclerView's code. Support fling operation li
 ### how to import?
 add this into gradle
 
-    compile('com.lsjwzh:recyclerviewpager:0.5.4')
-
+    compile('com.lsjwzh:recyclerviewpager:1.0.0')
 
 ### xml:
 
@@ -25,19 +32,15 @@ add this into gradle
 ### java api:
 ```
 RecyclerViewPager mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
-HorizontalCenterLayoutManager layout = new HorizontalCenterLayoutManager(getActivity());
+LinearLayoutManager layout = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
 mRecyclerView.setLayoutManager(layout);//setLayoutManager
-//set the left margin of first viewpage and the right margin of last viewpage
-mRecyclerView.setDisplayPadding(dip2px(getActivity(), 15));
 //set adapter
 mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView, mLayoutId));
-
-
 
 //set scroll listener
 //this will show you how to implement a ViewPager like the demo gif
 
-mRecyclerView.setOnScrollListener(new RecyclerViewEx.OnScrollListener() {
+mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerViewEx recyclerView, int scrollState) {
                 updateState(scrollState);
@@ -94,13 +97,15 @@ mRecyclerView.setOnScrollListener(new RecyclerViewEx.OnScrollListener() {
 
 ```
 ### release notes:
+    1.0.0 reimplement RecyclerViewPager without coping RecyclerView's codes.
+
     0.5.4 add 'HorizontalCenterLayoutManager' to implement ViewPager
     0.5.3 fix bug: setHasStableIds not work
 	0.1.0
 
 ### ToDo:
-    Vertical ViewPager
-    FragmentViewPager
+~~Vertical ViewPager~~    
+FragmentViewPager
 
 
 License
