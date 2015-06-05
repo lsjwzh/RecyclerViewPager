@@ -15,7 +15,7 @@ A ViewPager implemention base on RecyclerView. Support fling operation like gall
 ### how to import?
 add this into gradle
 
-    compile('com.lsjwzh:recyclerviewpager:1.0.0')
+    compile('com.lsjwzh:recyclerviewpager:1.0.1')
 
 ### xml:
 
@@ -97,6 +97,7 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
 ```
 ### release notes:
+    1.0.1 fix bug: smoothScrollToPosition index out of range
     1.0.0 reimplement RecyclerViewPager without coping RecyclerView's codes.
 
     0.5.4 add 'HorizontalCenterLayoutManager' to implement ViewPager
