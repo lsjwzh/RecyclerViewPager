@@ -147,9 +147,7 @@ public class RecyclerViewPager extends RecyclerView {
                             }
                         }
                     }
-                    targetPosition = Math.max(targetPosition, 0);
-                    targetPosition = Math.min(targetPosition, getAdapter().getItemCount() - 1);
-                    smoothScrollToPosition(targetPosition);
+                    smoothScrollToPosition(safeTargetPosition(targetPosition,getAdapter().getItemCount()));
                     mCurView = null;
                 }
                 if (mOnScrollListener != null) {
@@ -214,16 +212,16 @@ public class RecyclerViewPager extends RecyclerView {
             if (targetPosition == curPosition) {
                 View centerXChild = ViewUtils.getCenterXChild(this);
                 if (centerXChild != null) {
-                    if (mTouchSpan > centerXChild.getWidth() * mTriggerOffset) {
+                    if (mTouchSpan > centerXChild.getWidth() * mTriggerOffset * mTriggerOffset && targetPosition != 0) {
                         targetPosition--;
-                    } else if (mTouchSpan < centerXChild.getWidth() * -mTriggerOffset) {
+                    } else if (mTouchSpan < centerXChild.getWidth() * -mTriggerOffset && targetPosition != getAdapter().getItemCount() - 1) {
                         targetPosition++;
                     }
                 }
             }
-            smoothScrollToPosition(targetPosition);
             Log.d("@", "mTouchSpan:" + mTouchSpan);
             Log.d("@", "adjustPositionX:" + targetPosition);
+            smoothScrollToPosition(safeTargetPosition(targetPosition,getAdapter().getItemCount()));
         }
     }
 
@@ -242,17 +240,28 @@ public class RecyclerViewPager extends RecyclerView {
             if (targetPosition == curPosition) {
                 View centerYChild = ViewUtils.getCenterYChild(this);
                 if (centerYChild != null) {
-                    if (mTouchSpan > centerYChild.getHeight() * mTriggerOffset) {
+                    if (mTouchSpan > centerYChild.getHeight() * mTriggerOffset && targetPosition != 0) {
                         targetPosition--;
-                    } else if (mTouchSpan < centerYChild.getHeight() * -mTriggerOffset) {
+                    } else if (mTouchSpan < centerYChild.getHeight() * -mTriggerOffset && targetPosition != getAdapter().getItemCount() - 1) {
                         targetPosition++;
                     }
                 }
             }
-            smoothScrollToPosition(targetPosition);
             Log.d("@", "mTouchSpan:" + mTouchSpan);
             Log.d("@", "adjustPositionY:" + targetPosition);
+            smoothScrollToPosition(safeTargetPosition(targetPosition,getAdapter().getItemCount()));
         }
     }
+
+    private int safeTargetPosition(int position, int count) {
+        if (position < 0) {
+            return 0;
+        }
+        if (position >= count) {
+            return count - 1;
+        }
+        return position;
+    }
+
 
 }
