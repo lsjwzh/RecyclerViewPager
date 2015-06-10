@@ -26,15 +26,16 @@ public class RecyclerViewPager extends RecyclerView {
     private final OnScrollListener mWrapperScrollListener = new ScrollListener();
 
     public RecyclerViewPager(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public RecyclerViewPager(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public RecyclerViewPager(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        initAttrs(context, attrs, defStyle);
     }
 
     private void initAttrs(Context context, AttributeSet attrs, int defStyle) {
