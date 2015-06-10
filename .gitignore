@@ -24,3 +24,16 @@ proguard/
 
 # Log Files
 *.log
+
+# Android Studio (InteliJ)
+.idea/
+/.idea/workspace.xml
+*.iml
+*.iws
+*.ipr
+/*/out
+/*/build
+/*/*/production
+
+#OSx
+.DS_Store
