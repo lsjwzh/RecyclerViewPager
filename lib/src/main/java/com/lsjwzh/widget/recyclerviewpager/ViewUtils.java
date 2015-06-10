@@ -1,5 +1,6 @@
-package android.support.v7.widget;
+package com.lsjwzh.widget.recyclerviewpager;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 public class ViewUtils {
