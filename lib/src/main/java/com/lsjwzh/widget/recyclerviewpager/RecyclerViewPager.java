@@ -16,6 +16,7 @@ import android.view.View;
  * @author Green
  */
 public class RecyclerViewPager extends RecyclerView {
+    public static final boolean DEBUG = true;
 
     private RecyclerViewPagerAdapter<?> mViewPagerAdapter;
     private OnScrollListener mOnScrollListener;
@@ -124,10 +125,14 @@ public class RecyclerViewPager extends RecyclerView {
         if (flinging) {
             if (getLayoutManager().canScrollHorizontally()) {
                 adjustPositionX(velocityX);
-                Log.d("@", "velocityX:" + velocityX);
+                if (DEBUG) {
+                    Log.d("@", "velocityX:" + velocityX);
+                }
             } else {
                 adjustPositionY(velocityY);
-                Log.d("@", "velocityY:" + velocityY);
+                if (DEBUG) {
+                    Log.d("@", "velocityY:" + velocityY);
+                }
             }
         }
         return flinging;
@@ -155,9 +160,11 @@ public class RecyclerViewPager extends RecyclerView {
                     }
                 }
             }
-            Log.d("@", "mTouchSpan:" + mTouchSpan);
-            Log.d("@", "adjustPositionX:" + targetPosition);
-            smoothScrollToPosition(safeTargetPosition(targetPosition,getAdapter().getItemCount()));
+            if (DEBUG) {
+                Log.d("@", "mTouchSpan:" + mTouchSpan);
+                Log.d("@", "adjustPositionX:" + targetPosition);
+            }
+            smoothScrollToPosition(safeTargetPosition(targetPosition, getAdapter().getItemCount()));
         }
     }
 
@@ -183,9 +190,11 @@ public class RecyclerViewPager extends RecyclerView {
                     }
                 }
             }
-            Log.d("@", "mTouchSpan:" + mTouchSpan);
-            Log.d("@", "adjustPositionY:" + targetPosition);
-            smoothScrollToPosition(safeTargetPosition(targetPosition,getAdapter().getItemCount()));
+            if (DEBUG) {
+                Log.d("@", "mTouchSpan:" + mTouchSpan);
+                Log.d("@", "adjustPositionY:" + targetPosition);
+            }
+            smoothScrollToPosition(safeTargetPosition(targetPosition, getAdapter().getItemCount()));
         }
     }
 
@@ -249,7 +258,7 @@ public class RecyclerViewPager extends RecyclerView {
                         }
                     }
                 }
-                smoothScrollToPosition(safeTargetPosition(targetPosition,getAdapter().getItemCount()));
+                smoothScrollToPosition(safeTargetPosition(targetPosition, getAdapter().getItemCount()));
                 mCurView = null;
             }
             if (mOnScrollListener != null) {
