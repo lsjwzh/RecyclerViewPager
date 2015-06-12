@@ -121,7 +121,7 @@ public class RecyclerViewPager extends RecyclerView {
 
     @Override
     public boolean fling(int velocityX, int velocityY) {
-        boolean flinging = super.fling(velocityX, velocityY);
+        boolean flinging = super.fling((int) (velocityX * mFlingFactor), (int) (velocityY * mFlingFactor));
         if (flinging) {
             if (getLayoutManager().canScrollHorizontally()) {
                 adjustPositionX(velocityX);
