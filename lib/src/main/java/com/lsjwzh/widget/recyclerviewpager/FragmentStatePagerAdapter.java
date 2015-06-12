@@ -98,6 +98,8 @@ public abstract class FragmentStatePagerAdapter extends RecyclerView.Adapter<Fra
      */
     public abstract Fragment getItem(int position, Fragment.SavedState savedState);
 
+    public abstract void onDestroyItem(int position, Fragment fragment);
+
     public class FragmentViewHolder extends RecyclerView.ViewHolder implements View.OnAttachStateChangeListener {
 
         public FragmentViewHolder(View itemView) {
@@ -136,6 +138,7 @@ public abstract class FragmentStatePagerAdapter extends RecyclerView.Adapter<Fra
             mCurTransaction.commitAllowingStateLoss();
             mCurTransaction = null;
             mFragmentManager.executePendingTransactions();
+            onDestroyItem(getLayoutPosition(), frag);
         }
     }
 }

@@ -116,6 +116,11 @@ public class FragmentsPagerFragment extends Fragment {
         }
 
         @Override
+        public void onDestroyItem(int position, Fragment fragment) {
+            // onDestroyItem
+        }
+
+        @Override
         public int getItemCount() {
             return 100;
         }
