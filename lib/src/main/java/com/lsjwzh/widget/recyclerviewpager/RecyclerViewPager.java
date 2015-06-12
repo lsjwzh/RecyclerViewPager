@@ -1,6 +1,8 @@
 package com.lsjwzh.widget.recyclerviewpager;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -24,6 +26,7 @@ public class RecyclerViewPager extends RecyclerView {
     private float mFlingFactor = 0.15f;
     private float mTouchSpan;
     private final OnScrollListener mWrapperScrollListener = new ScrollListener();
+    private List<OnScrollListener> mScrollListeners;
 
     public RecyclerViewPager(Context context) {
         this(context, null);
@@ -117,6 +120,28 @@ public class RecyclerViewPager extends RecyclerView {
     @Override
     public void setOnScrollListener(OnScrollListener listener) {
         mOnScrollListener = listener;
+    }
+
+    @Override
+    public void addOnScrollListener(OnScrollListener listener) {
+        if (mScrollListeners == null) {
+            mScrollListeners = new ArrayList<OnScrollListener>();
+        }
+        mScrollListeners.add(listener);
+    }
+
+    @Override
+    public void removeOnScrollListener(OnScrollListener listener) {
+        if (mScrollListeners != null) {
+            mScrollListeners.remove(listener);
+        }
+    }
+
+    @Override
+    public void clearOnScrollListeners() {
+        if (mScrollListeners != null) {
+            mScrollListeners.clear();
+        }
     }
 
     @Override
@@ -264,12 +289,26 @@ public class RecyclerViewPager extends RecyclerView {
             if (mOnScrollListener != null) {
                 mOnScrollListener.onScrollStateChanged(recyclerView, newState);
             }
+            if (mScrollListeners != null) {
+                for (OnScrollListener l : mScrollListeners) {
+                    if (l != null) {
+                        l.onScrollStateChanged(recyclerView, newState);
+                    }
+                }
+            }
         }
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             if (mOnScrollListener != null) {
                 mOnScrollListener.onScrolled(recyclerView, dx, dy);
+            }
+            if (mScrollListeners != null) {
+                for (OnScrollListener l : mScrollListeners) {
+                    if (l != null) {
+                        l.onScrolled(recyclerView, dx, dy);
+                    }
+                }
             }
         }
 
