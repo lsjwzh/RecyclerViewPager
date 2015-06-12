@@ -16,18 +16,15 @@
 
 package com.lsjwzh.widget.recyclerviewpagerdeomo;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lsjwzh.widget.recyclerviewpager.FragmentStatePagerAdapter;
 import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
@@ -36,10 +33,7 @@ import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
 public class FragmentsPagerFragment extends Fragment {
     private View mViewRoot;
     private RecyclerViewPager mRecyclerView;
-    private TextView mCountText;
     private TextView mStateText;
-    private Toast mToast;
-    private TextView mPositionText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,11 +55,6 @@ public class FragmentsPagerFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final Activity activity = getActivity();
-
-        mToast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
-        mToast.setGravity(Gravity.CENTER, 0, 0);
-
         mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
 
         LinearLayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -73,9 +62,6 @@ public class FragmentsPagerFragment extends Fragment {
         mRecyclerView.setAdapter(new FragmentsAdapter(getChildFragmentManager()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLongClickable(true);
-
-        mPositionText = (TextView) view.getRootView().findViewById(R.id.position);
-        mCountText = (TextView) view.getRootView().findViewById(R.id.count);
 
         mStateText = (TextView) view.getRootView().findViewById(R.id.state);
         updateState(RecyclerView.SCROLL_STATE_IDLE);
