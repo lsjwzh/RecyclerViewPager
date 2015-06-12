@@ -19,14 +19,15 @@ public class PagerItemFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            mIndex = getArguments().getInt("index");
-        } else {
-            mIndex = savedInstanceState.getInt("index");
-        }
         View view = inflater.inflate(R.layout.item, container, false);
         TextView title = (TextView) view.findViewById(R.id.title);
-        title.setText("index:" + mIndex);
+        if (savedInstanceState == null) {
+            mIndex = getArguments().getInt("index");
+            title.setText("index:" + mIndex);
+        } else {
+            mIndex = savedInstanceState.getInt("index");
+            title.setText("index from savedInstanceState:" + mIndex);
+        }
         return view;
     }
 
