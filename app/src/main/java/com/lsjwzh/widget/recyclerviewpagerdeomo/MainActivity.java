@@ -45,9 +45,13 @@ public class MainActivity extends ActionBarActivity {
         ActionBar.Tab tab3 = actionBar.newTab()
                 .setText("ViewPager")
                 .setTabListener(new TabListener(ViewPagerFragment.class, "ViewPager"));
+        ActionBar.Tab tab4 = actionBar.newTab()
+                .setText("FragmentPager")
+                .setTabListener(new TabListener(FragmentsPagerFragment.class, "FragmentPager"));
         actionBar.addTab(tab, false);
         actionBar.addTab(tab2, false);
         actionBar.addTab(tab3, false);
+        actionBar.addTab(tab4, false);
         int tabIndex = getIntent().getIntExtra("tab",0);
         actionBar.selectTab(actionBar.getTabAt(tabIndex));
     }
