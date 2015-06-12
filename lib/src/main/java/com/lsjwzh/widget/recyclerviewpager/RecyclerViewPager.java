@@ -266,7 +266,7 @@ public class RecyclerViewPager extends RecyclerView {
                 int targetPosition = getLayoutManager().canScrollHorizontally() ? ViewUtils.getCenterXChildPosition(recyclerView) :
                         ViewUtils.getCenterYChildPosition(recyclerView);
                 if (mCurView != null) {
-                    targetPosition = recyclerView.getChildPosition(mCurView);
+                    targetPosition = recyclerView.getChildAdapterPosition(mCurView);
                     if (getLayoutManager().canScrollHorizontally()) {
                         int spanX = mCurView.getLeft() - mLeft;
                         if (spanX > mCurView.getWidth() * mTriggerOffset) {
