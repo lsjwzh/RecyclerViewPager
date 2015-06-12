@@ -7,7 +7,6 @@ public class ViewUtils {
 
     /**
      * Get center child in X Axes
-     *
      */
     public static View getCenterXChild(RecyclerView recyclerView) {
         int childCount = recyclerView.getChildCount();
@@ -24,7 +23,6 @@ public class ViewUtils {
 
     /**
      * Get position of center child in X Axes
-     *
      */
     public static int getCenterXChildPosition(RecyclerView recyclerView) {
         int childCount = recyclerView.getChildCount();
@@ -38,9 +36,9 @@ public class ViewUtils {
         }
         return childCount;
     }
+
     /**
      * Get center child in Y Axes
-     *
      */
     public static View getCenterYChild(RecyclerView recyclerView) {
         int childCount = recyclerView.getChildCount();
@@ -54,9 +52,9 @@ public class ViewUtils {
         }
         return null;
     }
+
     /**
      * Get position of center child in Y Axes
-     *
      */
     public static int getCenterYChildPosition(RecyclerView recyclerView) {
         int childCount = recyclerView.getChildCount();

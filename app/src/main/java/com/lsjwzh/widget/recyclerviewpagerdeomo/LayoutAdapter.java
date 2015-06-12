@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static com.lsjwzh.widget.recyclerviewpagerdeomo.R.id;
 import static com.lsjwzh.widget.recyclerviewpagerdeomo.R.layout;
@@ -78,7 +79,12 @@ public class LayoutAdapter extends RecyclerView.Adapter<LayoutAdapter.SimpleView
         holder.title.setText(mItems.get(position).toString());
 
         final View itemView = holder.itemView;
-
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "", Toast.LENGTH_SHORT).show();
+            }
+        });
         final int itemId = mItems.get(position);
     }
 

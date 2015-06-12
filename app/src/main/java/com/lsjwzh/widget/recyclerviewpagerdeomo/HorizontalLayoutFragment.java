@@ -17,7 +17,6 @@
 package com.lsjwzh.widget.recyclerviewpagerdeomo;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,12 +37,6 @@ public class HorizontalLayoutFragment extends Fragment {
     private TextView mStateText;
     private Toast mToast;
     private TextView mPositionText;
-
-
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +65,6 @@ public class HorizontalLayoutFragment extends Fragment {
 
         mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
 
-//        HorizontalViewPagerLayoutManager layout = new HorizontalViewPagerLayoutManager(getActivity());
         LinearLayoutManager layout = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView));

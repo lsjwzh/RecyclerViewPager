@@ -6,8 +6,8 @@ A ViewPager implemention base on RecyclerView. Support fling operation like gall
 1. Extends RecyclerView.
 2. Custom fling factor.
 3. Custom paging trigger.
-4. support Vertical and Horizontal orientation.
-
+4. Support Vertical and Horizontal orientation.
+5. Support FragmentViewPager (api 12+)
 
 ![RecyclerViewPager](https://github.com/lsjwzh/RecyclerViewPager/blob/master/demo.gif)
 ## Usage
@@ -106,7 +106,7 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
 ### ToDo:
 ~~Vertical ViewPager~~    
-FragmentViewPager
+~~FragmentViewPager~~
 
 
 License
