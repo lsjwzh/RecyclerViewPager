@@ -107,7 +107,7 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 ### ToDo:
 ~~Vertical ViewPager~~    
 ~~FragmentViewPager~~
-
+~~observe OnPageChanged~~
 
 License
 -------
