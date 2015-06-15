@@ -80,34 +80,7 @@ public abstract class FragmentStatePagerAdapter extends RecyclerView.Adapter<Fra
 
     @Override
     public final void onBindViewHolder(final FragmentViewHolder holder, int position) {
-        final int tagId = genTagId(position);
-
-        Fragment frag = mFragmentManager.findFragmentByTag(tagId + "");
-        final Fragment fragmentInAdapter = getItem(position, mStates.get(tagId));
-        if (!isSameFragment(frag, fragmentInAdapter)) {
-            attachFragment(holder, tagId, fragmentInAdapter);
-        }
-    }
-
-    private void attachFragment(final FragmentViewHolder holder, final int tagId, final Fragment fragmentInAdapter) {
-        holder.itemView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View v) {
-                v.removeOnAttachStateChangeListener(this);
-                if (mCurTransaction == null) {
-                    mCurTransaction = mFragmentManager.beginTransaction();
-                }
-                mCurTransaction.replace(holder.itemView.getId(), fragmentInAdapter, tagId + "");
-                mCurTransaction.commitAllowingStateLoss();
-                mCurTransaction = null;
-                mFragmentManager.executePendingTransactions();
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(View v) {
-
-            }
-        });
+        // do nothing
     }
 
     protected int genTagId(int position) {
@@ -125,15 +98,47 @@ public abstract class FragmentStatePagerAdapter extends RecyclerView.Adapter<Fra
      */
     public abstract Fragment getItem(int position, Fragment.SavedState savedState);
 
+    public abstract void onDestroyItem(int position, Fragment fragment);
 
-    public boolean isSameFragment(Fragment fragmentInView, Fragment fragmentInAdapter) {
-        return fragmentInView == fragmentInAdapter;
-    }
-
-    public static class FragmentViewHolder extends RecyclerView.ViewHolder {
+    public class FragmentViewHolder extends RecyclerView.ViewHolder implements View.OnAttachStateChangeListener {
 
         public FragmentViewHolder(View itemView) {
             super(itemView);
+            itemView.addOnAttachStateChangeListener(this);
+        }
+
+        @Override
+        public void onViewAttachedToWindow(View v) {
+            if (mCurTransaction == null) {
+                mCurTransaction = mFragmentManager.beginTransaction();
+            }
+            final int tagId = genTagId(getLayoutPosition());
+            final Fragment fragmentInAdapter = getItem(getLayoutPosition(), mStates.get(tagId));
+            if (fragmentInAdapter != null) {
+                mCurTransaction.replace(itemView.getId(), fragmentInAdapter, tagId + "");
+                mCurTransaction.commitAllowingStateLoss();
+                mCurTransaction = null;
+                mFragmentManager.executePendingTransactions();
+            }
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(View v) {
+            if (DEBUG) Log.v(TAG, "Removing fragment #");
+            final int tagId = genTagId(getLayoutPosition());
+            Fragment frag = mFragmentManager.findFragmentByTag(tagId + "");
+            if (frag == null) {
+                return;
+            }
+            if (mCurTransaction == null) {
+                mCurTransaction = mFragmentManager.beginTransaction();
+            }
+            mStates.put(tagId, mFragmentManager.saveFragmentInstanceState(frag));
+            mCurTransaction.remove(frag);
+            mCurTransaction.commitAllowingStateLoss();
+            mCurTransaction = null;
+            mFragmentManager.executePendingTransactions();
+            onDestroyItem(getLayoutPosition(), frag);
         }
     }
 }
