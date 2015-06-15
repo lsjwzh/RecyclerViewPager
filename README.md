@@ -5,17 +5,20 @@ A ViewPager implemention base on RecyclerView. Support fling operation like gall
 ## Features:
 1. Extends RecyclerView.
 2. Custom fling factor.
-3. Custom paging trigger.
+3. Custom paging trigger.p
 4. Support Vertical and Horizontal orientation.
 5. Support FragmentViewPager (api 12+)
 
-![RecyclerViewPager](https://github.com/lsjwzh/RecyclerViewPager/blob/master/demo.gif)
+![RecyclerViewPager](https://github.com/lsjwzh/RecyclerViewPager/blob/master/vertical.gif)
+![RecyclerViewPager](https://github.com/lsjwzh/RecyclerViewPager/blob/master/horizontal.gif)
+![RecyclerViewPager](https://github.com/lsjwzh/RecyclerViewPager/blob/master/fragment.gif)
+
 ## Usage
 
 ### how to import?
 add this into gradle
 
-    compile('com.lsjwzh:recyclerviewpager:1.0.1')
+    compile('com.lsjwzh:recyclerviewpager:1.0.2')
 
 ### xml:
 
@@ -97,6 +100,7 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
 ```
 ### release notes:
+    1.0.2 support FragmentViewPager, add OnPageChangedListener
     1.0.1 fix bug: smoothScrollToPosition index out of range
     1.0.0 reimplement RecyclerViewPager without coping RecyclerView's codes.
 
