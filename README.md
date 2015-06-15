@@ -5,7 +5,7 @@ A ViewPager implemention base on RecyclerView. Support fling operation like gall
 ## Features:
 1. Extends RecyclerView.
 2. Custom fling factor.
-3. Custom paging trigger.p
+3. Custom paging trigger.
 4. Support Vertical and Horizontal orientation.
 5. Support FragmentViewPager (api 12+)
 
@@ -29,6 +29,7 @@ add this into gradle
     android:layout_height="match_parent"
     android:paddingLeft="15dp"
     android:paddingRight="15dp"
+    app:triggerOffset="0.1"
     android:clipToPadding="false"/>
 ```
 
