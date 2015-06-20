@@ -65,7 +65,7 @@ public class HorizontalLayoutFragment extends Fragment {
 
         mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
 
-        LinearLayoutManager layout = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        LinearLayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView));
         mRecyclerView.setHasFixedSize(true);
@@ -153,7 +153,7 @@ public class HorizontalLayoutFragment extends Fragment {
                 stateName = "Flinging";
                 break;
         }
-
+        mPositionText.setText("currentPosition:" + mRecyclerView.getCurrentPosition());
         mStateText.setText(stateName);
     }
 }

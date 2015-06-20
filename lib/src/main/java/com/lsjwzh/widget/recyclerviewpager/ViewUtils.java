@@ -30,7 +30,7 @@ public class ViewUtils {
             for (int i = 0; i < childCount; i++) {
                 View child = recyclerView.getChildAt(i);
                 if (isChildInCenterX(recyclerView, child)) {
-                    return recyclerView.getChildPosition(child);
+                    return recyclerView.getChildAdapterPosition(child);
                 }
             }
         }
@@ -62,7 +62,7 @@ public class ViewUtils {
             for (int i = 0; i < childCount; i++) {
                 View child = recyclerView.getChildAt(i);
                 if (isChildInCenterY(recyclerView, child)) {
-                    return recyclerView.getChildPosition(child);
+                    return recyclerView.getChildAdapterPosition(child);
                 }
             }
         }

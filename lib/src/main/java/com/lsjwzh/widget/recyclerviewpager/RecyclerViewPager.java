@@ -176,6 +176,19 @@ public class RecyclerViewPager extends RecyclerView {
         super.smoothScrollToPosition(position);
     }
 
+    /**
+     * get item position in center of viewpager
+     */
+    public int getCurrentPosition() {
+        int curPosition = -1;
+        if (getLayoutManager().canScrollHorizontally()) {
+            curPosition = ViewUtils.getCenterXChildPosition(this);
+        } else {
+            curPosition = ViewUtils.getCenterYChildPosition(this);
+        }
+        return curPosition;
+    }
+
     /***
      * adjust position before Touch event complete and fling action start.
      */
