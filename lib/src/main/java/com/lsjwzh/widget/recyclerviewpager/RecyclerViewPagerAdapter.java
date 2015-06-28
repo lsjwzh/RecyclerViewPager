@@ -43,12 +43,13 @@ public class RecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder> extend
     public void onBindViewHolder(VH holder, int position) {
         mAdapter.onBindViewHolder(holder, position);
         final View itemView = holder.itemView;
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) itemView.getLayoutParams();
+        ViewGroup.LayoutParams lp = itemView.getLayoutParams() == null ? new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT) : itemView.getLayoutParams();
         if (mViewPager.getLayoutManager().canScrollHorizontally()) {
             lp.width = mViewPager.getWidth() - mViewPager.getPaddingLeft() - mViewPager.getPaddingRight();
         } else {
             lp.height = mViewPager.getHeight() - mViewPager.getPaddingTop() - mViewPager.getPaddingBottom();
         }
+        itemView.setLayoutParams(lp);
     }
 
     @Override
