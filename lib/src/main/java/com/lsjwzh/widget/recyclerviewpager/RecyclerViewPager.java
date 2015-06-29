@@ -18,8 +18,7 @@ import android.view.View;
  * @author Green
  */
 public class RecyclerViewPager extends RecyclerView {
-    // ToDo remove this before release
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = BuildConfig.DEBUG;
 
     private RecyclerViewPagerAdapter<?> mViewPagerAdapter;
     private OnScrollListener mOnScrollListener;
