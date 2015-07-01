@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import android.annotation.TargetApi;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -32,6 +33,9 @@ import android.view.ViewGroup;
  * <p/>
  * <p>Subclasses only need to implement {@link #getItem(int, Fragment.SavedState)}
  * and {@link #getItemCount()} to have a working adapter.
+ * <p>Warning:The fragment container id will be a simple sequence like [1,2,3....];
+ * If you don't like this,you should use custom ContainerIdGenerator by  {@link #setContainerIdGenerator(IContainerIdGenerator)}
+ * </p>
  */
 @TargetApi(12)
 public abstract class FragmentStatePagerAdapter extends RecyclerView.Adapter<FragmentStatePagerAdapter.FragmentViewHolder> {
@@ -40,11 +44,24 @@ public abstract class FragmentStatePagerAdapter extends RecyclerView.Adapter<Fra
 
     private final FragmentManager mFragmentManager;
     private FragmentTransaction mCurTransaction = null;
-    SparseArray<Fragment.SavedState> mStates = new SparseArray<>();
-    Set<Integer> mIds = new HashSet<>();
+    private SparseArray<Fragment.SavedState> mStates = new SparseArray<>();
+    private Set<Integer> mIds = new HashSet<>();
+    private IContainerIdGenerator mContainerIdGenerator = new IContainerIdGenerator() {
+        @Override
+        public int genId(Set<Integer> idContainer) {
+            return mIds.size() + 1;
+        }
+    };
 
     public FragmentStatePagerAdapter(FragmentManager fm) {
         mFragmentManager = fm;
+    }
+
+    /**
+     * set custom idGenerator
+     */
+    public void setContainerIdGenerator(@NonNull IContainerIdGenerator idGenerator) {
+        mContainerIdGenerator = idGenerator;
     }
 
     @Override
@@ -72,7 +89,7 @@ public abstract class FragmentStatePagerAdapter extends RecyclerView.Adapter<Fra
     @Override
     public final FragmentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rvp_fragment_container, parent, false);
-        int id = mIds.size() + 1;
+        int id = mContainerIdGenerator.genId(mIds);
         view.findViewById(R.id.rvp_fragment_container).setId(id);
         mIds.add(id);
         return new FragmentViewHolder(view);
@@ -140,5 +157,9 @@ public abstract class FragmentStatePagerAdapter extends RecyclerView.Adapter<Fra
             mFragmentManager.executePendingTransactions();
             onDestroyItem(getLayoutPosition(), frag);
         }
+    }
+
+    public interface IContainerIdGenerator {
+        int genId(Set<Integer> idContainer);
     }
 }
