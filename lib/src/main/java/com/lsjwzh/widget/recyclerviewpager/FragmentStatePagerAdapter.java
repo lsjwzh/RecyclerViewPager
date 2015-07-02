@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -90,6 +91,11 @@ public abstract class FragmentStatePagerAdapter extends RecyclerView.Adapter<Fra
     public final FragmentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rvp_fragment_container, parent, false);
         int id = mContainerIdGenerator.genId(mIds);
+        if (parent.getContext() instanceof Activity) {
+            while (((Activity) parent.getContext()).getWindow().getDecorView().findViewById(id) != null) {
+                id = mContainerIdGenerator.genId(mIds);
+            }
+        }
         view.findViewById(R.id.rvp_fragment_container).setId(id);
         mIds.add(id);
         return new FragmentViewHolder(view);
