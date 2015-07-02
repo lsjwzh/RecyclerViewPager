@@ -1,6 +1,7 @@
 package com.lsjwzh.widget.recyclerviewpager;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import android.annotation.TargetApi;
@@ -48,9 +49,11 @@ public abstract class FragmentStatePagerAdapter extends RecyclerView.Adapter<Fra
     private SparseArray<Fragment.SavedState> mStates = new SparseArray<>();
     private Set<Integer> mIds = new HashSet<>();
     private IContainerIdGenerator mContainerIdGenerator = new IContainerIdGenerator() {
+        private Random mRandom = new Random();
+
         @Override
         public int genId(Set<Integer> idContainer) {
-            return mIds.size() + 1;
+            return mRandom.nextInt();
         }
     };
 
