@@ -18,7 +18,7 @@ A ViewPager implemention base on RecyclerView. Support fling operation like gall
 ### how to import?
 add this into gradle
 
-    compile('com.lsjwzh:recyclerviewpager:1.0.4')
+    compile('com.lsjwzh:recyclerviewpager:1.0.5')
 
 ### xml:
 
@@ -39,7 +39,7 @@ RecyclerViewPager mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.lis
 LinearLayoutManager layout = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
 mRecyclerView.setLayoutManager(layout);//setLayoutManager
 //set adapter
-mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView, mLayoutId));
+mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView, mLayoutId));//you need to impelement LayoutAdapter by yourself like a ListAdapter.
 
 //set scroll listener
 //this will show you how to implement a ViewPager like the demo gif
@@ -47,7 +47,7 @@ mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView, mLayoutId));
 mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerViewEx recyclerView, int scrollState) {
-                updateState(scrollState);
+                // do something
             }
 
             @Override
@@ -101,6 +101,7 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
 ```
 ### release notes:
+    1.0.5 resolve potential id conflicting on FragmentViewPagerApdater
     1.0.4 fix bug : exception happens if  ItemView LayoutParam is not MarginLayoutParam
     1.0.3 add method: getCurrentPosition
     1.0.2 support FragmentViewPager, add OnPageChangedListener
