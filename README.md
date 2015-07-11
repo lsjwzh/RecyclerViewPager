@@ -18,7 +18,7 @@ A ViewPager implemention base on RecyclerView. Support fling operation like gall
 ### how to import?
 add this into gradle
 
-    compile('com.lsjwzh:recyclerviewpager:1.0.4')
+    compile('com.lsjwzh:recyclerviewpager:1.0.6')
 
 ### xml:
 
@@ -101,7 +101,7 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
 ```
 ### release notes:
-    1.0.5 resolve potential id conflicting on FragmentViewPagerApdater
+    1.0.6 resolve potential id conflicting on FragmentViewPagerApdater
     1.0.4 fix bug : exception happens if  ItemView LayoutParam is not MarginLayoutParam
     1.0.3 add method: getCurrentPosition
     1.0.2 support FragmentViewPager, add OnPageChangedListener

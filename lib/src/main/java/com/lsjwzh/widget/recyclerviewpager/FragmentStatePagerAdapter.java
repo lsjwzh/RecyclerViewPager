@@ -53,7 +53,7 @@ public abstract class FragmentStatePagerAdapter extends RecyclerView.Adapter<Fra
 
         @Override
         public int genId(Set<Integer> idContainer) {
-            return mRandom.nextInt();
+            return Math.abs(mRandom.nextInt());
         }
     };
 
