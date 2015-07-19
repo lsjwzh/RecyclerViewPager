@@ -1,9 +1,5 @@
 package com.lsjwzh.widget.recyclerviewpager;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcelable;
@@ -11,6 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * RecyclerViewPager
@@ -22,15 +22,17 @@ public class RecyclerViewPager extends RecyclerView {
     public static final boolean DEBUG = true;
 
     private RecyclerViewPagerAdapter<?> mViewPagerAdapter;
-    private OnScrollListener mOnScrollListener;
     private float mTriggerOffset = 0.25f;
     private float mFlingFactor = 0.15f;
     private float mTouchSpan;
-    private final OnScrollListener mWrapperScrollListener = new ScrollListener();
-    private List<OnScrollListener> mScrollListeners;
     private List<OnPageChangedListener> mOnPageChangedListeners;
     private int mSmoothScrollTargetPosition = -1;
     private int mPositionBeforeScroll = -1;
+
+    boolean mNeedAdjust;
+    int mLeft;
+    int mTop;
+    View mCurView;
 
     public RecyclerViewPager(Context context) {
         this(context, null);
@@ -67,18 +69,6 @@ public class RecyclerViewPager extends RecyclerView {
 
     public float getTriggerOffset() {
         return mTriggerOffset;
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        super.addOnScrollListener(mWrapperScrollListener);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.removeOnScrollListener(mWrapperScrollListener);
-        super.onDetachedFromWindow();
     }
 
     @Override
@@ -119,33 +109,6 @@ public class RecyclerViewPager extends RecyclerView {
 
     public RecyclerViewPagerAdapter getWrapperAdapter() {
         return mViewPagerAdapter;
-    }
-
-    @Override
-    public void setOnScrollListener(OnScrollListener listener) {
-        mOnScrollListener = listener;
-    }
-
-    @Override
-    public void addOnScrollListener(OnScrollListener listener) {
-        if (mScrollListeners == null) {
-            mScrollListeners = new ArrayList<OnScrollListener>();
-        }
-        mScrollListeners.add(listener);
-    }
-
-    @Override
-    public void removeOnScrollListener(OnScrollListener listener) {
-        if (mScrollListeners != null) {
-            mScrollListeners.remove(listener);
-        }
-    }
-
-    @Override
-    public void clearOnScrollListeners() {
-        if (mScrollListeners != null) {
-            mScrollListeners.clear();
-        }
     }
 
     @Override
@@ -255,6 +218,74 @@ public class RecyclerViewPager extends RecyclerView {
         }
     }
 
+    @Override
+    public void onScrollStateChanged(int state) {
+        if (state == SCROLL_STATE_DRAGGING) {
+            mNeedAdjust = true;
+            mCurView = getLayoutManager().canScrollHorizontally() ? ViewUtils.getCenterXChild(this) :
+                    ViewUtils.getCenterYChild(this);
+            if (mCurView != null) {
+                mPositionBeforeScroll = getChildLayoutPosition(mCurView);
+                if (DEBUG) {
+                    Log.d("@", "mPositionBeforeScroll:" + mPositionBeforeScroll);
+                }
+                mLeft = mCurView.getLeft();
+                mTop = mCurView.getTop();
+            } else {
+                mPositionBeforeScroll = -1;
+            }
+            mTouchSpan = 0;
+        } else if (state == SCROLL_STATE_SETTLING) {
+            mNeedAdjust = false;
+            if (mCurView != null) {
+                if (getLayoutManager().canScrollHorizontally()) {
+                    mTouchSpan = mCurView.getLeft() - mLeft;
+                } else {
+                    mTouchSpan = mCurView.getTop() - mTop;
+                }
+            } else {
+                mTouchSpan = 0;
+            }
+            mCurView = null;
+        } else if (state == SCROLL_STATE_IDLE) {
+            if (mNeedAdjust) {
+                int targetPosition = getLayoutManager().canScrollHorizontally() ? ViewUtils.getCenterXChildPosition(this) :
+                        ViewUtils.getCenterYChildPosition(this);
+                if (mCurView != null) {
+                    targetPosition = getChildAdapterPosition(mCurView);
+                    if (getLayoutManager().canScrollHorizontally()) {
+                        int spanX = mCurView.getLeft() - mLeft;
+                        if (spanX > mCurView.getWidth() * mTriggerOffset) {
+                            targetPosition--;
+                        } else if (spanX < mCurView.getWidth() * -mTriggerOffset) {
+                            targetPosition++;
+                        }
+                    } else {
+                        int spanY = mCurView.getTop() - mTop;
+                        if (spanY > mCurView.getHeight() * mTriggerOffset) {
+                            targetPosition--;
+                        } else if (spanY < mCurView.getHeight() * -mTriggerOffset) {
+                            targetPosition++;
+                        }
+                    }
+                }
+                smoothScrollToPosition(safeTargetPosition(targetPosition, getAdapter().getItemCount()));
+                mCurView = null;
+            } else if (mSmoothScrollTargetPosition != mPositionBeforeScroll) {
+                if (DEBUG) {
+                    Log.d("@", "onPageChanged:" + mSmoothScrollTargetPosition);
+                }
+                if (mOnPageChangedListeners != null) {
+                    for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
+                        if (onPageChangedListener != null) {
+                            onPageChangedListener.OnPageChanged(mPositionBeforeScroll, mSmoothScrollTargetPosition);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private int safeTargetPosition(int position, int count) {
         if (position < 0) {
             return 0;
@@ -263,106 +294,6 @@ public class RecyclerViewPager extends RecyclerView {
             return count - 1;
         }
         return position;
-    }
-
-    private class ScrollListener extends OnScrollListener {
-        boolean mNeedAdjust;
-        int mLeft;
-        int mTop;
-        View mCurView;
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            if (newState == SCROLL_STATE_DRAGGING) {
-                mNeedAdjust = true;
-                mCurView = getLayoutManager().canScrollHorizontally() ? ViewUtils.getCenterXChild(recyclerView) :
-                        ViewUtils.getCenterYChild(recyclerView);
-                if (mCurView != null) {
-                    mPositionBeforeScroll = recyclerView.getChildLayoutPosition(mCurView);
-                    if (DEBUG) {
-                        Log.d("@", "mPositionBeforeScroll:" + mPositionBeforeScroll);
-                    }
-                    mLeft = mCurView.getLeft();
-                    mTop = mCurView.getTop();
-                } else {
-                    mPositionBeforeScroll = -1;
-                }
-                mTouchSpan = 0;
-            } else if (newState == SCROLL_STATE_SETTLING) {
-                mNeedAdjust = false;
-                if (mCurView != null) {
-                    if (getLayoutManager().canScrollHorizontally()) {
-                        mTouchSpan = mCurView.getLeft() - mLeft;
-                    } else {
-                        mTouchSpan = mCurView.getTop() - mTop;
-                    }
-                } else {
-                    mTouchSpan = 0;
-                }
-                mCurView = null;
-            } else if (newState == SCROLL_STATE_IDLE) {
-                if (mNeedAdjust) {
-                    int targetPosition = getLayoutManager().canScrollHorizontally() ? ViewUtils.getCenterXChildPosition(recyclerView) :
-                            ViewUtils.getCenterYChildPosition(recyclerView);
-                    if (mCurView != null) {
-                        targetPosition = recyclerView.getChildAdapterPosition(mCurView);
-                        if (getLayoutManager().canScrollHorizontally()) {
-                            int spanX = mCurView.getLeft() - mLeft;
-                            if (spanX > mCurView.getWidth() * mTriggerOffset) {
-                                targetPosition--;
-                            } else if (spanX < mCurView.getWidth() * -mTriggerOffset) {
-                                targetPosition++;
-                            }
-                        } else {
-                            int spanY = mCurView.getTop() - mTop;
-                            if (spanY > mCurView.getHeight() * mTriggerOffset) {
-                                targetPosition--;
-                            } else if (spanY < mCurView.getHeight() * -mTriggerOffset) {
-                                targetPosition++;
-                            }
-                        }
-                    }
-                    smoothScrollToPosition(safeTargetPosition(targetPosition, getAdapter().getItemCount()));
-                    mCurView = null;
-                } else if (mSmoothScrollTargetPosition != mPositionBeforeScroll) {
-                    if (DEBUG) {
-                        Log.d("@", "onPageChanged:" + mSmoothScrollTargetPosition);
-                    }
-                    if (mOnPageChangedListeners != null) {
-                        for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
-                            if (onPageChangedListener != null) {
-                                onPageChangedListener.OnPageChanged(mPositionBeforeScroll, mSmoothScrollTargetPosition);
-                            }
-                        }
-                    }
-                }
-            }
-            if (mOnScrollListener != null) {
-                mOnScrollListener.onScrollStateChanged(recyclerView, newState);
-            }
-            if (mScrollListeners != null) {
-                for (OnScrollListener l : mScrollListeners) {
-                    if (l != null) {
-                        l.onScrollStateChanged(recyclerView, newState);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (mOnScrollListener != null) {
-                mOnScrollListener.onScrolled(recyclerView, dx, dy);
-            }
-            if (mScrollListeners != null) {
-                for (OnScrollListener l : mScrollListeners) {
-                    if (l != null) {
-                        l.onScrolled(recyclerView, dx, dy);
-                    }
-                }
-            }
-        }
-
     }
 
     public interface OnPageChangedListener {
