@@ -20,6 +20,19 @@ add this into gradle
 
     compile('com.lsjwzh:recyclerviewpager:1.0.6')
 
+and you can also use 1.0.7-SNAPSHOT now.
+v1.0.7 will be release a few days later.
+If you use 1.0.7-SNAPSHOT,don't forget this:
+
+```
+buildscript {
+    repositories {
+        ...
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+}
+```
+
 ### xml:
 
 ```
@@ -100,7 +113,8 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
         });
 
 ```
-### release notes:
+### Release Notes:
+    1.0.7 remove redandunt codes; support cancel action
     1.0.6 resolve potential id conflicting on FragmentViewPagerApdater
     1.0.4 fix bug : exception happens if  ItemView LayoutParam is not MarginLayoutParam
     1.0.3 add method: getCurrentPosition
@@ -111,6 +125,10 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
     0.5.4 add 'HorizontalCenterLayoutManager' to implement ViewPager
     0.5.3 fix bug: setHasStableIds not work
 	0.1.0
+
+### Special Thanks:
+[saadfarooq](https://github.com/saadfarooq)
+[taxomania](https://github.com/taxomania)
 
 ### ToDo:
 ~~Vertical ViewPager~~    
