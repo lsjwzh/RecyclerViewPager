@@ -29,6 +29,8 @@ public class RecyclerViewPager extends RecyclerView {
     private int mSmoothScrollTargetPosition = -1;
     private int mPositionBeforeScroll = -1;
 
+    private boolean mSinglePageFling;
+
     boolean mNeedAdjust;
     int mFisrtLeftWhenDragging;
     int mFirstTopWhenDragging;
@@ -56,6 +58,7 @@ public class RecyclerViewPager extends RecyclerView {
                 0);
         mFlingFactor = a.getFloat(R.styleable.RecyclerViewPager_flingFactor, 0.15f);
         mTriggerOffset = a.getFloat(R.styleable.RecyclerViewPager_triggerOffset, 0.25f);
+        mSinglePageFling = a.getBoolean(R.styleable.RecyclerViewPager_singlePageFling, mSinglePageFling);
         a.recycle();
     }
 
@@ -73,6 +76,14 @@ public class RecyclerViewPager extends RecyclerView {
 
     public float getTriggerOffset() {
         return mTriggerOffset;
+    }
+
+    public void setSinglePageFling(boolean singlePageFling) {
+        mSinglePageFling = singlePageFling;
+    }
+
+    public boolean isSinglePageFling() {
+        return mSinglePageFling;
     }
 
     @Override
@@ -165,6 +176,9 @@ public class RecyclerViewPager extends RecyclerView {
             int curPosition = ViewUtils.getCenterXChildPosition(this);
             int childWidth = getWidth() - getPaddingLeft() - getPaddingRight();
             int flingCount = (int) (velocityX * mFlingFactor / childWidth);
+            if (mSinglePageFling) {
+                flingCount = Math.max(-1, Math.min(1, flingCount));
+            }
             int targetPosition = curPosition + flingCount;
             targetPosition = Math.max(targetPosition, 0);
             targetPosition = Math.min(targetPosition, getAdapter().getItemCount() - 1);
