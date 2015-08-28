@@ -5,6 +5,7 @@
     <declare-styleable name="RecyclerViewPager">
         <attr name="triggerOffset" format="float" />
         <attr name="flingFactor" format="float" />
+        <attr name="singlePageFling" format="boolean" />
     </declare-styleable>
 
 </resources>
