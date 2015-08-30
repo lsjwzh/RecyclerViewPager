@@ -18,20 +18,7 @@ A ViewPager implemention base on RecyclerView. Support fling operation like gall
 ### how to import?
 add this into gradle
 
-    compile('com.lsjwzh:recyclerviewpager:1.0.6')
-
-and you can also use 1.0.7-SNAPSHOT now.
-v1.0.7 will be release a few days later.
-If you use 1.0.7-SNAPSHOT,don't forget this:
-
-```
-buildscript {
-    repositories {
-        ...
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
-}
-```
+    compile('com.lsjwzh:recyclerviewpager:1.0.8')
 
 ### xml:
 
@@ -43,6 +30,7 @@ buildscript {
     android:paddingLeft="15dp"
     android:paddingRight="15dp"
     app:triggerOffset="0.1"
+    app:singlePageFling="true"
     android:clipToPadding="false"/>
 ```
 
@@ -114,6 +102,7 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
 ```
 ### Release Notes:
+    1.0.8 override swapAdapter；support singlePageFling；
     1.0.7 remove redandunt codes; support cancel action
     1.0.6 resolve potential id conflicting on FragmentViewPagerApdater
     1.0.4 fix bug : exception happens if  ItemView LayoutParam is not MarginLayoutParam
