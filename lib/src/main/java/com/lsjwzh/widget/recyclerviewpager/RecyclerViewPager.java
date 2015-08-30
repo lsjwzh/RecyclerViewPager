@@ -110,8 +110,14 @@ public class RecyclerViewPager extends RecyclerView {
 
     @Override
     public void setAdapter(Adapter adapter) {
-        mViewPagerAdapter = new RecyclerViewPagerAdapter(this, adapter);
+        mViewPagerAdapter = (adapter instanceof RecyclerViewPagerAdapter) ? (RecyclerViewPagerAdapter) adapter : new RecyclerViewPagerAdapter(this, adapter);
         super.setAdapter(mViewPagerAdapter);
+    }
+
+    @Override
+    public void swapAdapter(Adapter adapter, boolean removeAndRecycleExistingViews) {
+        mViewPagerAdapter = (adapter instanceof RecyclerViewPagerAdapter) ? (RecyclerViewPagerAdapter) adapter : new RecyclerViewPagerAdapter(this, adapter);
+        super.swapAdapter(mViewPagerAdapter, removeAndRecycleExistingViews);
     }
 
     @Override
