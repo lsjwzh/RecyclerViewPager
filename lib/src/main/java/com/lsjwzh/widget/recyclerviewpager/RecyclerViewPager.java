@@ -335,6 +335,7 @@ public class RecyclerViewPager extends RecyclerView {
                         }
                     }
                 }
+                mPositionBeforeScroll = mSmoothScrollTargetPosition;
             }
             // reset
             mMaxLeftWhenDragging = Integer.MIN_VALUE;
