@@ -30,6 +30,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':lib')
     compile 'com.android.support:appcompat-v7:22.2.0'
-    compile('com.lsjwzh:recyclerviewpager:1.0.7-SNAPSHOT')
 }
