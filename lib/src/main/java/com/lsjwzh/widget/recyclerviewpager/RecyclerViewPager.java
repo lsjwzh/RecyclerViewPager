@@ -2,12 +2,14 @@ package com.lsjwzh.widget.recyclerviewpager;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -158,6 +160,39 @@ public class RecyclerViewPager extends RecyclerView {
         }
         mSmoothScrollTargetPosition = position;
         super.smoothScrollToPosition(position);
+    }
+
+    @Override
+    public void scrollToPosition(int position) {
+        if (DEBUG) {
+            Log.d("@", "scrollToPosition:" + position);
+        }
+
+        mPositionBeforeScroll = getCurrentPosition();
+        mSmoothScrollTargetPosition = position;
+
+        super.scrollToPosition(position);
+
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT < 16) {
+                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+
+                if (mSmoothScrollTargetPosition >= 0 && mSmoothScrollTargetPosition < getAdapter().getItemCount()) {
+                    if (mOnPageChangedListeners != null) {
+                        for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
+                            if (onPageChangedListener != null) {
+                                onPageChangedListener.OnPageChanged(mPositionBeforeScroll, getCurrentPosition());
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /**
