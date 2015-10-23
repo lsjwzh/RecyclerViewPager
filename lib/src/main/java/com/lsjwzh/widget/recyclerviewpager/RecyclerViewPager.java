@@ -41,6 +41,7 @@ public class RecyclerViewPager extends RecyclerView {
     int mMinLeftWhenDragging = Integer.MAX_VALUE;
     int mMaxTopWhenDragging = Integer.MIN_VALUE;
     int mMinTopWhenDragging = Integer.MAX_VALUE;
+    private int mPositionOnTouchDown = -1;
 
     public RecyclerViewPager(Context context) {
         this(context, null);
@@ -217,13 +218,18 @@ public class RecyclerViewPager extends RecyclerView {
             int curPosition = ViewUtils.getCenterXChildPosition(this);
             int childWidth = getWidth() - getPaddingLeft() - getPaddingRight();
             int flingCount = (int) (velocityX * mFlingFactor / childWidth);
+            int targetPosition = curPosition + flingCount;
             if (mSinglePageFling) {
                 flingCount = Math.max(-1, Math.min(1, flingCount));
+                targetPosition = flingCount == 0 ?  curPosition : mPositionOnTouchDown + flingCount;
+                if (DEBUG) {
+                    Log.d("@", "flingCount:" + flingCount);
+                    Log.d("@", "original targetPosition:" + targetPosition);
+                }
             }
-            int targetPosition = curPosition + flingCount;
             targetPosition = Math.max(targetPosition, 0);
             targetPosition = Math.min(targetPosition, getAdapter().getItemCount() - 1);
-            if (targetPosition == curPosition) {
+            if (targetPosition == curPosition && !mSinglePageFling) {
                 View centerXChild = ViewUtils.getCenterXChild(this);
                 if (centerXChild != null) {
                     if (mTouchSpan > centerXChild.getWidth() * mTriggerOffset * mTriggerOffset && targetPosition != 0) {
@@ -270,9 +276,14 @@ public class RecyclerViewPager extends RecyclerView {
             int childHeight = getHeight() - getPaddingTop() - getPaddingBottom();
             int flingCount = (int) (velocityY * mFlingFactor / childHeight);
             int targetPosition = curPosition + flingCount;
+            if (mSinglePageFling) {
+                flingCount = Math.max(-1, Math.min(1, flingCount));
+                targetPosition = flingCount == 0 ?  curPosition : mPositionOnTouchDown + flingCount;
+            }
+
             targetPosition = Math.max(targetPosition, 0);
             targetPosition = Math.min(targetPosition, getAdapter().getItemCount() - 1);
-            if (targetPosition == curPosition) {
+            if (targetPosition == curPosition && !mSinglePageFling) {
                 View centerYChild = ViewUtils.getCenterYChild(this);
                 if (centerYChild != null) {
                     if (mTouchSpan > centerYChild.getHeight() * mTriggerOffset && targetPosition != 0) {
@@ -288,6 +299,19 @@ public class RecyclerViewPager extends RecyclerView {
             }
             smoothScrollToPosition(safeTargetPosition(targetPosition, getAdapter().getItemCount()));
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mPositionOnTouchDown = getLayoutManager().canScrollHorizontally()
+                    ? ViewUtils.getCenterXChildPosition(this)
+                    : ViewUtils.getCenterYChildPosition(this);
+            if (DEBUG) {
+                Log.d("@", "mPositionOnTouchDown:" + mPositionOnTouchDown);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
