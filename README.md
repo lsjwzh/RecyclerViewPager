@@ -127,11 +127,16 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 [taxomania](https://github.com/taxomania)
 
 ### ToDo:
+
+
+
+
 ~~Vertical ViewPager~~    
 ~~FragmentViewPager~~
 ~~observe OnPageChanged~~
 Infinite-Loop-ViewPager
 Support ViewPagerIndicator
+Wrap Content？
 
 License
 -------
