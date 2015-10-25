@@ -141,15 +141,14 @@ public class RecyclerViewPager extends RecyclerView {
         if (flinging) {
             if (getLayoutManager().canScrollHorizontally()) {
                 adjustPositionX(velocityX);
-                if (DEBUG) {
-                    Log.d("@", "velocityX:" + velocityX);
-                }
             } else {
                 adjustPositionY(velocityY);
-                if (DEBUG) {
-                    Log.d("@", "velocityY:" + velocityY);
-                }
             }
+        }
+
+        if (DEBUG) {
+            Log.d("@", "velocityX:" + velocityX);
+            Log.d("@", "velocityY:" + velocityY);
         }
         return flinging;
     }
@@ -217,11 +216,11 @@ public class RecyclerViewPager extends RecyclerView {
         if (childCount > 0) {
             int curPosition = ViewUtils.getCenterXChildPosition(this);
             int childWidth = getWidth() - getPaddingLeft() - getPaddingRight();
-            int flingCount = (int) (velocityX * mFlingFactor / childWidth);
+            int flingCount = getFlingCount(velocityX, childWidth);
             int targetPosition = curPosition + flingCount;
             if (mSinglePageFling) {
                 flingCount = Math.max(-1, Math.min(1, flingCount));
-                targetPosition = flingCount == 0 ?  curPosition : mPositionOnTouchDown + flingCount;
+                targetPosition = flingCount == 0 ? curPosition : mPositionOnTouchDown + flingCount;
                 if (DEBUG) {
                     Log.d("@", "flingCount:" + flingCount);
                     Log.d("@", "original targetPosition:" + targetPosition);
@@ -229,7 +228,10 @@ public class RecyclerViewPager extends RecyclerView {
             }
             targetPosition = Math.max(targetPosition, 0);
             targetPosition = Math.min(targetPosition, getAdapter().getItemCount() - 1);
-            if (targetPosition == curPosition && !mSinglePageFling) {
+            if (targetPosition == curPosition
+                    && ((mSinglePageFling
+                    && mPositionOnTouchDown == curPosition)
+                    || !mSinglePageFling)) {
                 View centerXChild = ViewUtils.getCenterXChild(this);
                 if (centerXChild != null) {
                     if (mTouchSpan > centerXChild.getWidth() * mTriggerOffset * mTriggerOffset && targetPosition != 0) {
@@ -274,16 +276,19 @@ public class RecyclerViewPager extends RecyclerView {
         if (childCount > 0) {
             int curPosition = ViewUtils.getCenterYChildPosition(this);
             int childHeight = getHeight() - getPaddingTop() - getPaddingBottom();
-            int flingCount = (int) (velocityY * mFlingFactor / childHeight);
+            int flingCount = getFlingCount(velocityY, childHeight);
             int targetPosition = curPosition + flingCount;
             if (mSinglePageFling) {
                 flingCount = Math.max(-1, Math.min(1, flingCount));
-                targetPosition = flingCount == 0 ?  curPosition : mPositionOnTouchDown + flingCount;
+                targetPosition = flingCount == 0 ? curPosition : mPositionOnTouchDown + flingCount;
             }
 
             targetPosition = Math.max(targetPosition, 0);
             targetPosition = Math.min(targetPosition, getAdapter().getItemCount() - 1);
-            if (targetPosition == curPosition && !mSinglePageFling) {
+            if (targetPosition == curPosition
+                    && ((mSinglePageFling
+                    && mPositionOnTouchDown == curPosition)
+                    || !mSinglePageFling)) {
                 View centerYChild = ViewUtils.getCenterYChild(this);
                 if (centerYChild != null) {
                     if (mTouchSpan > centerYChild.getHeight() * mTriggerOffset && targetPosition != 0) {
@@ -402,6 +407,16 @@ public class RecyclerViewPager extends RecyclerView {
             mMaxTopWhenDragging = Integer.MIN_VALUE;
             mMinTopWhenDragging = Integer.MAX_VALUE;
         }
+    }
+
+
+    private int getFlingCount(int velocity, int cellSize) {
+        if (velocity == 0) {
+            return 0;
+        }
+        int sign = velocity > 0 ? 1 : -1;
+        return (int) (sign * Math.ceil((velocity * sign * mFlingFactor / cellSize)
+                - mTriggerOffset));
     }
 
     private int safeTargetPosition(int position, int count) {
