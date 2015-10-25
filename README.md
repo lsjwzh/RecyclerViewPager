@@ -20,6 +20,12 @@ add this into gradle
 
     compile('com.lsjwzh:recyclerviewpager:1.0.10-SNAPSHOT')
 
+	!!!   SNAPSHOT version depend on snapshots rep
+    repositories { 		   
+        ...
+        maven { url 'https://oss.sonatype.org/content/	repositories/snapshots' }
+        ...
+    }
 ### xml:
 
 ```
@@ -102,6 +108,7 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
 ```
 ### Release Notes:
+    1.0.10 make touch gesture smother；
     1.0.8 override swapAdapter；support singlePageFling；
     1.0.7 remove redandunt codes; support cancel action
     1.0.6 resolve potential id conflicting on FragmentViewPagerApdater
@@ -123,6 +130,8 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 ~~Vertical ViewPager~~    
 ~~FragmentViewPager~~
 ~~observe OnPageChanged~~
+Infinite-Loop-ViewPager
+Support ViewPagerIndicator
 
 License
 -------
