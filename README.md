@@ -18,7 +18,7 @@ A ViewPager implemention base on RecyclerView. Support fling operation like gall
 ### how to import?
 add this into gradle
 
-    compile('com.lsjwzh:recyclerviewpager:1.0.8')
+    compile('com.lsjwzh:recyclerviewpager:1.0.10-SNAPSHOT')
 
 ### xml:
 
