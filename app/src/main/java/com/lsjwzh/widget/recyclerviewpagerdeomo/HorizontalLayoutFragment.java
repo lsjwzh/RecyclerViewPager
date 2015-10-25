@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,6 +115,12 @@ public class HorizontalLayoutFragment extends Fragment {
                         v.setScaleX(0.9f + rate * 0.1f);
                     }
                 }
+            }
+        });
+        mRecyclerView.addOnPageChangedListener(new RecyclerViewPager.OnPageChangedListener() {
+            @Override
+            public void OnPageChanged(int oldPosition, int newPosition) {
+                Log.d("test", "oldPosition:" + oldPosition + " newPosition:" + newPosition);
             }
         });
 
