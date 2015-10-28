@@ -6,10 +6,9 @@ import android.view.ViewGroup;
 
 /**
  * RecyclerViewPagerAdapter </br>
- * Adapter wrapper. Use to add margin at first and last itemView.
+ * Adapter wrapper.
  *
  * @author Green
- * @since 2015/1/20 下午2:17
  */
 public class RecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
     private final RecyclerViewPager mViewPager;
