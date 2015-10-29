@@ -104,7 +104,7 @@ public class RecyclerViewPager extends RecyclerView {
             fAnchorOffset.setAccessible(true);
             if (fAnchorOffset.getInt(layoutState) > 0) {
                 fAnchorPosition.set(layoutState, fAnchorPosition.getInt(layoutState) - 1);
-            } else {
+            } else if(fAnchorOffset.getInt(layoutState) < 0){
                 fAnchorPosition.set(layoutState, fAnchorPosition.getInt(layoutState) + 1);
             }
             fAnchorOffset.setInt(layoutState, 0);
