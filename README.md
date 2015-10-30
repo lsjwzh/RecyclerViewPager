@@ -2,12 +2,24 @@
 # RecyclerViewPager
 A ViewPager implemention base on RecyclerView. Support fling operation like gallary.
 
+android.support.v4.view.ViewPager的完美替代品
+
 ## Features:
 1. Extends RecyclerView.
 2. Custom fling factor.
 3. Custom paging trigger.
 4. Support Vertical and Horizontal orientation.
 5. Support FragmentViewPager (api 12+)
+6. Infinite-Loop-ViewPager 
+
+## 特性:
+1. 扩展自RecyclerView.
+2. 可自定义fling滑动速率.
+3. 可自定义翻页触发条件.
+4. 支持垂直ViewPager.
+5. 支持Fragment (api 12+)
+6. 支持无限循环
+
 
 ![RecyclerViewPager](https://github.com/lsjwzh/RecyclerViewPager/blob/master/vertical.gif)
 ![RecyclerViewPager](https://github.com/lsjwzh/RecyclerViewPager/blob/master/horizontal.gif)
@@ -108,6 +120,7 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
 ```
 ### Release Notes:
+	1.0.11 support infinite loop
     1.0.10 make touch gesture smother；
     1.0.8 override swapAdapter；support singlePageFling；
     1.0.7 remove redandunt codes; support cancel action
@@ -127,16 +140,12 @@ mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 [taxomania](https://github.com/taxomania)
 
 ### ToDo:
-
-
-
-
 ~~Vertical ViewPager~~    
-~~FragmentViewPager~~
-~~observe OnPageChanged~~
-Infinite-Loop-ViewPager
-Support ViewPagerIndicator
-Wrap Content？
+~~FragmentViewPager~~	
+~~observe OnPageChanged~~	
+~~Infinite-Loop-ViewPager~~		
+Support ViewPagerIndicator	
+Wrap Content？	
 
 License
 -------
