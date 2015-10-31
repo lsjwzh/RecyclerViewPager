@@ -30,12 +30,12 @@ android.support.v4.view.ViewPager的完美替代品
 ### how to import?
 add this into gradle
 
-    compile('com.lsjwzh:recyclerviewpager:1.0.10-SNAPSHOT')
+    compile('com.lsjwzh:recyclerviewpager:1.0.11-SNAPSHOT')
 
 	!!!   SNAPSHOT version depend on snapshots rep
     repositories { 		   
         ...
-        maven { url 'https://oss.sonatype.org/content/	repositories/snapshots' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         ...
     }
 ### xml:
