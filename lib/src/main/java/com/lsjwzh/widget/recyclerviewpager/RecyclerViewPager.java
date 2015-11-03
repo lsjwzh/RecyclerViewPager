@@ -56,6 +56,7 @@ public class RecyclerViewPager extends RecyclerView {
     public RecyclerViewPager(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initAttrs(context, attrs, defStyle);
+		setNestedScrollingEnabled(false);
     }
 
     private void initAttrs(Context context, AttributeSet attrs, int defStyle) {
