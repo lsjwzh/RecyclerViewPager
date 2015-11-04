@@ -44,6 +44,7 @@ public class RecyclerViewPager extends RecyclerView {
     int mMinTopWhenDragging = Integer.MAX_VALUE;
     private int mPositionOnTouchDown = -1;
     private boolean mLoopEnabled;
+    private boolean mHasCalledOnPageChanged = true;
 
     public RecyclerViewPager(Context context) {
         this(context, null);
@@ -366,7 +367,11 @@ public class RecyclerViewPager extends RecyclerView {
             mCurView = getLayoutManager().canScrollHorizontally() ? ViewUtils.getCenterXChild(this) :
                     ViewUtils.getCenterYChild(this);
             if (mCurView != null) {
-                mPositionBeforeScroll = getChildLayoutPosition(mCurView);
+                if (mHasCalledOnPageChanged) {
+                    // While rvp is scrolling, mPositionBeforeScroll will be previous value.
+                    mPositionBeforeScroll = getChildLayoutPosition(mCurView);
+                    mHasCalledOnPageChanged = false;
+                }
                 if (DEBUG) {
                     Log.d("@", "mPositionBeforeScroll:" + mPositionBeforeScroll);
                 }
@@ -424,6 +429,7 @@ public class RecyclerViewPager extends RecyclerView {
                         }
                     }
                 }
+                mHasCalledOnPageChanged = true;
                 mPositionBeforeScroll = mSmoothScrollTargetPosition;
             }
             // reset
