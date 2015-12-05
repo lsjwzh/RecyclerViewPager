@@ -63,10 +63,10 @@ public class RecyclerViewPager extends RecyclerView {
     private void initAttrs(Context context, AttributeSet attrs, int defStyle) {
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RecyclerViewPager, defStyle,
                 0);
-        mFlingFactor = a.getFloat(R.styleable.RecyclerViewPager_flingFactor, 0.15f);
-        mTriggerOffset = a.getFloat(R.styleable.RecyclerViewPager_triggerOffset, 0.25f);
-        mSinglePageFling = a.getBoolean(R.styleable.RecyclerViewPager_singlePageFling, mSinglePageFling);
-        mLoopEnabled = a.getBoolean(R.styleable.RecyclerViewPager_loopEnabled, false);
+        mFlingFactor = a.getFloat(R.styleable.RecyclerViewPager_rvp_flingFactor, 0.15f);
+        mTriggerOffset = a.getFloat(R.styleable.RecyclerViewPager_rvp_triggerOffset, 0.25f);
+        mSinglePageFling = a.getBoolean(R.styleable.RecyclerViewPager_rvp_singlePageFling, mSinglePageFling);
+        mLoopEnabled = a.getBoolean(R.styleable.RecyclerViewPager_rvp_loopEnabled, false);
         a.recycle();
     }
 

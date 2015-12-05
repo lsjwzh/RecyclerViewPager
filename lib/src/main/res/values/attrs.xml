@@ -3,10 +3,10 @@
 <resources>
 
     <declare-styleable name="RecyclerViewPager">
-        <attr name="triggerOffset" format="float" />
-        <attr name="flingFactor" format="float" />
-        <attr name="singlePageFling" format="boolean" />
-        <attr name="loopEnabled" format="boolean" />
+        <attr name="rvp_triggerOffset" format="float" />
+        <attr name="rvp_flingFactor" format="float" />
+        <attr name="rvp_singlePageFling" format="boolean" />
+        <attr name="rvp_loopEnabled" format="boolean" />
     </declare-styleable>
 
 </resources>
