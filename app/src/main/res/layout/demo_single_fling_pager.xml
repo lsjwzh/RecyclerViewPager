@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 <com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager
     android:layout_marginTop="20dp"
-    android:id="@+id/list"
+    android:id="@+id/viewpager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="30dp"

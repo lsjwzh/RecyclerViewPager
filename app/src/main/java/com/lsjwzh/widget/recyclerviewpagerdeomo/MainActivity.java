@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Lucas Rocha
+ * Copyright (C) 2015 lsjwzh
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,83 +16,103 @@
 
 package com.lsjwzh.widget.recyclerviewpagerdeomo;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.lsjwzh.adapter.GenericRecyclerViewAdapter;
+import com.lsjwzh.adapter.OnRecyclerViewItemClickListener;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
+
+    RecyclerView mDemoRecyclerView;
+    private DemoListAdapter mDemoListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayShowHomeEnabled
-                (false);
-
-        ActionBar.Tab tab = actionBar.newTab()
-                .setText("Horizontal")
-                .setTabListener(new TabListener(HorizontalLayoutFragment.class, "Horizontal"));
-        ActionBar.Tab tab2 = actionBar.newTab()
-                .setText("Vertical")
-                .setTabListener(new TabListener(VerticalLayoutFragment.class, "Vertical"));
-        ActionBar.Tab tab3 = actionBar.newTab()
-                .setText("ViewPager")
-                .setTabListener(new TabListener(ViewPagerFragment.class, "ViewPager"));
-        ActionBar.Tab tab4 = actionBar.newTab()
-                .setText("FragmentPager")
-                .setTabListener(new TabListener(FragmentsPagerFragment.class, "FragmentPager"));
-        actionBar.addTab(tab, false);
-        actionBar.addTab(tab2, false);
-        actionBar.addTab(tab3, false);
-        actionBar.addTab(tab4, false);
-        int tabIndex = getIntent().getIntExtra("tab",0);
-        actionBar.selectTab(actionBar.getTabAt(tabIndex));
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        getIntent().putExtra("tab", getSupportActionBar().getSelectedTab().getPosition());
-        super.onSaveInstanceState(outState);
-    }
-
-    public class TabListener implements ActionBar.TabListener {
-        private final String mTag;
-        Class<? extends Fragment> mFragClazz;
-
-        public TabListener(Class<? extends Fragment> fragClazz, String tag) {
-            mFragClazz = fragClazz;
-            mTag = tag;
-        }
-
-        @Override
-        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content);
-            if (fragment == null) {
-                ft.add(R.id.content, new HorizontalLayoutFragment(), mTag);
-            } else if (!mFragClazz.isAssignableFrom(fragment.getClass())) {
-                try {
-                    ft.replace(R.id.content, mFragClazz.newInstance());
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+        setContentView(R.layout.demo_list);
+        mDemoRecyclerView = (RecyclerView) findViewById(R.id.demo_list);
+        mDemoRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager
+                .VERTICAL, false));
+        mDemoListAdapter = new DemoListAdapter();
+        mDemoRecyclerView.setAdapter(mDemoListAdapter);
+        mDemoListAdapter.add(new DemoItem("Single Fling Pager(like official ViewPager)") {
+            @Override
+            void onClick() {
+                startActivity(new Intent(MainActivity.this, SingleFlingPagerActivity.class));
             }
+        });
+        mDemoListAdapter.add(new DemoItem("Free Fling Pager(like ViewPager combine with Gallary)") {
+            @Override
+            void onClick() {
+                // TODO: open Free fling pager
+            }
+        });
+        mDemoListAdapter.add(new DemoItem("Material Demo") {
+            @Override
+            void onClick() {
+                // TODO: open Material Demo
+            }
+        });
+        mDemoListAdapter.add(new DemoItem("3D effect Demo") {
+            @Override
+            void onClick() {
+                // TODO: open 3D effect Demo
+            }
+        });
+    }
+
+
+    class DemoListAdapter extends GenericRecyclerViewAdapter<DemoItem, DemoListItemViewHolder> {
+
+        DemoListAdapter() {
+            setOnItemClickListener(new OnRecyclerViewItemClickListener<DemoListItemViewHolder>() {
+                @Override
+                public void onItemClick(View view, int position, DemoListItemViewHolder viewHolder) {
+                    getItem(position).onClick();
+                }
+            });
         }
 
         @Override
-        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+        public DemoListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(MainActivity.this)
+                    .inflate(R.layout.demo_list_item, parent, false);
+            return new DemoListItemViewHolder(view);
         }
 
         @Override
-        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+        public void onBindViewHolder(DemoListItemViewHolder holder, int position) {
+            super.onBindViewHolder(holder, position);
+            holder.mTextView.setText(getItem(position).mText);
+        }
+    }
+
+    class DemoItem {
+        String mText;
+
+        DemoItem(String text) {
+            mText = text;
+        }
+
+        void onClick() {
+        }
+    }
+
+    class DemoListItemViewHolder extends RecyclerView.ViewHolder {
+        TextView mTextView;
+
+        public DemoListItemViewHolder(View itemView) {
+            super(itemView);
+            mTextView = (TextView) itemView.findViewById(R.id.text);
         }
     }
 
