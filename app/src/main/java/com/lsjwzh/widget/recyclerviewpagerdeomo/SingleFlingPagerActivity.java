@@ -10,12 +10,16 @@ import android.view.View;
 import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
 
 public class SingleFlingPagerActivity extends Activity {
-    private RecyclerViewPager mRecyclerView;
+    protected RecyclerViewPager mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.demo_single_fling_pager);
+        initViewPager();
+    }
+
+    protected void initViewPager() {
         mRecyclerView = (RecyclerViewPager)findViewById(R.id.viewpager);
         LinearLayoutManager layout = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,
                 false);

@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         mDemoListAdapter.add(new DemoItem("Free Fling Pager(like ViewPager combine with Gallary)") {
             @Override
             void onClick() {
-                // TODO: open Free fling pager
+                startActivity(new Intent(MainActivity.this, FreeFlingPagerActivity.class));
             }
         });
         mDemoListAdapter.add(new DemoItem("Material Demo") {

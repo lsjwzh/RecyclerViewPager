@@ -19,6 +19,9 @@
         <activity
           android:name=".SingleFlingPagerActivity" >
         </activity>
+        <activity
+          android:name=".FreeFlingPagerActivity" >
+        </activity>
     </application>
 
 </manifest>
