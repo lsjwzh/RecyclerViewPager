@@ -23,6 +23,9 @@
           android:name=".FreeFlingPagerActivity" >
         </activity>
         <activity
+          android:name=".VerticalPagerActivity" >
+        </activity>
+        <activity
           android:name=".MaterialDemoActivity"
           android:theme="@style/Theme.DesignDemo">
         </activity>
