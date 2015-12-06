@@ -62,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, MaterialDemoActivity.class));
             }
         });
+        mDemoListAdapter.add(new DemoItem("Vertical ViewPager Demo(TODO)") {
+            @Override
+            void onClick() {
+                // TODO
+            }
+        });
         mDemoListAdapter.add(new DemoItem("3D effect Demo(TODO)") {
             @Override
             void onClick() {
