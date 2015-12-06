@@ -59,10 +59,10 @@ public class MainActivity extends AppCompatActivity {
         mDemoListAdapter.add(new DemoItem("Material Demo") {
             @Override
             void onClick() {
-                // TODO: open Material Demo
+                startActivity(new Intent(MainActivity.this, MaterialDemoActivity.class));
             }
         });
-        mDemoListAdapter.add(new DemoItem("3D effect Demo") {
+        mDemoListAdapter.add(new DemoItem("3D effect Demo(TODO)") {
             @Override
             void onClick() {
                 // TODO: open 3D effect Demo

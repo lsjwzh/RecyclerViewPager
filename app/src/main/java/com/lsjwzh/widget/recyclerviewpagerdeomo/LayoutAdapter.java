@@ -31,7 +31,7 @@ import static com.lsjwzh.widget.recyclerviewpagerdeomo.R.id;
 import static com.lsjwzh.widget.recyclerviewpagerdeomo.R.layout;
 
 public class LayoutAdapter extends RecyclerView.Adapter<LayoutAdapter.SimpleViewHolder> {
-    private static final int COUNT = 100;
+    private static final int DEFAULT_ITEM_COUNT = 100;
 
     private final Context mContext;
     private final RecyclerView mRecyclerView;
@@ -48,9 +48,13 @@ public class LayoutAdapter extends RecyclerView.Adapter<LayoutAdapter.SimpleView
     }
 
     public LayoutAdapter(Context context, RecyclerView recyclerView) {
+       this(context, recyclerView, DEFAULT_ITEM_COUNT);
+    }
+
+    public LayoutAdapter(Context context, RecyclerView recyclerView, int itemCount) {
         mContext = context;
-        mItems = new ArrayList<>(COUNT);
-        for (int i = 0; i < COUNT; i++) {
+        mItems = new ArrayList<>(itemCount);
+        for (int i = 0; i < itemCount; i++) {
             addItem(i);
         }
 
