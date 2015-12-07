@@ -1,5 +1,7 @@
 package com.lsjwzh.widget.recyclerviewpagerdeomo;
 
+import java.util.LinkedHashMap;
+
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -54,6 +56,7 @@ public class MaterialDemoActivity extends AppCompatActivity {
 
 
     class FragmentsAdapter extends FragmentStatePagerAdapter implements TabLayoutSupport.ViewPagerTabLayoutAdapter {
+        LinkedHashMap<Integer, Fragment> mFragmentCache = new LinkedHashMap<>();
 
         public FragmentsAdapter(FragmentManager fm) {
             super(fm);
@@ -61,19 +64,30 @@ public class MaterialDemoActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position, Fragment.SavedState savedState) {
-            Fragment f = new CheeseListFragment();
-            if (savedState == null) {
+            Fragment f = mFragmentCache.containsKey(position) ? mFragmentCache.get(position)
+                    : new CheeseListFragment();
+            Log.e("test", "getItem:" + position + " from cache" + mFragmentCache.containsKey
+                    (position));
+            if (savedState == null || f.getArguments() == null) {
                 Bundle bundle = new Bundle();
                 bundle.putInt("index", position);
                 f.setArguments(bundle);
+                Log.e("test", "setArguments:" + position);
+            } else if (!mFragmentCache.containsKey(position)) {
+                f.setInitialSavedState(savedState);
+                Log.e("test", "setInitialSavedState:" + position);
             }
-            f.setInitialSavedState(savedState);
+            mFragmentCache.put(position, f);
             return f;
         }
 
         @Override
         public void onDestroyItem(int position, Fragment fragment) {
             // onDestroyItem
+            while (mFragmentCache.size() > 5) {
+                Object[] keys = mFragmentCache.keySet().toArray();
+                mFragmentCache.remove(keys[0]);
+            }
         }
 
         @Override
@@ -83,7 +97,7 @@ public class MaterialDemoActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return 3;
+            return 10;
         }
     }
 }

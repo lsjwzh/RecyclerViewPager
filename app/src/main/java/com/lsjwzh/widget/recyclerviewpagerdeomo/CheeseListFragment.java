@@ -21,12 +21,13 @@ import java.util.List;
 import java.util.Random;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 public class CheeseListFragment extends Fragment {
+    private int mIndex;
 
     @Nullable
     @Override
@@ -45,7 +47,23 @@ public class CheeseListFragment extends Fragment {
         RecyclerView rv = (RecyclerView) inflater.inflate(
                 R.layout.fragment_cheese_list, container, false);
         setupRecyclerView(rv);
+        if (savedInstanceState == null) {
+            mIndex = getArguments().getInt("index");
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
+                    .setTitle("from arguments:" + mIndex);
+        } else {
+            mIndex = savedInstanceState.getInt("index");
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
+                    .setTitle("from savedInstanceState:" + mIndex);
+        }
         return rv;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("index", mIndex);
+        Log.d("test", "call onSaveInstanceState:" + mIndex);
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
