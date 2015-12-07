@@ -83,12 +83,13 @@ public class TabLayoutSupport {
             final float positionOffset = offset * 1f / pagerWidth;
             if (tabLayout != null) {
                 if (positionOffset < 0) {
-                    tabLayout.setScrollPosition(mPositionBeforeScroll + (int) (positionOffset - 0.99)
-                            , (int) (0.99 - positionOffset) + positionOffset,
+                    tabLayout.setScrollPosition(mPositionBeforeScroll
+                                    + (int) Math.floor(positionOffset),
+                            positionOffset - (int) Math.floor(positionOffset),
                             false);
                 } else {
-                    tabLayout.setScrollPosition(mPositionBeforeScroll + (int) (positionOffset)
-                            , positionOffset - (int) (positionOffset),
+                    tabLayout.setScrollPosition(mPositionBeforeScroll + (int) (positionOffset),
+                            positionOffset - (int) (positionOffset),
                             false);
                 }
             }
