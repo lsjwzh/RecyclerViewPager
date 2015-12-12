@@ -19,7 +19,7 @@ public class VerticalPagerActivity extends Activity {
     }
 
     protected void initViewPager() {
-        mRecyclerView = (RecyclerViewPager) findViewById(R.id.list);
+        mRecyclerView = (RecyclerViewPager) findViewById(R.id.viewpager);
 
         LinearLayoutManager layout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,
                 false);
@@ -38,7 +38,7 @@ public class VerticalPagerActivity extends Activity {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int i, int i2) {
-//                mPositionText.setText("First: " + mRecyclerView.getFirstVisiblePosition());
+//                mPositionText.setText("First: " + mRecyclerViewPager.getFirstVisiblePosition());
                 int childCount = mRecyclerView.getChildCount();
                 int width = mRecyclerView.getChildAt(0).getWidth();
                 int padding = (mRecyclerView.getWidth() - width) / 2;
