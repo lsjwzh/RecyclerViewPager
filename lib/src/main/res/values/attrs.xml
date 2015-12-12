@@ -6,7 +6,6 @@
         <attr name="rvp_triggerOffset" format="float" />
         <attr name="rvp_flingFactor" format="float" />
         <attr name="rvp_singlePageFling" format="boolean" />
-        <attr name="rvp_loopEnabled" format="boolean" />
     </declare-styleable>
 
 </resources>
