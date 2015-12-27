@@ -74,6 +74,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, LoopPagerActivity.class));
             }
         });
+        mDemoListAdapter.add(new DemoItem("Reverse Single Fling Pager(like official ViewPager)") {
+            @Override
+            void onClick() {
+                startActivity(new Intent(MainActivity.this, ReverseSingleFlingPagerActivity.class));
+            }
+        });
+        mDemoListAdapter.add(new DemoItem("Reverse Vertical ViewPager Demo") {
+            @Override
+            void onClick() {
+                startActivity(new Intent(MainActivity.this, ReverseVerticalPagerActivity.class));
+            }
+        });
         mDemoListAdapter.add(new DemoItem("3D effect Demo(TODO)") {
             @Override
             void onClick() {

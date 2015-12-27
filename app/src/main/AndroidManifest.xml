@@ -32,6 +32,12 @@
           android:name=".MaterialDemoActivity"
           android:theme="@style/Theme.DesignDemo">
         </activity>
+        <activity
+            android:name=".ReverseSingleFlingPagerActivity" >
+        </activity>
+        <activity
+            android:name=".ReverseVerticalPagerActivity" >
+        </activity>
     </application>
 
 </manifest>
