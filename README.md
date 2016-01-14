@@ -41,7 +41,7 @@ add this into gradle
 
     dependencies {
         ...
-        compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.0-beta2'
+        compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.0-beta3'
         ...
     }
 
