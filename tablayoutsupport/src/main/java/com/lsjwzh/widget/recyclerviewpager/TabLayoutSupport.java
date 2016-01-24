@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 public class TabLayoutSupport {
 
@@ -76,9 +77,12 @@ public class TabLayoutSupport {
             final int pagerWidth = recyclerView.getWidth()
                     - recyclerView.getPaddingLeft()
                     - recyclerView.getPaddingRight();
-            int centerChildPosition = viewPager.getChildAdapterPosition(ViewUtils.getCenterXChild
-                    (viewPager));
-            float offset = mPagerLeftBeforeScroll - ViewUtils.getCenterXChild(viewPager).getLeft()
+            final View centerXChild = ViewUtils.getCenterXChild(viewPager);
+            if (centerXChild == null) {
+                return;
+            }
+            int centerChildPosition = viewPager.getChildAdapterPosition(centerXChild);
+            float offset = mPagerLeftBeforeScroll - centerXChild.getLeft()
                     + pagerWidth * (centerChildPosition - mPositionBeforeScroll);
             final float positionOffset = offset * 1f / pagerWidth;
             if (tabLayout != null) {
