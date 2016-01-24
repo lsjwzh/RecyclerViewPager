@@ -33,6 +33,10 @@
           android:theme="@style/Theme.DesignDemo">
         </activity>
         <activity
+          android:name=".MaterialDemoWithLoopPagerActivity"
+          android:theme="@style/Theme.DesignDemo">
+        </activity>
+        <activity
             android:name=".ReverseSingleFlingPagerActivity" >
         </activity>
         <activity

@@ -62,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, MaterialDemoActivity.class));
             }
         });
+        mDemoListAdapter.add(new DemoItem("Material Demo With loop pager") {
+            @Override
+            void onClick() {
+                startActivity(new Intent(MainActivity.this, MaterialDemoWithLoopPagerActivity.class));
+            }
+        });
         mDemoListAdapter.add(new DemoItem("Vertical ViewPager Demo") {
             @Override
             void onClick() {

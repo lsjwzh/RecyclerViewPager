@@ -19,7 +19,8 @@ public class TabLayoutSupport {
         for (int count = viewPagerTabLayoutAdapter.getItemCount(); i < count; ++i) {
             tabLayout.addTab(tabLayout.newTab().setText(viewPagerTabLayoutAdapter.getPageTitle(i)));
         }
-        final TabLayoutOnPageChangeListener listener = new TabLayoutOnPageChangeListener(tabLayout);
+        final TabLayoutOnPageChangeListener listener
+                = new TabLayoutOnPageChangeListener(tabLayout, viewPager);
         viewPager.addOnScrollListener(listener);
         viewPager.addOnPageChangedListener(listener);
         tabLayout.setOnTabSelectedListener(new ViewPagerOnTabSelectedListener(viewPager));
@@ -52,11 +53,13 @@ public class TabLayoutSupport {
     public static class TabLayoutOnPageChangeListener extends RecyclerView.OnScrollListener implements RecyclerViewPager
             .OnPageChangedListener {
         private final WeakReference<TabLayout> mTabLayoutRef;
+        private final WeakReference<RecyclerViewPager> mViewPagerRef;
         private int mPositionBeforeScroll;
         private int mPagerLeftBeforeScroll;
 
-        public TabLayoutOnPageChangeListener(TabLayout tabLayout) {
+        public TabLayoutOnPageChangeListener(TabLayout tabLayout, RecyclerViewPager viewPager) {
             this.mTabLayoutRef = new WeakReference<>(tabLayout);
+            this.mViewPagerRef = new WeakReference<>(viewPager);
         }
 
         @Override
@@ -102,6 +105,13 @@ public class TabLayoutSupport {
 
         @Override
         public void OnPageChanged(int oldPosition, int newPosition) {
+            if (mViewPagerRef.get() == null) {
+                return;
+            }
+            if (mViewPagerRef.get() instanceof LoopRecyclerViewPager) {
+                newPosition = ((LoopRecyclerViewPager) mViewPagerRef.get())
+                        .transformToActualPosition(newPosition);
+            }
             TabLayout tabLayout = this.mTabLayoutRef.get();
             if (tabLayout != null && tabLayout.getTabAt(newPosition) != null) {
                 tabLayout.getTabAt(newPosition).select();
