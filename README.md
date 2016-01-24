@@ -41,7 +41,7 @@ add this into gradle
 
     dependencies {
         ...
-        compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.0-beta4'
+        compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.0-beta5'
         ...
     }
 
@@ -89,7 +89,7 @@ It is easy to setup like a Recycler List View.
 
     dependencies {
         ...
-        compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.0-beta4'
+        compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.0-beta5'
         ...
     }
 
@@ -116,6 +116,7 @@ Ex:In a 'LoopRecyclerViewPager' with 10 items, 'scrollToPosition(1)' will get
   same scroll behavior as  'scrollToPosition(11)'、'scrollToPosition(21)' and so on.
 
 ### Release Notes:
+    1.1.0beta5 feat: TabLayoutSupport Lib supports LoopViewPager
     1.1.0beta4 fix bug:support ItemDecorations;
     1.1.0beta3 support reverse;
     1.1.0 refactor;support TabLayout;
