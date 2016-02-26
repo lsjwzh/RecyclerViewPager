@@ -31,20 +31,21 @@ android.support.v4.view.ViewPager的完美替代品
 ### how to import?
 add this into gradle
 
-	!!!   Yes, I have switched to jitpack.io.
+```gradle
+// Yes, I have switched to jitpack.io.
 
-    repositories { 		   
-        ...
-        maven { url "https://jitpack.io" }
-        ...
-    }
+repositories {
+    ...
+    maven { url "https://jitpack.io" }
+    ...
+}
 
-    dependencies {
-        ...
-        compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.0-beta5'
-        ...
-    }
-
+dependencies {
+    ...
+    compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.0-beta5'
+    ...
+}
+```
 add proguard rules if need
 
 	-keep class com.lsjwzh.widget.recyclerviewpager.**
@@ -57,7 +58,7 @@ It is easy to setup like a Recycler List View.
 
 #### xml:
 
-```
+```xml
 <com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager
     android:id="@+id/list"
     android:layout_width="match_parent"
@@ -69,51 +70,52 @@ It is easy to setup like a Recycler List View.
     android:clipToPadding="false"/>
 ```
 #### code:
-```
-    RecyclerViewPager mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
+```java
+RecyclerViewPager mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.list);
 
-    // setLayoutManager like normal RecyclerView, you do not need to change any thing.
-    LinearLayoutManager layout = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
-    mRecyclerView.setLayoutManager(layout);
+// setLayoutManager like normal RecyclerView, you do not need to change any thing.
+LinearLayoutManager layout = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+mRecyclerView.setLayoutManager(layout);
 
-    //set adapter
-    //You just need to impelement ViewPageAdapter by yourself like a normal RecyclerView.Adpater.
-    mRecyclerView.setAdapter(new RecyclerView.Adpater<X>());
-    
-    // That is all. 
+//set adapter
+//You just need to impelement ViewPageAdapter by yourself like a normal RecyclerView.Adpater.
+mRecyclerView.setAdapter(new RecyclerView.Adpater<X>());
+
+// That is all.
 
 ```
 ### Support TabLayout:
 
 #### 1.Add Dependency:
-
-    dependencies {
-        ...
-        compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.0-beta5'
-        ...
-    }
-
+```gradle
+dependencies {
+    ...
+    compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.0-beta5'
+    ...
+}
+```
 #### 2.Call 'setupWithViewPager'
-
-    TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-    TabLayoutSupport.setupWithViewPager(tabLayout, mRecyclerView, mAdapter);
-
+```java
+TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+TabLayoutSupport.setupWithViewPager(tabLayout, mRecyclerView, mAdapter);
+```
 ### Infinite Loop ViewPager:
-    <com.lsjwzh.widget.recyclerviewpager.LoopRecyclerViewPager
-            android:id="@+id/viewpager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:clipToPadding="false"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"/>
-
-You just need to use 'LoopRecyclerViewPager' replace 'RecyclerViewPager'.
-The usage of 'LoopRecyclerViewPager' is the same as 'RecyclerViewPager'.
-No matter what you specify position you want to scroll, 'LoopRecyclerViewPager' will transform it
+```xml
+<com.lsjwzh.widget.recyclerviewpager.LoopRecyclerViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:clipToPadding="false"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"/>
+```
+You just need to use `LoopRecyclerViewPager` replace `RecyclerViewPager`.
+The usage of `LoopRecyclerViewPager` is the same as `RecyclerViewPager`.
+No matter what you specify position you want to scroll, `LoopRecyclerViewPager` will transform it
  to right position.
-Ex:In a 'LoopRecyclerViewPager' with 10 items, 'scrollToPosition(1)' will get
-  same scroll behavior as  'scrollToPosition(11)'、'scrollToPosition(21)' and so on.
+Ex:In a `LoopRecyclerViewPager` with 10 items, `scrollToPosition(1)` will get
+  same scroll behavior as `scrollToPosition(11)`、`scrollToPosition(21)` and so on.
 
 ### Release Notes:
     1.1.0beta5 feat: TabLayoutSupport Lib supports LoopViewPager
@@ -140,7 +142,7 @@ Ex:In a 'LoopRecyclerViewPager' with 10 items, 'scrollToPosition(1)' will get
 [taxomania](https://github.com/taxomania)
 
 ### ToDo:
-~~Vertical ViewPager~~    
+~~Vertical ViewPager~~
 ~~FragmentViewPager~~
 ~~observe OnPageChanged~~
 ~~Infinite-Loop-ViewPager~~
