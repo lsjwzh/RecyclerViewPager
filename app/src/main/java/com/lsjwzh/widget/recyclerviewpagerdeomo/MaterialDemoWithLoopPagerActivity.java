@@ -49,7 +49,7 @@ public class MaterialDemoWithLoopPagerActivity extends AppCompatActivity {
         mRecyclerView.addOnPageChangedListener(new RecyclerViewPager.OnPageChangedListener() {
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
-                Log.d("test", "oldPosition:" + oldPosition + " newPosition:" + newPosition);
+                Log.e("test", "oldPosition:" + oldPosition + " newPosition:" + newPosition);
             }
         });
 
@@ -65,6 +65,7 @@ public class MaterialDemoWithLoopPagerActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position, Fragment.SavedState savedState) {
+            position = mRecyclerView.transformToActualPosition(position);
             Fragment f = mFragmentCache.containsKey(position) ? mFragmentCache.get(position)
                     : new CheeseListFragment();
             Log.e("test", "getItem:" + position + " from cache" + mFragmentCache.containsKey

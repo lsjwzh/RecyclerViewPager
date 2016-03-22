@@ -70,6 +70,11 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
         return transformToActualPosition(position);
     }
 
+    /**
+     * Transform adapter position to actual position.
+     * @param position adapter position
+     * @return actual position
+     */
     public int transformToActualPosition(int position) {
         return position % getActualItemCountFromAdpater();
     }

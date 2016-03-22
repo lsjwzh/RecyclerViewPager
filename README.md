@@ -117,6 +117,17 @@ No matter what you specify position you want to scroll, `LoopRecyclerViewPager` 
 Ex:In a `LoopRecyclerViewPager` with 10 items, `scrollToPosition(1)` will get
   same scroll behavior as `scrollToPosition(11)`、`scrollToPosition(21)` and so on.
 
+#### How to get actual position in LoopRecyclerViewPager:
+```
+    int actualPosition = mLoopRecyclerViewPager.transformToActualPosition(adapterPosition);
+```
+If you just want to get current actual position, you can do it like this:
+
+```
+    int actualCurrentPosition = mLoopRecyclerViewPager.getActualCurrentPosition();
+```
+
+
 ### Release Notes:
     1.1.0beta5 feat: TabLayoutSupport Lib supports LoopViewPager
     1.1.0beta4 fix bug:support ItemDecorations;
