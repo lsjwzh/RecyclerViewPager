@@ -39,6 +39,41 @@ public class RecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder> extend
     }
 
     @Override
+    public void onViewRecycled(VH holder) {
+        super.onViewRecycled(holder);
+        mAdapter.onViewRecycled(holder);
+    }
+
+    @Override
+    public boolean onFailedToRecycleView(VH holder) {
+        return mAdapter.onFailedToRecycleView(holder);
+    }
+
+    @Override
+    public void onViewAttachedToWindow(VH holder) {
+        super.onViewAttachedToWindow(holder);
+        mAdapter.onViewAttachedToWindow(holder);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(VH holder) {
+        super.onViewDetachedFromWindow(holder);
+        mAdapter.onViewDetachedFromWindow(holder);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mAdapter.onAttachedToRecyclerView(recyclerView);
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        mAdapter.onDetachedFromRecyclerView(recyclerView);
+    }
+
+    @Override
     public void onBindViewHolder(VH holder, int position) {
         mAdapter.onBindViewHolder(holder, position);
         final View itemView = holder.itemView;
