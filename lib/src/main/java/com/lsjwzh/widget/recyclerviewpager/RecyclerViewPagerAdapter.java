@@ -77,11 +77,16 @@ public class RecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder> extend
     public void onBindViewHolder(VH holder, int position) {
         mAdapter.onBindViewHolder(holder, position);
         final View itemView = holder.itemView;
-        ViewGroup.LayoutParams lp = itemView.getLayoutParams() == null ? new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT) : itemView.getLayoutParams();
-        if (mViewPager.getLayoutManager().canScrollHorizontally()) {
-            lp.width = mViewPager.getMeasuredWidth() - mViewPager.getPaddingLeft() - mViewPager.getPaddingRight();
+        ViewGroup.LayoutParams lp;
+        if (itemView.getLayoutParams() == null) {
+            lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         } else {
-            lp.height = mViewPager.getMeasuredHeight() - mViewPager.getPaddingTop() - mViewPager.getPaddingBottom();
+            lp = itemView.getLayoutParams();
+            if (mViewPager.getLayoutManager().canScrollHorizontally()) {
+                lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            } else {
+                lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            }
         }
         itemView.setLayoutParams(lp);
     }
