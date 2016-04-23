@@ -47,18 +47,20 @@ public class VerticalPagerActivity extends Activity {
                     View v = recyclerView.getChildAt(j);
                     //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
                     float rate = 0;
-                    if (v.getLeft() <= padding) {
-                        if (v.getLeft() >= padding - v.getWidth()) {
-                            rate = (padding - v.getLeft()) * 1f / v.getWidth();
+                    if (v.getTop() <= padding) {
+                        if (v.getTop() >= padding - v.getHeight()) {
+                            rate = (padding - v.getTop()) * 1f / v.getHeight();
                         } else {
                             rate = 1;
                         }
+                        v.setScaleX(1 - rate * 0.1f);
                         v.setScaleY(1 - rate * 0.1f);
                     } else {
-                        //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
-                        if (v.getLeft() <= recyclerView.getWidth() - padding) {
-                            rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
+                        //往右 从 padding 到 recyclerView.getHeight()-padding 的过程中，由大到小
+                        if (v.getTop() <= recyclerView.getHeight() - padding) {
+                            rate = (recyclerView.getHeight() - padding - v.getTop()) * 1f / v.getHeight();
                         }
+                        v.setScaleX(0.9f + rate * 0.1f);
                         v.setScaleY(0.9f + rate * 0.1f);
                     }
                 }
