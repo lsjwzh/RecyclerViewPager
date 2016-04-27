@@ -1,9 +1,5 @@
 package com.lsjwzh.widget.recyclerviewpager;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.PointF;
@@ -18,6 +14,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * RecyclerViewPager
@@ -219,6 +219,9 @@ public class RecyclerViewPager extends RecyclerView {
                         }
                     };
             linearSmoothScroller.setTargetPosition(position);
+            if (position == RecyclerView.NO_POSITION) {
+                return;
+            }
             getLayoutManager().startSmoothScroll(linearSmoothScroller);
         } else {
             super.smoothScrollToPosition(position);
