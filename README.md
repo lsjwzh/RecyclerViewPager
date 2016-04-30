@@ -42,7 +42,7 @@ repositories {
 
 dependencies {
     ...
-    compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.0-beta5'
+    compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.0'
     ...
 }
 ```
@@ -129,6 +129,7 @@ If you just want to get current actual position, you can do it like this:
 
 
 ### Release Notes:
+    1.1.0stable fix bug:LoopViewPager position confusion;LoopViewPager non stop spinning;
     1.1.0beta5 feat: TabLayoutSupport Lib supports LoopViewPager
     1.1.0beta4 fix bug:support ItemDecorations;
     1.1.0beta3 support reverse;
