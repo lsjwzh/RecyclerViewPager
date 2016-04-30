@@ -161,6 +161,7 @@ If you just want to get current actual position, you can do it like this:
 ~~Support TabLayout	~~
 Support ViewPagerIndicator
 Wrap Content？
+dispatchTouchEvent override demo
 
 License
 -------
