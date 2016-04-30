@@ -3,6 +3,7 @@ package com.lsjwzh.widget.recyclerviewpager;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 
 public class LoopRecyclerViewPager extends RecyclerViewPager {
 
@@ -47,7 +48,9 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
      */
     @Override
     public void smoothScrollToPosition(int position) {
-        super.smoothScrollToPosition(transformInnerPositionIfNeed(position));
+        int transformedPosition = transformInnerPositionIfNeed(position);
+        super.smoothScrollToPosition(transformedPosition);
+        Log.e("test", "transformedPosition:" + transformedPosition);
     }
 
     /**
@@ -76,15 +79,15 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
      * @return actual position
      */
     public int transformToActualPosition(int position) {
-        return position % getActualItemCountFromAdpater();
+        return position % getActualItemCountFromAdapter();
     }
 
-    private int getActualItemCountFromAdpater() {
+    private int getActualItemCountFromAdapter() {
         return ((LoopRecyclerViewPagerAdapter) getWrapperAdapter()).getActualItemCount();
     }
 
     private int transformInnerPositionIfNeed(int position) {
-        final int actualItemCount = getActualItemCountFromAdpater();
+        final int actualItemCount = getActualItemCountFromAdapter();
         final int actualCurrentPosition = getCurrentPosition() % actualItemCount;
         int bakPosition1 = getCurrentPosition()
                 - actualCurrentPosition
@@ -97,6 +100,7 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
                 - actualCurrentPosition
                 + actualItemCount
                 + position % actualItemCount;
+        Log.e("test", bakPosition1 + "/" + bakPosition2 + "/" + bakPosition3 + "/" + getCurrentPosition());
         // get position which is closer to current position
         if (Math.abs(bakPosition1 - getCurrentPosition()) > Math.abs(bakPosition2 -
                 getCurrentPosition())){
@@ -118,7 +122,7 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
 
     private int getMiddlePosition() {
         int middlePosition = Integer.MAX_VALUE / 2;
-        final int actualItemCount = getActualItemCountFromAdpater();
+        final int actualItemCount = getActualItemCountFromAdapter();
         if (actualItemCount > 0 && middlePosition % actualItemCount != 0) {
             middlePosition = middlePosition - middlePosition % actualItemCount;
         }
