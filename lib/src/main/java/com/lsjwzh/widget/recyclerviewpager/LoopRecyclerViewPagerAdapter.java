@@ -54,7 +54,7 @@ public class LoopRecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder>
             }
         }
         try {
-            mPositionField.set(holder, position);;
+            mPositionField.set(holder, position);
         } catch (Exception e) {
             e.printStackTrace();
         }
