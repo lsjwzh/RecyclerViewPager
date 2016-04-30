@@ -90,7 +90,7 @@ mRecyclerView.setAdapter(new RecyclerView.Adpater<X>());
 ```gradle
 dependencies {
     ...
-    compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.0-beta5'
+    compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.0'
     ...
 }
 ```
