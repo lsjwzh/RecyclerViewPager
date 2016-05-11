@@ -2,11 +2,19 @@ package com.lsjwzh.widget.recyclerviewpager;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
+import android.os.Build;
 import android.os.Parcelable;
+import android.support.v4.view.KeyEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.FocusFinder;
+import android.view.KeyEvent;
+import android.view.SoundEffectConstants;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -19,6 +27,8 @@ import java.util.List;
  */
 public class RecyclerViewPager extends RecyclerView {
     public static final boolean DEBUG = BuildConfig.DEBUG;
+
+    private final Rect mTempRect = new Rect();
 
     private RecyclerViewPagerAdapter<?> mViewPagerAdapter;
     private float mTriggerOffset = 0.25f;
@@ -296,6 +306,151 @@ public class RecyclerViewPager extends RecyclerView {
                 }
             }
         }
+    }
+
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return super.dispatchKeyEvent(event) || executeKeyEvent(event);
+    }
+
+    public boolean executeKeyEvent(KeyEvent event) {
+        boolean handled = false;
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    handled = arrowScroll(FOCUS_LEFT);
+                    break;
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    handled = arrowScroll(FOCUS_RIGHT);
+                    break;
+                case KeyEvent.KEYCODE_TAB:
+                    if (Build.VERSION.SDK_INT >= 11) {
+                        // The focus finder had a bug handling FOCUS_FORWARD and FOCUS_BACKWARD
+                        // before Android 3.0. Ignore the tab key on those devices.
+                        if (KeyEventCompat.hasNoModifiers(event)) {
+                            handled = arrowScroll(FOCUS_FORWARD);
+                        } else if (KeyEventCompat.hasModifiers(event, KeyEvent.META_SHIFT_ON)) {
+                            handled = arrowScroll(FOCUS_BACKWARD);
+                        }
+                    }
+                    break;
+            }
+        }
+        return handled;
+    }
+
+    public boolean arrowScroll(int direction) {
+        View currentFocused = findFocus();
+        if (currentFocused == this) {
+            currentFocused = null;
+        } else if (currentFocused != null) {
+            boolean isChild = false;
+            for (ViewParent parent = currentFocused.getParent(); parent instanceof ViewGroup;
+                 parent = parent.getParent()) {
+                if (parent == this) {
+                    isChild = true;
+                    break;
+                }
+            }
+            if (!isChild) {
+                // This would cause the focus search down below to fail in fun ways.
+                final StringBuilder sb = new StringBuilder();
+                sb.append(currentFocused.getClass().getSimpleName());
+                for (ViewParent parent = currentFocused.getParent(); parent instanceof ViewGroup;
+                     parent = parent.getParent()) {
+                    sb.append(" => ").append(parent.getClass().getSimpleName());
+                }
+//                Log.e(TAG, "arrowScroll tried to find focus based on non-child " +
+//                        "current focused view " + sb.toString());
+                currentFocused = null;
+            }
+        }
+
+        boolean handled = false;
+
+        View nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused,
+                direction);
+        if (nextFocused != null && nextFocused != currentFocused) {
+            final int pager_width = getRight()-getLeft();
+            if (direction == View.FOCUS_LEFT) {
+                // If there is nothing to the left, or this is causing us to
+                // jump to the right, then what we really want to do is page left.
+                final int nextLeft = getChildRectInPagerCoordinates(mTempRect, nextFocused).left%pager_width;
+                final int currLeft = getChildRectInPagerCoordinates(mTempRect, currentFocused).left%pager_width;
+//                Log.d(TAG,"nextFocused:"+nextFocused+" nextLeft:"+nextLeft+" currentFocused:"+currentFocused+" currLeft:"+currLeft);
+                if (currentFocused != null && nextLeft >= currLeft) {
+                    handled = pageLeft();
+                } else {
+                    handled = nextFocused.requestFocus();
+                }
+            } else if (direction == View.FOCUS_RIGHT) {
+                // If there is nothing to the right, or this is causing us to
+                // jump to the left, then what we really want to do is page right.
+                final int nextLeft = getChildRectInPagerCoordinates(mTempRect, nextFocused).left%pager_width;
+                final int currLeft = getChildRectInPagerCoordinates(mTempRect, currentFocused).left%pager_width;
+//                Log.d(TAG,"nextFocused:"+nextFocused+" next:"+getChildRectInPagerCoordinates(mTempRect, nextFocused)+" currentFocused:"+currentFocused+" current:"+getChildRectInPagerCoordinates(mTempRect, currentFocused));
+                if (currentFocused != null && nextLeft <= currLeft) {
+                    handled = pageRight();
+                } else {
+                    handled = nextFocused.requestFocus();
+                }
+            }
+        } else if (direction == FOCUS_LEFT || direction == FOCUS_BACKWARD) {
+            // Trying to move left and nothing there; try to page.
+            handled = pageLeft();
+        } else if (direction == FOCUS_RIGHT || direction == FOCUS_FORWARD) {
+            // Trying to move right and nothing there; try to page.
+            handled = pageRight();
+        }
+        if (handled) {
+            playSoundEffect(SoundEffectConstants.getContantForFocusDirection(direction));
+        }
+        return handled;
+    }
+
+    private Rect getChildRectInPagerCoordinates(Rect outRect, View child) {
+        if (outRect == null) {
+            outRect = new Rect();
+        }
+        if (child == null) {
+            outRect.set(0, 0, 0, 0);
+            return outRect;
+        }
+        outRect.left = child.getLeft();
+        outRect.right = child.getRight();
+        outRect.top = child.getTop();
+        outRect.bottom = child.getBottom();
+
+        ViewParent parent = child.getParent();
+        while (parent instanceof ViewGroup && parent != this) {
+            final ViewGroup group = (ViewGroup) parent;
+            outRect.left += group.getLeft();
+            outRect.right += group.getRight();
+            outRect.top += group.getTop();
+            outRect.bottom += group.getBottom();
+
+            parent = group.getParent();
+        }
+        return outRect;
+    }
+
+    boolean pageLeft() {
+        int curPos = getCurrentPosition();
+        if (curPos > 0) {
+            smoothScrollToPosition(curPos - 1);
+            return true;
+        }
+        return false;
+    }
+
+    boolean pageRight() {
+        int curPos = getCurrentPosition();
+        if (mViewPagerAdapter != null && curPos < (mViewPagerAdapter.getItemCount() - 1)) {
+            smoothScrollToPosition(curPos + 1);
+            return true;
+        }
+        return false;
     }
 
     private int safeTargetPosition(int position, int count) {
