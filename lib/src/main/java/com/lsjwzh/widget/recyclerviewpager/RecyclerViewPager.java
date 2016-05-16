@@ -526,4 +526,8 @@ public class RecyclerViewPager extends RecyclerView {
         void OnPageChanged(int oldPosition, int newPosition);
     }
 
+
+    public float getlLastY() {
+        return mLastY;
+    }
 }
