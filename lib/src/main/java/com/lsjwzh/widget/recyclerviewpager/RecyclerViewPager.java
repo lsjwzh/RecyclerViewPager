@@ -48,6 +48,7 @@ public class RecyclerViewPager extends RecyclerView {
     private int mPositionOnTouchDown = -1;
     private boolean mHasCalledOnPageChanged = true;
     private boolean reverseLayout = false;
+    private float mLastY;
 
     public RecyclerViewPager(Context context) {
         this(context, null);
@@ -390,6 +391,7 @@ public class RecyclerViewPager extends RecyclerView {
             if (DEBUG) {
                 Log.d("@", "mPositionOnTouchDown:" + mPositionOnTouchDown);
             }
+            mLastY = ev.getRawY();
         }
         return super.dispatchTouchEvent(ev);
     }
