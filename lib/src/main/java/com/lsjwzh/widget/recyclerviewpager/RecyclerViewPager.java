@@ -238,6 +238,7 @@ public class RecyclerViewPager extends RecyclerView {
         super.scrollToPosition(position);
 
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @SuppressWarnings("deprecation")
             @Override
             public void onGlobalLayout() {
                 if (Build.VERSION.SDK_INT < 16) {
@@ -246,7 +247,7 @@ public class RecyclerViewPager extends RecyclerView {
                     getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
 
-                if (mSmoothScrollTargetPosition >= 0 && mSmoothScrollTargetPosition < mViewPagerAdapter.getItemCount()) {
+                if (mSmoothScrollTargetPosition >= 0 && mSmoothScrollTargetPosition < getItemCount()) {
                     if (mOnPageChangedListeners != null) {
                         for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
                             if (onPageChangedListener != null) {
@@ -259,11 +260,15 @@ public class RecyclerViewPager extends RecyclerView {
         });
     }
 
+    private int getItemCount() {
+        return mViewPagerAdapter == null ? 0 : mViewPagerAdapter.getItemCount();
+    }
+
     /**
      * get item position in center of viewpager
      */
     public int getCurrentPosition() {
-        int curPosition = -1;
+        int curPosition;
         if (getLayoutManager().canScrollHorizontally()) {
             curPosition = ViewUtils.getCenterXChildPosition(this);
         } else {
@@ -296,17 +301,15 @@ public class RecyclerViewPager extends RecyclerView {
                 }
             }
             targetPosition = Math.max(targetPosition, 0);
-            targetPosition = Math.min(targetPosition, mViewPagerAdapter.getItemCount() - 1);
+            targetPosition = Math.min(targetPosition, getItemCount() - 1);
             if (targetPosition == curPosition
-                    && ((mSinglePageFling
-                    && mPositionOnTouchDown == curPosition)
-                    || !mSinglePageFling)) {
+                    && (!mSinglePageFling || mPositionOnTouchDown == curPosition)) {
                 View centerXChild = ViewUtils.getCenterXChild(this);
                 if (centerXChild != null) {
                     if (mTouchSpan > centerXChild.getWidth() * mTriggerOffset * mTriggerOffset && targetPosition != 0) {
                         if (!reverseLayout) targetPosition--;
                         else targetPosition++;
-                    } else if (mTouchSpan < centerXChild.getWidth() * -mTriggerOffset && targetPosition != mViewPagerAdapter.getItemCount() - 1) {
+                    } else if (mTouchSpan < centerXChild.getWidth() * -mTriggerOffset && targetPosition != getItemCount() - 1) {
                         if (!reverseLayout) targetPosition++;
                         else targetPosition--;
                     }
@@ -316,7 +319,7 @@ public class RecyclerViewPager extends RecyclerView {
                 Log.d("@", "mTouchSpan:" + mTouchSpan);
                 Log.d("@", "adjustPositionX:" + targetPosition);
             }
-            smoothScrollToPosition(safeTargetPosition(targetPosition, mViewPagerAdapter.getItemCount()));
+            smoothScrollToPosition(safeTargetPosition(targetPosition, getItemCount()));
         }
     }
 
@@ -357,17 +360,15 @@ public class RecyclerViewPager extends RecyclerView {
             }
 
             targetPosition = Math.max(targetPosition, 0);
-            targetPosition = Math.min(targetPosition, mViewPagerAdapter.getItemCount() - 1);
+            targetPosition = Math.min(targetPosition, getItemCount() - 1);
             if (targetPosition == curPosition
-                    && ((mSinglePageFling
-                    && mPositionOnTouchDown == curPosition)
-                    || !mSinglePageFling)) {
+                    && (!mSinglePageFling || mPositionOnTouchDown == curPosition)) {
                 View centerYChild = ViewUtils.getCenterYChild(this);
                 if (centerYChild != null) {
                     if (mTouchSpan > centerYChild.getHeight() * mTriggerOffset && targetPosition != 0) {
                         if (!reverseLayout) targetPosition--;
                         else targetPosition++;
-                    } else if (mTouchSpan < centerYChild.getHeight() * -mTriggerOffset && targetPosition != mViewPagerAdapter.getItemCount() - 1) {
+                    } else if (mTouchSpan < centerYChild.getHeight() * -mTriggerOffset && targetPosition != getItemCount() - 1) {
                         if (!reverseLayout) targetPosition++;
                         else targetPosition--;
                     }
@@ -377,7 +378,7 @@ public class RecyclerViewPager extends RecyclerView {
                 Log.d("@", "mTouchSpan:" + mTouchSpan);
                 Log.d("@", "adjustPositionY:" + targetPosition);
             }
-            smoothScrollToPosition(safeTargetPosition(targetPosition, mViewPagerAdapter.getItemCount()));
+            smoothScrollToPosition(safeTargetPosition(targetPosition, getItemCount()));
         }
     }
 
@@ -469,7 +470,7 @@ public class RecyclerViewPager extends RecyclerView {
                         }
                     }
                 }
-                smoothScrollToPosition(safeTargetPosition(targetPosition, mViewPagerAdapter.getItemCount()));
+                smoothScrollToPosition(safeTargetPosition(targetPosition, getItemCount()));
                 mCurView = null;
             } else if (mSmoothScrollTargetPosition != mPositionBeforeScroll) {
                 if (DEBUG) {
@@ -493,6 +494,7 @@ public class RecyclerViewPager extends RecyclerView {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @NonNull
     protected RecyclerViewPagerAdapter ensureRecyclerViewPagerAdapter(Adapter adapter) {
         return (adapter instanceof RecyclerViewPagerAdapter)
