@@ -1,16 +1,11 @@
 package com.lsjwzh.widget.recyclerviewpager;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.ViewHolderDelegate;
 
-import java.lang.reflect.Field;
 
 public class LoopRecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder>
         extends RecyclerViewPagerAdapter<VH> {
-
-    private static final String TAG = LoopRecyclerViewPager.class.getSimpleName();
-
-    private Field mPositionField;
 
     public LoopRecyclerViewPagerAdapter(RecyclerViewPager viewPager, RecyclerView.Adapter<VH> adapter) {
         super(viewPager, adapter);
@@ -48,21 +43,7 @@ public class LoopRecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder>
         super.onBindViewHolder(holder, getActualPosition(position));
         // because of getCurrentPosition may return ViewHolder‘s position,
         // so we must reset mPosition if exists.
-        if (mPositionField == null) {
-            try {
-                mPositionField = holder.getClass().getDeclaredField("mPosition");
-                mPositionField.setAccessible(true);
-            } catch (NoSuchFieldException e) {
-                Log.i(TAG, "The holder doesn't have a mPosition field.");
-            }
-        }
-        if (mPositionField != null) {
-            try {
-                mPositionField.set(holder, position);
-            } catch (Exception e) {
-                Log.w(TAG, "Error while updating holder's mPosition field", e);
-            }
-        }
+        ViewHolderDelegate.setPosition(holder, position);
     }
 
     public int getActualPosition(int position) {
