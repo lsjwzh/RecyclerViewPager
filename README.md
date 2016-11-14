@@ -42,7 +42,7 @@ repositories {
 
 dependencies {
     ...
-    compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.1'
+    compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.2'
     ...
 }
 ```
@@ -90,7 +90,7 @@ mRecyclerView.setAdapter(new RecyclerView.Adpater<X>());
 ```gradle
 dependencies {
     ...
-    compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.1'
+    compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.2'
     ...
 }
 ```
@@ -129,6 +129,7 @@ If you just want to get current actual position, you can do it like this:
 
 
 ### Release Notes:
+    1.1.2 merge some fix.
     1.1.1 merge some fix.
     1.1.0stable fix bug:LoopViewPager position confusion;LoopViewPager non stop spinning;
     1.1.0beta5 feat: TabLayoutSupport Lib supports LoopViewPager
