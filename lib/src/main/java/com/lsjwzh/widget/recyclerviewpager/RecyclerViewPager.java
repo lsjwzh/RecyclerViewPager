@@ -174,7 +174,10 @@ public class RecyclerViewPager extends RecyclerView {
         if (DEBUG) {
             Log.d("@", "smoothScrollToPosition:" + position);
         }
-        mPositionBeforeScroll = getCurrentPosition();
+
+        if (mPositionBeforeScroll < 0) {
+            mPositionBeforeScroll = getCurrentPosition();
+        }
         mSmoothScrollTargetPosition = position;
         if (getLayoutManager() != null && getLayoutManager() instanceof LinearLayoutManager) {
             // exclude item decoration
