@@ -79,6 +79,9 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
      * @return actual position
      */
     public int transformToActualPosition(int position) {
+        if(getAdapter() == null || getAdapter().getItemCount() < 0) {
+            return 0;
+        }
         return position % getActualItemCountFromAdapter();
     }
 
@@ -88,6 +91,8 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
 
     private int transformInnerPositionIfNeed(int position) {
         final int actualItemCount = getActualItemCountFromAdapter();
+        if(actualItemCount == 0)
+            return actualItemCount;
         final int actualCurrentPosition = getCurrentPosition() % actualItemCount;
         int bakPosition1 = getCurrentPosition()
                 - actualCurrentPosition

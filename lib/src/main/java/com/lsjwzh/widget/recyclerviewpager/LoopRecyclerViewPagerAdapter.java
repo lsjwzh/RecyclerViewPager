@@ -25,12 +25,20 @@ public class LoopRecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return Integer.MAX_VALUE;
+        if (getActualItemCount() > 0) {
+            return Integer.MAX_VALUE;
+        } else {
+            return super.getItemCount();
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
-        return super.getItemViewType(getActualPosition(position));
+        if (getActualItemCount() > 0) {
+            return super.getItemViewType(getActualPosition(position));
+        } else {
+            return 0;
+        }
     }
 
     @Override
@@ -48,7 +56,7 @@ public class LoopRecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder>
 
     public int getActualPosition(int position) {
         int actualPosition = position;
-        if (position >= getActualItemCount()) {
+        if (getActualItemCount() > 0 && position >= getActualItemCount()) {
             actualPosition = position % getActualItemCount();
         }
         return actualPosition;
