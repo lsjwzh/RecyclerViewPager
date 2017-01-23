@@ -104,6 +104,14 @@ public class RecyclerViewPager extends RecyclerView {
         return mSinglePageFling;
     }
 
+    public boolean isInertia() {
+        return isInertia;
+    }
+
+    public void setInertia(boolean inertia) {
+        isInertia = inertia;
+    }
+
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         try {
