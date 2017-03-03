@@ -6,6 +6,7 @@
         <attr name="rvp_triggerOffset" format="float" />
         <attr name="rvp_flingFactor" format="float" />
         <attr name="rvp_singlePageFling" format="boolean" />
+        <attr name="rvp_millisecondsPerInch" format="float" />
     </declare-styleable>
 
 </resources>
