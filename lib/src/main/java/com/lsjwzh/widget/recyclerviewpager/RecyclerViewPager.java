@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +32,7 @@ public class RecyclerViewPager extends RecyclerView {
     private RecyclerViewPagerAdapter<?> mViewPagerAdapter;
     private float mTriggerOffset = 0.25f;
     private float mFlingFactor = 0.15f;
+    private float mMillisecondsPerInch = 25f;
     private float mTouchSpan;
     private List<OnPageChangedListener> mOnPageChangedListeners;
     private int mSmoothScrollTargetPosition = -1;
@@ -77,6 +79,7 @@ public class RecyclerViewPager extends RecyclerView {
         mTriggerOffset = a.getFloat(R.styleable.RecyclerViewPager_rvp_triggerOffset, 0.25f);
         mSinglePageFling = a.getBoolean(R.styleable.RecyclerViewPager_rvp_singlePageFling, mSinglePageFling);
         isInertia = a.getBoolean(R.styleable.RecyclerViewPager_rvp_inertia, false);
+        mMillisecondsPerInch = a.getFloat(R.styleable.RecyclerViewPager_rvp_millisecondsPerInch, 25f);
         a.recycle();
     }
 
@@ -236,6 +239,11 @@ public class RecyclerViewPager extends RecyclerView {
                             if (time > 0) {
                                 action.update(-dx, -dy, time, mDecelerateInterpolator);
                             }
+                        }
+
+                        @Override
+                        protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                            return mMillisecondsPerInch / displayMetrics.densityDpi;
                         }
                     };
             linearSmoothScroller.setTargetPosition(position);
