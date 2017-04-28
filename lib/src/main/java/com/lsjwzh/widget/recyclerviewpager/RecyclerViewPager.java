@@ -245,7 +245,21 @@ public class RecyclerViewPager extends RecyclerView {
                         protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
                             return mMillisecondsPerInch / displayMetrics.densityDpi;
                         }
+
+                        @Override
+                        protected void onStop() {
+                            super.onStop();
+                            if (mOnPageChangedListeners != null) {
+                                for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
+                                    if (onPageChangedListener != null) {
+                                        onPageChangedListener.OnPageChanged(mPositionBeforeScroll, mSmoothScrollTargetPosition);
+                                    }
+                                }
+                            }
+                            mHasCalledOnPageChanged = true;
+                        }
                     };
+
             linearSmoothScroller.setTargetPosition(position);
             if (position == RecyclerView.NO_POSITION) {
                 return;
@@ -535,14 +549,6 @@ public class RecyclerViewPager extends RecyclerView {
                 if (DEBUG) {
                     Log.d("@", "onPageChanged:" + mSmoothScrollTargetPosition);
                 }
-                if (mOnPageChangedListeners != null) {
-                    for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
-                        if (onPageChangedListener != null) {
-                            onPageChangedListener.OnPageChanged(mPositionBeforeScroll, mSmoothScrollTargetPosition);
-                        }
-                    }
-                }
-                mHasCalledOnPageChanged = true;
                 mPositionBeforeScroll = mSmoothScrollTargetPosition;
             }
             // reset
@@ -582,6 +588,11 @@ public class RecyclerViewPager extends RecyclerView {
     }
 
     public interface OnPageChangedListener {
+        /**
+         * Fires when viewpager changes it's page
+         * @param oldPosition old position
+         * @param newPosition new position
+         */
         void OnPageChanged(int oldPosition, int newPosition);
     }
 
