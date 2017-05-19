@@ -1,4 +1,4 @@
-[![Android Arsenal](https:00000000000000000000000//img.shields.io/badge/Android%20Arsenal-RecyclerViewPager-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1622)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerViewPager-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1622)
 # RecyclerViewPager
 A ViewPager implemention base on RecyclerView. Support fling operation like gallary.
 
@@ -42,7 +42,7 @@ repositories {
 
 dependencies {
     ...
-    compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.2'
+    compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.2@aar'
     ...
 }
 ```
@@ -78,7 +78,7 @@ LinearLayoutManager layout = new LinearLayoutManager(getActivity(),LinearLayoutM
 mRecyclerView.setLayoutManager(layout);
 
 //set adapter
-//You just need to impelement ViewPageAdapter by yourself like a normal RecyclerView.Adpater.
+//You just need to implement ViewPageAdapter by yourself like a normal RecyclerView.Adpater.
 mRecyclerView.setAdapter(new RecyclerView.Adpater<X>());
 
 // That is all.
@@ -90,7 +90,7 @@ mRecyclerView.setAdapter(new RecyclerView.Adpater<X>());
 ```gradle
 dependencies {
     ...
-    compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.2'
+    compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.2@aar'
     ...
 }
 ```
