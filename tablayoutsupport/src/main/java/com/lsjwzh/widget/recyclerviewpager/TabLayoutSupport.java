@@ -23,7 +23,7 @@ public class TabLayoutSupport {
                 = new TabLayoutOnPageChangeListener(tabLayout, viewPager);
         viewPager.addOnScrollListener(listener);
         viewPager.addOnPageChangedListener(listener);
-        tabLayout.setOnTabSelectedListener(new ViewPagerOnTabSelectedListener(viewPager));
+        tabLayout.setOnTabSelectedListener(new ViewPagerOnTabSelectedListener(viewPager, listener));
     }
 
     public interface ViewPagerTabLayoutAdapter {
@@ -34,13 +34,17 @@ public class TabLayoutSupport {
 
     public static class ViewPagerOnTabSelectedListener implements TabLayout.OnTabSelectedListener {
         private final RecyclerViewPager mViewPager;
+        private final TabLayoutOnPageChangeListener mOnPageChangeListener;
 
-        public ViewPagerOnTabSelectedListener(RecyclerViewPager viewPager) {
+        public ViewPagerOnTabSelectedListener(RecyclerViewPager viewPager, TabLayoutOnPageChangeListener listener) {
             this.mViewPager = viewPager;
+            this.mOnPageChangeListener = listener;
         }
 
         public void onTabSelected(TabLayout.Tab tab) {
-            this.mViewPager.smoothScrollToPosition(tab.getPosition());
+            if(!this.mOnPageChangeListener.isPageChangeTabSelecting()) {
+                this.mViewPager.smoothScrollToPosition(tab.getPosition());
+            }
         }
 
         public void onTabUnselected(TabLayout.Tab tab) {
@@ -56,6 +60,7 @@ public class TabLayoutSupport {
         private final WeakReference<RecyclerViewPager> mViewPagerRef;
         private int mPositionBeforeScroll;
         private int mPagerLeftBeforeScroll;
+        private boolean mPageChangeTabSelectingNow;
 
         public TabLayoutOnPageChangeListener(TabLayout tabLayout, RecyclerViewPager viewPager) {
             this.mTabLayoutRef = new WeakReference<>(tabLayout);
@@ -118,8 +123,14 @@ public class TabLayoutSupport {
             }
             TabLayout tabLayout = this.mTabLayoutRef.get();
             if (tabLayout != null && tabLayout.getTabAt(newPosition) != null) {
+                mPageChangeTabSelectingNow = true;
                 tabLayout.getTabAt(newPosition).select();
+                mPageChangeTabSelectingNow = false;
             }
+        }
+
+        public boolean isPageChangeTabSelecting(){
+            return mPageChangeTabSelectingNow;
         }
     }
 }
