@@ -18,7 +18,8 @@ public class RecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder> extend
     public RecyclerViewPagerAdapter(RecyclerViewPager viewPager, RecyclerView.Adapter<VH> adapter) {
         mAdapter = adapter;
         mViewPager = viewPager;
-        setHasStableIds(mAdapter.hasStableIds());
+        if (mAdapter != null)
+            setHasStableIds(mAdapter.hasStableIds());
     }
 
     @Override
