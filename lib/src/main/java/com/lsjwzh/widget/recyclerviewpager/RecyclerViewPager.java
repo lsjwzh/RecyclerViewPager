@@ -326,7 +326,7 @@ public class RecyclerViewPager extends RecyclerView {
     }
 
 
-    private boolean isRightToLeftMode(){
+    private boolean isLeftToRightMode(){
         return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_LTR;
     }
 
@@ -336,7 +336,7 @@ public class RecyclerViewPager extends RecyclerView {
     protected void adjustPositionX(int velocityX) {
 
         if (reverseLayout) velocityX *= -1;
-        if (!isRightToLeftMode()) velocityX *= -1;
+        if (!isLeftToRightMode()) velocityX *= -1;
 
         int childCount = getChildCount();
         if (childCount > 0) {
