@@ -533,7 +533,7 @@ public class RecyclerViewPager extends RecyclerView {
                 if (mCurView != null) {
                     targetPosition = getChildAdapterPosition(mCurView);
                     if (getLayoutManager().canScrollHorizontally()) {
-                        boolean leftToRight = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_LTR;
+                        boolean leftToRight = isLeftToRightMode();
                         int spanX = mCurView.getLeft() - mFisrtLeftWhenDragging;
                         if (spanX > mCurView.getWidth() * mTriggerOffset && mCurView.getLeft() >= mMaxLeftWhenDragging) {
                             if (!reverseLayout) {
