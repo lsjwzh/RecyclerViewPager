@@ -6,6 +6,8 @@ import android.graphics.PointF;
 import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.text.TextUtilsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +22,7 @@ import android.view.ViewTreeObserver;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * RecyclerViewPager
@@ -322,11 +325,18 @@ public class RecyclerViewPager extends RecyclerView {
         return curPosition;
     }
 
+
+    private boolean isLeftToRightMode(){
+        return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_LTR;
+    }
+
     /***
      * adjust position before Touch event complete and fling action start.
      */
     protected void adjustPositionX(int velocityX) {
+
         if (reverseLayout) velocityX *= -1;
+        if (!isLeftToRightMode()) velocityX *= -1;
 
         int childCount = getChildCount();
         if (childCount > 0) {
@@ -464,8 +474,8 @@ public class RecyclerViewPager extends RecyclerView {
                     touchStartPoint.set(x, y);
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    float tempDistance = (float) Math.sqrt(x*x+ y*y);
-                    float lastDistance = (float) Math.sqrt(touchStartPoint.x*touchStartPoint.x + touchStartPoint.y*touchStartPoint.y);
+                    float tempDistance = (float) Math.sqrt(x * x + y * y);
+                    float lastDistance = (float) Math.sqrt(touchStartPoint.x * touchStartPoint.x + touchStartPoint.y * touchStartPoint.y);
 
                     if (Math.abs(lastDistance - tempDistance) > minSlideDistance) {
                         float k = Math.abs((touchStartPoint.y - y) / (touchStartPoint.x - x));
@@ -523,14 +533,22 @@ public class RecyclerViewPager extends RecyclerView {
                 if (mCurView != null) {
                     targetPosition = getChildAdapterPosition(mCurView);
                     if (getLayoutManager().canScrollHorizontally()) {
+                        boolean leftToRight = isLeftToRightMode();
                         int spanX = mCurView.getLeft() - mFisrtLeftWhenDragging;
-                        // if user is tending to cancel paging action, don't perform position changing
                         if (spanX > mCurView.getWidth() * mTriggerOffset && mCurView.getLeft() >= mMaxLeftWhenDragging) {
-                            if (!reverseLayout) targetPosition--;
-                            else targetPosition++;
+                            if (!reverseLayout) {
+                                targetPosition = leftToRight ? (targetPosition - 1) : (targetPosition + 1);
+                            }
+                            else {
+                                targetPosition = leftToRight ? (targetPosition + 1) : (targetPosition - 1);
+                            }
                         } else if (spanX < mCurView.getWidth() * -mTriggerOffset && mCurView.getLeft() <= mMinLeftWhenDragging) {
-                            if (!reverseLayout) targetPosition++;
-                            else targetPosition--;
+                            if (!reverseLayout) {
+                                targetPosition = leftToRight ? (targetPosition + 1) : (targetPosition - 1);
+                            }
+                            else {
+                                targetPosition = leftToRight ? (targetPosition - 1) : (targetPosition + 1);
+                            }
                         }
                     } else {
                         int spanY = mCurView.getTop() - mFirstTopWhenDragging;
@@ -590,6 +608,7 @@ public class RecyclerViewPager extends RecyclerView {
     public interface OnPageChangedListener {
         /**
          * Fires when viewpager changes it's page
+         *
          * @param oldPosition old position
          * @param newPosition new position
          */
