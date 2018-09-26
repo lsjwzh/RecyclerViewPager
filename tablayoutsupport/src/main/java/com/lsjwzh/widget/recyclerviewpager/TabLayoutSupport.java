@@ -2,9 +2,9 @@ package com.lsjwzh.widget.recyclerviewpager;
 
 import java.lang.ref.WeakReference;
 
-import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import com.google.android.material.tabs.TabLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
