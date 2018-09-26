@@ -1,7 +1,7 @@
 package com.lsjwzh.widget.recyclerviewpager;
 
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.ViewHolderDelegate;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ViewHolderDelegate;
 
 
 public class LoopRecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder>
