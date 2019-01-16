@@ -23,7 +23,7 @@ public class TabLayoutSupport {
                 = new TabLayoutOnPageChangeListener(tabLayout, viewPager);
         viewPager.addOnScrollListener(listener);
         viewPager.addOnPageChangedListener(listener);
-        tabLayout.setOnTabSelectedListener(new ViewPagerOnTabSelectedListener(viewPager, listener));
+        tabLayout.addOnTabSelectedListener(new ViewPagerOnTabSelectedListener(viewPager, listener));
     }
 
     public interface ViewPagerTabLayoutAdapter {
