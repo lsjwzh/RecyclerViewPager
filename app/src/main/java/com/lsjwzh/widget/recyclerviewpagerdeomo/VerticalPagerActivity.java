@@ -23,8 +23,6 @@ public class VerticalPagerActivity extends Activity {
 
         LinearLayoutManager layout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,
                 false);
-        mRecyclerView.setTriggerOffset(0.15f);
-        mRecyclerView.setFlingFactor(0.25f);
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setAdapter(new LayoutAdapter(this, mRecyclerView));
         mRecyclerView.setHasFixedSize(true);

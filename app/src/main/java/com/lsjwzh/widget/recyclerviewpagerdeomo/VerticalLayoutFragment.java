@@ -60,8 +60,6 @@ public class VerticalLayoutFragment extends Fragment {
         mRecyclerView = (RecyclerViewPager) view.findViewById(R.id.viewpager);
 
         LinearLayoutManager layout = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
-        mRecyclerView.setTriggerOffset(0.15f);
-        mRecyclerView.setFlingFactor(0.25f);
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setAdapter(new LayoutAdapter(activity, mRecyclerView));
         mRecyclerView.setHasFixedSize(true);

@@ -19,8 +19,8 @@ public class TabLayoutSupport {
         for (int count = viewPagerTabLayoutAdapter.getItemCount(); i < count; ++i) {
             tabLayout.addTab(tabLayout.newTab().setText(viewPagerTabLayoutAdapter.getPageTitle(i)));
         }
-        final TabLayoutOnPageChangeListener listener
-                = new TabLayoutOnPageChangeListener(tabLayout, viewPager);
+        final TabLayoutOnPageChangedListener listener
+                = new TabLayoutOnPageChangedListener(tabLayout, viewPager);
         viewPager.addOnScrollListener(listener);
         viewPager.addOnPageChangedListener(listener);
         tabLayout.setOnTabSelectedListener(new ViewPagerOnTabSelectedListener(viewPager, listener));
@@ -34,15 +34,15 @@ public class TabLayoutSupport {
 
     public static class ViewPagerOnTabSelectedListener implements TabLayout.OnTabSelectedListener {
         private final RecyclerViewPager mViewPager;
-        private final TabLayoutOnPageChangeListener mOnPageChangeListener;
+        private final TabLayoutOnPageChangedListener mOnPageChangeListener;
 
-        public ViewPagerOnTabSelectedListener(RecyclerViewPager viewPager, TabLayoutOnPageChangeListener listener) {
+        public ViewPagerOnTabSelectedListener(RecyclerViewPager viewPager, TabLayoutOnPageChangedListener listener) {
             this.mViewPager = viewPager;
             this.mOnPageChangeListener = listener;
         }
 
         public void onTabSelected(TabLayout.Tab tab) {
-            if(!this.mOnPageChangeListener.isPageChangeTabSelecting()) {
+            if (!this.mOnPageChangeListener.isPageChangeTabSelecting()) {
                 this.mViewPager.smoothScrollToPosition(tab.getPosition());
             }
         }
@@ -54,15 +54,14 @@ public class TabLayoutSupport {
         }
     }
 
-    public static class TabLayoutOnPageChangeListener extends RecyclerView.OnScrollListener implements RecyclerViewPager
-            .OnPageChangedListener {
+    public static class TabLayoutOnPageChangedListener extends RecyclerView.OnScrollListener implements RecyclerViewPager.OnPageChangedListener {
         private final WeakReference<TabLayout> mTabLayoutRef;
         private final WeakReference<RecyclerViewPager> mViewPagerRef;
         private int mPositionBeforeScroll;
         private int mPagerLeftBeforeScroll;
         private boolean mPageChangeTabSelectingNow;
 
-        public TabLayoutOnPageChangeListener(TabLayout tabLayout, RecyclerViewPager viewPager) {
+        public TabLayoutOnPageChangedListener(TabLayout tabLayout, RecyclerViewPager viewPager) {
             this.mTabLayoutRef = new WeakReference<>(tabLayout);
             this.mViewPagerRef = new WeakReference<>(viewPager);
         }
@@ -97,9 +96,9 @@ public class TabLayoutSupport {
                 if (positionOffset < 0) {
                     try {
                         tabLayout.setScrollPosition(mPositionBeforeScroll
-                                + (int) Math.floor(positionOffset),
-                            positionOffset - (int) Math.floor(positionOffset),
-                            false);
+                                        + (int) Math.floor(positionOffset),
+                                positionOffset - (int) Math.floor(positionOffset),
+                                false);
                     } catch (Throwable e) {
                         e.printStackTrace();
                     }
@@ -129,7 +128,7 @@ public class TabLayoutSupport {
             }
         }
 
-        public boolean isPageChangeTabSelecting(){
+        public boolean isPageChangeTabSelecting() {
             return mPageChangeTabSelectingNow;
         }
     }

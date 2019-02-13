@@ -38,8 +38,6 @@ public class LoopPagerActivity extends Activity {
 
         LinearLayoutManager layout = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,
                 false);
-        mRecyclerViewPager.setTriggerOffset(0.15f);
-        mRecyclerViewPager.setFlingFactor(0.25f);
         mRecyclerViewPager.setLayoutManager(layout);
         mRecyclerViewPager.setAdapter(new LayoutAdapter(this, mRecyclerViewPager));
         mRecyclerViewPager.setHasFixedSize(true);
