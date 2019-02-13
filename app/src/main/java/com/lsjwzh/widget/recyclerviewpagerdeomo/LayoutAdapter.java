@@ -31,7 +31,7 @@ import static com.lsjwzh.widget.recyclerviewpagerdeomo.R.id;
 import static com.lsjwzh.widget.recyclerviewpagerdeomo.R.layout;
 
 public class LayoutAdapter extends RecyclerView.Adapter<LayoutAdapter.SimpleViewHolder> {
-    private static final int DEFAULT_ITEM_COUNT = 100;
+    private static final int DEFAULT_ITEM_COUNT = 10;
 
     private final Context mContext;
     private final RecyclerView mRecyclerView;

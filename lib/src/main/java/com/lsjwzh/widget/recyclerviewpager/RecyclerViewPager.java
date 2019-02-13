@@ -244,7 +244,7 @@ public class RecyclerViewPager extends RecyclerView {
           }
 
           return beforeInterceptTouchEvent(startScroll, dx, dy)
-              || (startScroll && super.onInterceptTouchEvent(e));
+              || (super.onInterceptTouchEvent(e) && startScroll);
         }
       }
       break;

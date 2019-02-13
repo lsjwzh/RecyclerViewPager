@@ -143,8 +143,10 @@ public class PowerfulPagerSnapHelper extends PagerSnapHelper {
             protected void onTargetFound(View targetView, RecyclerView.State state, Action action) {
                 int[] snapDistances = calculateDistanceToFinalSnap(mRecyclerView.getLayoutManager(),
                         targetView);
-                final int dx = snapDistances[0];
-                final int dy = snapDistances[1];
+                final int dx = allowSmoothScroll? calculateDxToMakeVisible(targetView,
+                        getHorizontalSnapPreference()) : snapDistances[0];
+                final int dy = allowSmoothScroll? calculateDyToMakeVisible(targetView,
+                        getVerticalSnapPreference()) : snapDistances[1];
                 final int time = calculateTimeForDeceleration(Math.max(Math.abs(dx), Math.abs(dy)));
                 if (time > 0) {
                     action.update(dx, dy, time, mDecelerateInterpolator);
