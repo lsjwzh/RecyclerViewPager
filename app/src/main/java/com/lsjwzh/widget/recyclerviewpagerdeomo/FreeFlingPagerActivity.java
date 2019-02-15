@@ -8,6 +8,7 @@ public class FreeFlingPagerActivity extends SingleFlingPagerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRecyclerView.setSinglePagerEnable(false);
         mRecyclerView.setScrollingTouchSlop(TOUCH_SLOP_DEFAULT);
     }
 }
