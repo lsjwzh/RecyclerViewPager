@@ -32,6 +32,11 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
     }
 
     @Override
+    public Adapter getAdapter() {
+        return super.getAdapter();
+    }
+
+    @Override
     @NonNull
     protected RecyclerViewPagerAdapter ensureRecyclerViewPagerAdapter(Adapter adapter) {
         return (adapter instanceof LoopRecyclerViewPagerAdapter)
@@ -86,7 +91,7 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
     }
 
     private int getActualItemCountFromAdapter() {
-        return ((LoopRecyclerViewPagerAdapter) getWrapperAdapter()).getActualItemCount();
+        return ((LoopRecyclerViewPagerAdapter) getActualAdapter()).getActualItemCount();
     }
 
     private int transformInnerPositionIfNeed(int position) {

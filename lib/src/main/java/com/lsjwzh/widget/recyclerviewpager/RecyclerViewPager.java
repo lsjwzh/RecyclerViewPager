@@ -139,13 +139,10 @@ public class RecyclerViewPager extends RecyclerView {
 
     @Override
     public Adapter getAdapter() {
-        if (viewPagerAdapter != null) {
-            return viewPagerAdapter.mAdapter;
-        }
-        return null;
+        return viewPagerAdapter;
     }
 
-    public RecyclerViewPagerAdapter getWrapperAdapter() {
+    public RecyclerViewPagerAdapter getActualAdapter() {
         return viewPagerAdapter;
     }
 
