@@ -1,15 +1,12 @@
 package com.lsjwzh.widget.recyclerviewpager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearPagerSnapHelper;
 import android.support.v7.widget.LinearSmoothScroller;
+import android.support.v7.widget.RVPUtil;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerViewUtil;
 import android.support.v7.widget.SinglePagerSnapHelper;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.SnapScrollerCreator;
@@ -17,6 +14,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerViewPager extends RecyclerView {
     public static final int INVALID_POINTER = -1;
@@ -208,7 +208,8 @@ public class RecyclerViewPager extends RecyclerView {
 
                 final int x = (int) (e.getX(index) + 0.5f);
                 final int y = (int) (e.getY(index) + 0.5f);
-                if (getScrollState() != SCROLL_STATE_DRAGGING) {
+                final int scrollState = getScrollState();
+                if (scrollState != SCROLL_STATE_DRAGGING) {
                     final int dx = x - initialTouchX;
                     final int dy = y - initialTouchY;
                     boolean startScroll = false;
@@ -225,8 +226,15 @@ public class RecyclerViewPager extends RecyclerView {
                             (Math.abs(dy) >= Math.abs(dx) || canScrollHorizontally)) {
                         startScroll = true;
                     }
+                    super.onInterceptTouchEvent(e);
+                    if (startScroll) {
+                        RVPUtil.setScrollState(this, SCROLL_STATE_DRAGGING);
+                    } else {
+                        RVPUtil.setScrollState(this, scrollState);
+                    }
 
-                    return beforeInterceptTouchEvent(startScroll, dx, dy) || super.onInterceptTouchEvent(e);
+                    return beforeInterceptTouchEvent(startScroll, dx, dy)
+                            || getScrollState() == SCROLL_STATE_DRAGGING;
                 }
             }
             break;
@@ -283,7 +291,7 @@ public class RecyclerViewPager extends RecyclerView {
         }
         removeCallbacks(pageChangedNotifyRunnable);
         LayoutManager layoutManager = getLayoutManager();
-        if (!RecyclerViewUtil.isLayoutFrozen(this) && layoutManager != null) {
+        if (!RVPUtil.isLayoutFrozen(this) && layoutManager != null) {
             LinearSmoothScroller linearSmoothScroller =
                     ((SnapScrollerCreator) snapHelper).createSnapScroller(layoutManager);
             if (linearSmoothScroller != null) {
