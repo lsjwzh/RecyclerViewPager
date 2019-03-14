@@ -120,6 +120,9 @@ public class RecyclerViewPager extends RecyclerView {
             return RecyclerView.NO_POSITION;
         }
         if (targetPosition != RecyclerView.NO_POSITION) {
+            if (getAdapter() != null && targetPosition >= getAdapter().getItemCount()) {
+                targetPosition = getAdapter().getItemCount() - 1;
+            }
             pendingTargetPosition = targetPosition;
         }
         return targetPosition;
