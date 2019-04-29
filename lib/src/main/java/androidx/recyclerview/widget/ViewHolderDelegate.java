@@ -1,4 +1,4 @@
-package android.support.v7.widget;
+package androidx.recyclerview.widget;
 
 public abstract class ViewHolderDelegate {
 
