@@ -19,7 +19,6 @@ package com.lsjwzh.widget.recyclerviewpagerdeomo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -43,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
         mDemoRecyclerView = (RecyclerView) findViewById(R.id.demo_list);
         mDemoRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager
                 .VERTICAL, false));
-        mDemoRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager
-                .VERTICAL));
         mDemoListAdapter = new DemoListAdapter();
         mDemoRecyclerView.setAdapter(mDemoListAdapter);
         mDemoListAdapter.add(new DemoItem("Single Fling Pager(like official ViewPager)") {
