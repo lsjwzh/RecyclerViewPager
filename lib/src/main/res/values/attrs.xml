@@ -6,8 +6,9 @@
         <attr name="rvp_triggerOffset" format="float" />
         <attr name="rvp_flingFactor" format="float" />
         <attr name="rvp_singlePageFling" format="boolean" />
-        <attr name="rvp_inertia" format="boolean"/>
+        <attr name="rvp_inertia" format="boolean" />
         <attr name="rvp_millisecondsPerInch" format="float" />
+        <attr name="rvp_shoot_every_page" format="boolean" />
     </declare-styleable>
 
 </resources>

@@ -43,6 +43,7 @@ public class RecyclerViewPager extends RecyclerView {
 
     private boolean mSinglePageFling;
     boolean isInertia; // inertia slide state
+    boolean isShootEveryPage;
     float minSlideDistance;
     PointF touchStartPoint;
 
@@ -82,6 +83,7 @@ public class RecyclerViewPager extends RecyclerView {
         mTriggerOffset = a.getFloat(R.styleable.RecyclerViewPager_rvp_triggerOffset, 0.25f);
         mSinglePageFling = a.getBoolean(R.styleable.RecyclerViewPager_rvp_singlePageFling, mSinglePageFling);
         isInertia = a.getBoolean(R.styleable.RecyclerViewPager_rvp_inertia, false);
+        isShootEveryPage = a.getBoolean(R.styleable.RecyclerViewPager_rvp_shoot_every_page, false);
         mMillisecondsPerInch = a.getFloat(R.styleable.RecyclerViewPager_rvp_millisecondsPerInch, 25f);
         a.recycle();
     }
@@ -255,7 +257,7 @@ public class RecyclerViewPager extends RecyclerView {
                             if (mOnPageChangedListeners != null) {
                                 for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
                                     if (onPageChangedListener != null) {
-                                        onPageChangedListener.OnPageChanged(mPositionBeforeScroll, mSmoothScrollTargetPosition);
+                                        onPageChanged(onPageChangedListener, mPositionBeforeScroll, mSmoothScrollTargetPosition);
                                     }
                                 }
                             }
@@ -296,7 +298,7 @@ public class RecyclerViewPager extends RecyclerView {
                     if (mOnPageChangedListeners != null) {
                         for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
                             if (onPageChangedListener != null) {
-                                onPageChangedListener.OnPageChanged(mPositionBeforeScroll, getCurrentPosition());
+                                onPageChanged(onPageChangedListener, mPositionBeforeScroll, getCurrentPosition());
                             }
                         }
                     }
@@ -618,5 +620,20 @@ public class RecyclerViewPager extends RecyclerView {
 
     public float getlLastY() {
         return mLastY;
+    }
+
+    private void onPageChanged(OnPageChangedListener onPageChangedListener, int beforePosition,
+                               int currentPosition) {
+        if (!isShootEveryPage) {
+            onPageChangedListener.OnPageChanged(beforePosition, currentPosition);
+        }
+        int gapBetweenPositions = currentPosition - beforePosition;
+        int multiple = gapBetweenPositions < 0 ? -1 : 1;
+        gapBetweenPositions = Math.abs(gapBetweenPositions);
+        for (int i = 0; i < gapBetweenPositions; i++) {
+            int previousPosition = beforePosition + i * multiple;
+            int nextPosition = previousPosition + multiple;
+            onPageChangedListener.OnPageChanged(previousPosition, nextPosition);
+        }
     }
 }
