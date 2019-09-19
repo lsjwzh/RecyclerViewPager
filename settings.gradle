@@ -1,1 +1,1 @@
-include ':app', ':lib', ':tablayoutsupport'
+include ':app', ':lib', ':tablayoutsupport', ':stub-appcompat'
