@@ -626,6 +626,7 @@ public class RecyclerViewPager extends RecyclerView {
                                int currentPosition) {
         if (!isShootEveryPage) {
             onPageChangedListener.OnPageChanged(beforePosition, currentPosition);
+            return;
         }
         int gapBetweenPositions = currentPosition - beforePosition;
         int multiple = gapBetweenPositions < 0 ? -1 : 1;
