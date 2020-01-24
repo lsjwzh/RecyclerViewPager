@@ -128,6 +128,8 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
             if (toLeftChunkPosition <= toCurrentChunkPosition) {
                 return leftChunkPosition;
             }
+        } else if(getCurrentPosition() == position) {
+            return currentChunkPosition;
         } else {
             // Right direction
             // Scroll from current actual position to next
