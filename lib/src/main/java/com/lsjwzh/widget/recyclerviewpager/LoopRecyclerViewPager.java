@@ -91,38 +91,58 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
 
     private int transformInnerPositionIfNeed(int position) {
         final int actualItemCount = getActualItemCountFromAdapter();
-        if(actualItemCount == 0)
-            return actualItemCount;
+        if (actualItemCount == 0) { return actualItemCount; }
         final int actualCurrentPosition = getCurrentPosition() % actualItemCount;
-        int bakPosition1 = getCurrentPosition()
-                - actualCurrentPosition
-                + position % actualItemCount;
-        int bakPosition2 = getCurrentPosition()
-                - actualCurrentPosition
-                - actualItemCount
-                + position % actualItemCount;
-        int bakPosition3 = getCurrentPosition()
-                - actualCurrentPosition
-                + actualItemCount
-                + position % actualItemCount;
-        Log.e("test", bakPosition1 + "/" + bakPosition2 + "/" + bakPosition3 + "/" + getCurrentPosition());
-        // get position which is closer to current position
-        if (Math.abs(bakPosition1 - getCurrentPosition()) > Math.abs(bakPosition2 -
-                getCurrentPosition())){
-            if (Math.abs(bakPosition2 -
-                    getCurrentPosition())> Math.abs(bakPosition3 -
-                    getCurrentPosition())) {
-                return bakPosition3;
+        final int actualNextPosition = position % actualItemCount;
+        // position in current chunk
+        int currentChunkPosition =
+                getCurrentPosition() - actualCurrentPosition + actualNextPosition;
+        // position in left chunk
+        int leftChunkPosition =
+                getCurrentPosition() - actualCurrentPosition - actualItemCount + actualNextPosition;
+        // position in right chunk
+        int rightChunkPosition =
+                getCurrentPosition() - actualCurrentPosition + actualItemCount + actualNextPosition;
+        Log.e("test",
+              currentChunkPosition +
+              "/" +
+              leftChunkPosition +
+              "/" +
+              rightChunkPosition +
+              "/" +
+              getCurrentPosition());
+
+        // If given actualItemCount lesser than position, considering scroll called by gesture
+        final boolean isGestureScroll = actualItemCount < position;
+
+        int toCurrentChunkPosition = Math.abs(currentChunkPosition - getCurrentPosition());
+        int toLeftChunkPosition = Math.abs(leftChunkPosition - getCurrentPosition());
+        int toRightChunkPosition = Math.abs(rightChunkPosition - getCurrentPosition());
+        if (getCurrentPosition() > position) {
+            // Left direction
+            // Scroll from current actual position to next
+            // actual position with gesture scrolls to next chunk
+            if (actualCurrentPosition == actualNextPosition && isGestureScroll) {
+                return leftChunkPosition;
             }
-            return bakPosition2;
+            if (toLeftChunkPosition <= toCurrentChunkPosition) {
+                return leftChunkPosition;
+            }
+        } else if(getCurrentPosition() == position) {
+            return currentChunkPosition;
         } else {
-            if (Math.abs(bakPosition1 -
-                    getCurrentPosition())> Math.abs(bakPosition3 -
-                    getCurrentPosition())) {
-                return bakPosition3;
+            // Right direction
+            // Scroll from current actual position to next
+            // actual position with gesture scrolls to next chunk
+            if (actualCurrentPosition == actualNextPosition && isGestureScroll) {
+                return rightChunkPosition;
             }
-            return bakPosition1;
+            if (toRightChunkPosition <= toCurrentChunkPosition) {
+                return rightChunkPosition;
+            }
         }
+
+        return currentChunkPosition;
     }
 
     private int getMiddlePosition() {
