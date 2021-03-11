@@ -89,6 +89,15 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
         return position % getActualItemCountFromAdapter();
     }
 
+    public int getMiddlePosition() {
+        int middlePosition = Integer.MAX_VALUE / 2;
+        final int actualItemCount = getActualItemCountFromAdapter();
+        if (actualItemCount > 0 && middlePosition % actualItemCount != 0) {
+            middlePosition = middlePosition - middlePosition % actualItemCount;
+        }
+        return middlePosition;
+    }
+
     private int getActualItemCountFromAdapter() {
         return ((LoopRecyclerViewPagerAdapter) getWrapperAdapter()).getActualItemCount();
     }
@@ -147,14 +156,5 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
         }
 
         return currentChunkPosition;
-    }
-
-    private int getMiddlePosition() {
-        int middlePosition = Integer.MAX_VALUE / 2;
-        final int actualItemCount = getActualItemCountFromAdapter();
-        if (actualItemCount > 0 && middlePosition % actualItemCount != 0) {
-            middlePosition = middlePosition - middlePosition % actualItemCount;
-        }
-        return middlePosition;
     }
 }
