@@ -21,8 +21,12 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
 
     @Override
     public void setAdapter(Adapter adapter) {
+        setAdapter(adapter, false);
+    }
+
+    public void setAdapter(Adapter adapter, boolean skipOnPageChangedListener) {
         super.setAdapter(adapter);
-        super.scrollToPosition(getMiddlePosition());
+        super.scrollToPosition(getMiddlePosition(), skipOnPageChangedListener);
     }
 
     @Override
@@ -61,8 +65,8 @@ public class LoopRecyclerViewPager extends RecyclerViewPager {
      * @param position target position
      */
     @Override
-    public void scrollToPosition(int position) {
-        super.scrollToPosition(transformInnerPositionIfNeed(position));
+    public void scrollToPosition(int position, boolean skipOnPageChangedListener) {
+        super.scrollToPosition(transformInnerPositionIfNeed(position), skipOnPageChangedListener);
     }
 
     /**

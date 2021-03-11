@@ -277,12 +277,20 @@ public class RecyclerViewPager extends RecyclerView {
 
     @Override
     public void scrollToPosition(int position) {
+        scrollToPosition(position, false);
+    }
+
+    public void scrollToPosition(int position, boolean skipOnPageChangedListener) {
         if (DEBUG) {
             Log.d("@", "scrollToPosition:" + position);
         }
         mPositionBeforeScroll = getCurrentPosition();
         mSmoothScrollTargetPosition = position;
         super.scrollToPosition(position);
+
+        if (skipOnPageChangedListener) {
+            return;
+        }
 
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @SuppressWarnings("deprecation")
